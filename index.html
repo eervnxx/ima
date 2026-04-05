@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>شركة الحساب الذهني الدولية | العبقرية الذهنية</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5f7fc 0%, #eef2f9 100%);
+            color: #1e2a3e;
+            overflow-x: hidden;
+        }
+
+        /* الحاوية الرئيسية - تخطيط الجانبين */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* القائمة الجانبية اليمنى (شريط التنقل) */
+        .sidebar-right {
+            width: 280px;
+            background: #0b2b3b;
+            backdrop-filter: blur(2px);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area {
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+
+        .logo-area h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffd966;
+        }
+
+        .logo-area p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 25px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 25px;
+            margin: 6px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+            color: #e0e7ff;
+        }
+
+        .nav-item i {
+            width: 28px;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            background: #ffb347;
+            color: #1e2a3e;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .nav-item.active i {
+            color: #1e2a3e;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #1f4e62;
+            color: white;
+        }
+
+        /* المحتوى الرئيسي (الجهة اليسرى) */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            overflow-y: auto;
+            background: #f8fafd;
+        }
+
+        /* بطاقات ومكونات */
+        .page-card {
+            background: white;
+            border-radius: 32px;
+            padding: 28px 32px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            transition: 0.2s;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            border-right: 6px solid #ffb347;
+            padding-right: 20px;
+            color: #0b2b3b;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .school-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.03);
+            border: 1px solid #eef2f9;
+            transition: transform 0.2s;
+        }
+        .school-card:hover { transform: translateY(-4px); border-color: #ffd966;}
+
+        .school-name {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #1e4663;
+        }
+
+        .contract-link {
+            display: inline-block;
+            margin-top: 12px;
+            background: #f0f4fa;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #ff8c42;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .contract-img-preview {
+            margin-top: 12px;
+            max-width: 100%;
+            border-radius: 16px;
+            border: 1px solid #ddd;
+            max-height: 140px;
+            object-fit: cover;
+        }
+
+        .btn-gold {
+            background: #ffb347;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-gold:hover {
+            background: #ff9f1c;
+            transform: scale(1.02);
+        }
+
+        .upload-area {
+            background: #f2f5fc;
+            border-radius: 28px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            margin: 25px 0;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+        }
+
+        .system-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .step {
+            flex: 1;
+            background: #fef7e0;
+            padding: 20px;
+            border-radius: 28px;
+            text-align: center;
+        }
+        .step i {
+            font-size: 2.5rem;
+            color: #ffb347;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #6c86a3;
+        }
+
+        @media (max-width: 850px) {
+            .dashboard {
+                flex-direction: column-reverse;
+            }
+            .sidebar-right {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px;
+            }
+            .nav-menu {
+                display: flex;
+                padding: 10px;
+            }
+            .nav-item {
+                white-space: nowrap;
+                padding: 10px 18px;
+            }
+            .logo-area {
+                display: none;
+            }
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- القائمة الجانبية اليمنى (أزرار التنقل) -->
+    <div class="sidebar-right">
+        <div class="logo-area">
+            <h2>الحساب الذهني</h2>
+            <p>الدولية · Mental Math</p>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i> <span>الرئيسية</span>
+            </div>
+            <div class="nav-item" data-page="schools">
+                <i class="fas fa-school"></i> <span>المدارس المتعاقدة</span>
+            </div>
+            <div class="nav-item" data-page="addContract">
+                <i class="fas fa-file-signature"></i> <span>إضافة عقود & صور</span>
+            </div>
+            <div class="nav-item" data-page="system">
+                <i class="fas fa-cogs"></i> <span>نظام العمل & التفاصيل</span>
+            </div>
+        </div>
+        <div style="padding: 20px; font-size: 0.7rem; text-align: center; border-top:1px solid rgba(255,255,255,0.1);">
+            <i class="fas fa-brain"></i> تعليم المستقبل
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي (الجهة اليسرى) يتغير بناءً على اختيار الصفحة -->
+    <div class="main-content" id="dynamicPageContainer">
+        <!-- سيتم تحميل الصفحات هنا بواسطة JavaScript -->
+        <div style="text-align:center; padding: 60px;">جاري التحميل...</div>
+    </div>
+</div>
+
+<script>
+    // ---------- بيانات المدارس والعقود (مخزنة محلياً مع صور وهمية) ----------
+    let schoolsData = [
+        { id: 1, name: "مدارس الرياض الأهلية", contractImage: "https://picsum.photos/id/20/300/200", contractDesc: "عقد تعاون 2025" },
+        { id: 2, name: "مدارس النخبة العالمية", contractImage: "https://picsum.photos/id/26/300/200", contractDesc: "اتفاقية تجديد 2025" },
+        { id: 3, name: "أكاديمية العباقرة", contractImage: "https://picsum.photos/id/28/300/200", contractDesc: "عقد حصري" }
+    ];
+
+    // مساعدة لتخزين الصور الجديدة (سنقوم بتحديث المدارس)
+    function renderSchoolsPage() {
+        let html = `<div class="page-card"><div class="section-title"><i class="fas fa-handshake"></i> المدارس المتعاقدة مع الشركة</div>
+                    <div class="grid-cards" id="schoolsListContainer">`;
+        schoolsData.forEach(school => {
+            html += `<div class="school-card">
+                        <div class="school-name"><i class="fas fa-building"></i> ${escapeHtml(school.name)}</div>
+                        <div style="font-size:0.8rem; color:#6c757d;">عقد: ${escapeHtml(school.contractDesc)}</div>
+                        <img src="${school.contractImage}" alt="صورة العقد" class="contract-img-preview" onerror="this.src='https://via.placeholder.com/300x150?text=صورة+العقد'">
+                        <div class="contract-link"><i class="fas fa-eye"></i> معاينة العقد</div>
+                     </div>`;
+        });
+        html += `</div></div>`;
+        return html;
+    }
+
+    // صفحة إضافة عقود جديدة + صور للمدارس
+    function renderAddContractPage() {
+        return `
+        <div class="page-card">
+            <div class="section-title"><i class="fas fa-plus-circle"></i> إضافة مدرسة متعاقدة جديدة وعقدها</div>
+            <div class="upload-area">
+                <label style="font-weight:bold;">اسم المدرسة:</label>
+                <input type="text" id="newSchoolName" placeholder="مثال: مدارس المستقبل" style="width:100%; padding:12px; margin:10px 0; border-radius:60px; border:1px solid #ccc;">
+                
+                <label style="font-weight:bold;">وصف العقد:</label>
+                <input type="text" id="newContractDesc" placeholder="عقد تعاون 2026" style="width:100%; padding:12px; margin:10px 0; border-radius:60px; border:1px solid #ccc;">
+                
+                <label style="font-weight:bold;">رابط صورة العقد (URL):</label>
+                <input type="text" id="newContractImageUrl" placeholder="https://example.com/contract.jpg" style="width:100%; padding:12px; margin:10px 0; border-radius:60px; border:1px solid #ccc;">
+                <div style="font-size:0.8rem; color:gray;">⭐ يمكنك استخدام أي رابط صورة، أو استخدام صور عشوائية تجريبية مثل https://picsum.photos/id/101/300/200</div>
+                <button class="btn-gold" id="btnAddSchool" style="margin-top:15px;"><i class="fas fa-save"></i> إضافة المدرسة والعقد</button>
+            </div>
+            <hr style="margin:25px 0;">
+            <div class="section-title" style="font-size:1.4rem;"><i class="fas fa-upload"></i> أو رفع صورة عقد من جهازك (اختياري)</div>
+            <div class="upload-area">
+                <label>رفع صورة عقد (سيتم تحويلها إلى رابط مؤقت):</label>
+                <input type="file" id="contractUploadFile" accept="image/*" style="margin:10px 0; display:block;">
+                <button class="btn-gold" id="btnUploadImageAsContract"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة وإضافتها لمدرسة جديدة</button>
+                <div id="uploadMsg" style="margin-top:10px; color:green;"></div>
+            </div>
+        </div>`;
+    }
+
+    // صفحة نظام العمل والتفاصيل + فيديو
+    function renderSystemPage() {
+        return `
+        <div class="page-card">
+            <div class="section-title"><i class="fas fa-chalkboard-user"></i> نظام عمل شركة الحساب الذهني الدولية</div>
+            <p style="font-size:1.1rem; line-height:1.6;">تعتمد شركة الحساب الذهني على منهجية تدريب العقل باستخدام العداد الذهني (السوروبان) لتنشيط نصفي الكرة المخية، مما ينمي القدرات الحسابية، التركيز، والذاكرة. يتم تقديم البرنامج على مراحل تدريجية من المستوى المبتدئ إلى الاحترافي.</p>
+            
+            <div class="system-steps">
+                <div class="step"><i class="fas fa-child"></i><h3>التقييم الأولي</h3><p>تحديد مستوى الطالب ووضعه في المسار المناسب</p></div>
+                <div class="step"><i class="fas fa-brain"></i><h3>التدريب الذهني</h3><p>تمارين السوروبان والتصور الذهني</p></div>
+                <div class="step"><i class="fas fa-trophy"></i><h3>المسابقات والشهادات</h3><p>شهادات معتمدة ومشاركات دولية</p></div>
+            </div>
+            <h3 style="margin:15px 0 10px 0;"><i class="fas fa-video"></i> فيديو توضيحي عن الحساب الذهني</h3>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/8e3nNuJ_aBY" title="العبقرية الذهنية - الحساب الذهني" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p><i class="fas fa-check-circle" style="color:#ffb347;"></i> برامجنا معتمدة من منظمات تعليمية عالمية، وتشمل التدريب عبر الإنترنت واللقاءات المباشرة مع مدربين معتمدين.</p>
+            <footer style="margin-top:30px;">© 2025 شركة الحساب الذهني الدولية - نحو عقول مبدعة</footer>
+        </div>`;
+    }
+
+    // الصفحة الرئيسية (ترحيب + نبذة)
+    function renderHomePage() {
+        return `
+        <div class="page-card">
+            <div class="section-title">مرحباً بكم في <span style="color:#ffb347;">شركة الحساب الذهني الدولية</span></div>
+            <p style="font-size:1.15rem; line-height:1.6;">نحن الشركة الرائدة في تعليم الحساب الذهني وتنمية المهارات العقلية للأطفال والناشئين. نتعاون مع أكثر من 100 مدرسة حول العالم، ونقدم عقود شراكة مميزة.</p>
+            <div style="background: #eef2fa; border-radius: 28px; padding: 20px; margin: 30px 0;">
+                <i class="fas fa-chart-line" style="font-size: 2rem;"></i>
+                <h3>رؤيتنا: جيل ذهني مبدع</h3>
+                <p>من خلال منهجية فريدة تجمع بين الحساب الذهني وتقنيات التصور، نضمن تفوق الطلاب في جميع المواد الدراسية.</p>
+            </div>
+            <div><i class="fas fa-hand-peace"></i> اختر من القائمة اليمنى لعرض المدارس المتعاقدة، إضافة عقود جديدة، أو الاطلاع على نظام العمل.</div>
+        </div>
+        `;
+    }
+
+    // دالة تغيير الصفحة ديناميكياً
+    let currentPage = "home";
+    function loadPage(pageId) {
+        currentPage = pageId;
+        const container = document.getElementById("dynamicPageContainer");
+        if (!container) return;
+        if (pageId === "home") {
+            container.innerHTML = renderHomePage();
+        } else if (pageId === "schools") {
+            container.innerHTML = renderSchoolsPage();
+        } else if (pageId === "addContract") {
+            container.innerHTML = renderAddContractPage();
+            attachAddContractEvents();
+        } else if (pageId === "system") {
+            container.innerHTML = renderSystemPage();
+        } else {
+            container.innerHTML = renderHomePage();
+        }
+        // إعادة ربط أحداث إضافية لصفحة المدارس (لو في أزرار مستقبلية)
+        if (pageId === "schools") {
+            // أي تفاعلات إضافية
+        }
+    }
+
+    // دالة مساعدة لتحديث صفحة المدارس بشكل حيوي بعد إضافة مدرسة
+    function refreshSchoolsPage() {
+        if (currentPage === "schools") {
+            const container = document.getElementById("dynamicPageContainer");
+            if (container) container.innerHTML = renderSchoolsPage();
+        } else if (currentPage === "addContract") {
+            // إذا كنت في صفحة الإضافة لا نغيرها
+        }
+    }
+
+    // إضافة الأحداث لإضافة مدرسة جديدة (رابط صورة أو رفع ملف)
+    function attachAddContractEvents() {
+        const btnAdd = document.getElementById("btnAddSchool");
+        if (btnAdd) {
+            btnAdd.onclick = () => {
+                const nameInput = document.getElementById("newSchoolName");
+                const descInput = document.getElementById("newContractDesc");
+                const urlInput = document.getElementById("newContractImageUrl");
+                let schoolName = nameInput?.value.trim();
+                let contractDesc = descInput?.value.trim();
+                let imageUrl = urlInput?.value.trim();
+                if (!schoolName) {
+                    alert("يرجى إدخال اسم المدرسة");
+                    return;
+                }
+                if (!contractDesc) contractDesc = "عقد شراكة";
+                if (!imageUrl) imageUrl = "https://picsum.photos/id/42/300/200";
+                // إضافة المدرسة الجديدة إلى البيانات
+                const newId = Date.now();
+                schoolsData.push({
+                    id: newId,
+                    name: schoolName,
+                    contractImage: imageUrl,
+                    contractDesc: contractDesc
+                });
+                // مسح الحقول
+                nameInput.value = "";
+                descInput.value = "";
+                urlInput.value = "";
+                alert(`تمت إضافة المدرسة "${schoolName}" بنجاح مع العقد!`);
+                refreshSchoolsPage();
+                // إذا كان المستخدم في صفحة المدارس سيتحديث تلقائياً، وإلا نحتفظ
+                if (currentPage !== "schools") {
+                    // نعرض رسالة فقط
+                } else {
+                    loadPage("schools");
+                }
+            };
+        }
+
+        // رفع صورة من الجهاز وتحويلها إلى ObjectURL وإضافة مدرسة جديدة (اختياري)
+        const uploadBtn = document.getElementById("btnUploadImageAsContract");
+        if (uploadBtn) {
+            uploadBtn.onclick = () => {
+                const fileInput = document.getElementById("contractUploadFile");
+                const file = fileInput?.files[0];
+                if (!file) {
+                    alert("الرجاء اختيار صورة عقد من جهازك أولاً");
+                    return;
+                }
+                const nameSchoolPrompt = prompt("أدخل اسم المدرسة الجديدة لهذه الصورة:");
+                if (!nameSchoolPrompt) return;
+                const descPrompt = prompt("وصف العقد (اختياري):", "عقد جديد");
+                const objectUrl = URL.createObjectURL(file);
+                schoolsData.push({
+                    id: Date.now(),
+                    name: nameSchoolPrompt,
+                    contractImage: objectUrl,
+                    contractDesc: descPrompt || "عقد موقع"
+                });
+                document.getElementById("uploadMsg").innerHTML = `✅ تم إضافة مدرسة "${nameSchoolPrompt}" بالصورة المرفوعة.`;
+                fileInput.value = "";
+                refreshSchoolsPage();
+                if (currentPage !== "schools") {
+                    // تنبيه فقط
+                } else {
+                    loadPage("schools");
+                }
+                setTimeout(() => {
+                    const msgDiv = document.getElementById("uploadMsg");
+                    if(msgDiv) msgDiv.innerHTML = "";
+                }, 3000);
+            };
+        }
+    }
+
+    // دالة حماية من XSS
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // التنقل عبر القائمة
+    function initNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                const page = this.getAttribute('data-page');
+                if (!page) return;
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                loadPage(page);
+            });
+        });
+    }
+
+    // تحميل أولي
+    function init() {
+        initNavigation();
+        loadPage('home');
+    }
+
+    init();
+</script>
+</body>
+</html>
