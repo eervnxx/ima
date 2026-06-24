@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المختبر - Ultimate AI Labs</title>
+    <title>المختبر المتطور - Ultimate Labs v2.0</title>
     <style>
         :root {
             --primary:#6366f1;--primary-hover:#4f46e5;--primary-light:rgba(99,102,241,0.1);
@@ -29,22 +29,26 @@
         .labs-area{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px;}
         .lab-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;transition:all var(--transition);}
         .lab-card:hover{box-shadow:var(--shadow-lg);}
-        .lab-card h3{color:var(--primary);margin-bottom:6px;font-size:0.95rem;}
+        .lab-card h3{color:var(--primary);margin-bottom:6px;font-size:0.95rem;display:flex;align-items:center;gap:6px;}
         .lab-card p{font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;}
         .lab-card input,.lab-card textarea,.lab-card select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.85rem;background:var(--bg);color:var(--text);margin:4px 0;}
         .lab-card button{background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:18px;cursor:pointer;font-family:inherit;font-size:0.78rem;margin:3px;transition:all var(--transition);}
-        .lab-card button:hover{background:var(--primary-hover);}
-        .lab-result{margin-top:10px;padding:10px;background:var(--bg);border-radius:var(--radius-sm);font-size:0.85rem;white-space:pre-wrap;}
+        .lab-card button:hover{background:var(--primary-hover);transform:translateY(-1px);}
+        .lab-card button:active{transform:scale(0.97);}
+        .lab-result{margin-top:10px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);font-size:0.85rem;white-space:pre-wrap;min-height:20px;}
+        .lab-result:empty{display:none;}
         .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e293b;color:white;padding:9px 20px;border-radius:22px;font-size:0.78rem;z-index:300;opacity:0;transition:all 0.3s;pointer-events:none;}
         .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
         .footer{text-align:center;padding:10px;font-size:0.7rem;color:var(--text-secondary);border-top:1px solid var(--border);background:var(--surface);margin-top:auto;}
         .footer span{font-weight:600;color:var(--primary);}
+        .emoji-large{font-size:2rem;}
+        .btn-group{display:flex;gap:4px;flex-wrap:wrap;}
         @media(max-width:600px){.labs-area{padding:8px;gap:10px;}.lab-card{padding:12px;}}
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">🧪 المختبر</div>
+        <div class="nav-brand">🧪 المختبر المتطور</div>
         <div class="nav-links">
             <a href="index.html" class="nav-link">💬 شات</a>
             <a href="tools.html" class="nav-link">🧰 أدوات</a>
@@ -54,21 +58,59 @@
     </nav>
 
     <div class="labs-area">
-        <div class="lab-card"><h3>🎲 مولد أفكار مشاريع</h3><p>يولد فكرة مشروع عشوائية مع اسم مقترح</p><button onclick="generateIdea()">🎯 ولّد فكرة</button><div class="lab-result" id="ideaResult"></div></div>
-        <div class="lab-card"><h3>😂 مولد نكات</h3><p>نكت تقنية وعامة وبرمجة</p><button onclick="generateJoke()">🤣 هات نكتة</button><div class="lab-result" id="jokeResult"></div></div>
-        <div class="lab-card"><h3>📊 تحليل نص متقدم</h3><textarea id="analyzeInput" rows="3" placeholder="الصق نصاً..."></textarea><button onclick="analyzeText()">📈 حلل</button><div class="lab-result" id="analyzeResult"></div></div>
-        <div class="lab-card"><h3>🕐 عداد تنازلي</h3><select id="countdownSelect"><option value="2027-01-01">رأس السنة 2027</option><option value="2027-03-01">رمضان 2027 (تقريبي)</option><option value="2026-12-31">نهاية 2026</option></select><button onclick="calculateCountdown()">⏳ احسب</button><div class="lab-result" id="countdownResult"></div></div>
-        <div class="lab-card"><h3>💤 حاسبة النوم الذكية</h3><p>احسب وقت نومك المثالي بناءً على دورات النوم</p><input type="time" id="wakeTime" value="06:00"><button onclick="calculateSleep()">😴 احسب</button><div class="lab-result" id="sleepResult"></div></div>
-        <div class="lab-card"><h3>💪 مولد تمارين رياضية</h3><p>تمارين عشوائية لليوم</p><button onclick="generateWorkout()">🏋️ ولّد</button><div class="lab-result" id="workoutResult"></div></div>
-        <div class="lab-card"><h3>🍳 مقترح وصفات</h3><input id="recipeIng" placeholder="المكونات المتوفرة (مثال: دجاج، رز)"><button onclick="suggestRecipe()">👨‍🍳 اقترح</button><div class="lab-result" id="recipeResult"></div></div>
-        <div class="lab-card"><h3>📖 قاموس سريع</h3><input id="dictWord" placeholder="اكتب كلمة..."><button onclick="defineWord()">📚 ابحث</button><div class="lab-result" id="dictResult"></div></div>
-        <div class="lab-card"><h3>🎵 بحث كلمات أغاني</h3><input id="songQuery" placeholder="اسم الأغنية..."><button onclick="findLyrics()">🎶 ابحث</button><div class="lab-result" id="lyricsResult"></div></div>
-        <div class="lab-card"><h3>🔮 مولد Predictions</h3><p>توقعات عشوائية للمستقبل (للتسلية)</p><button onclick="generatePrediction()">🔮 تنبأ</button><div class="lab-result" id="predictionResult"></div></div>
-        <div class="lab-card"><h3>🃏 مولد بطاقات عشوائي</h3><p>بطاقة لعب عشوائية</p><button onclick="drawCard()">🃏 اسحب</button><div class="lab-result" id="cardResult" style="font-size:2rem;text-align:center;"></div></div>
-        <div class="lab-card"><h3>🌍 معلومات دولة عشوائية</h3><button onclick="randomCountry()">🗺️ دولة</button><div class="lab-result" id="countryResult"></div></div>
-        <div class="lab-card"><h3>✍️ مولد اقتباسات تحفيزية</h3><button onclick="generateQuote()">💬 اقتباس</button><div class="lab-result" id="quoteResult"></div></div>
-        <div class="lab-card"><h3>🎯 اختبار سرعة كتابة</h3><p id="typingTarget">اكتب: مرحبا بالعالم</p><input id="typingInput" placeholder="اكتب هنا..."><button onclick="checkTyping()">✓ تحقق</button><div class="lab-result" id="typingResult"></div></div>
-        <div class="lab-card"><h3>🧮 مولد معادلات رياضية</h3><p>للتدريب على الحساب</p><button onclick="generateMath()">➕ ولّد</button><div class="lab-result" id="mathResult" style="font-size:1.2rem;"></div></div>
+        <!-- 1. مولد أفكار -->
+        <div class="lab-card"><h3>🎲 مولد أفكار مشاريع</h3><p>يولد فكرة مشروع مع اسم ووصف</p><button onclick="generateIdea()">🎯 ولّد فكرة</button><div class="lab-result" id="ideaResult"></div></div>
+
+        <!-- 2. نكت -->
+        <div class="lab-card"><h3>😂 مولد نكت</h3><p>نكت تقنية، برمجة، وعامة</p><div class="btn-group"><button onclick="generateJoke('tech')">💻 نكت تقنية</button><button onclick="generateJoke('general')">🤣 نكت عامة</button></div><div class="lab-result" id="jokeResult"></div></div>
+
+        <!-- 3. تحليل نص -->
+        <div class="lab-card"><h3>📊 تحليل نص متقدم</h3><textarea id="analyzeInput" rows="4" placeholder="الصق نصاً لتحليله..."></textarea><button onclick="analyzeText()">📈 حلل</button><div class="lab-result" id="analyzeResult"></div></div>
+
+        <!-- 4. عداد تنازلي -->
+        <div class="lab-card"><h3>🕐 عداد تنازلي</h3><select id="countdownSelect"><option value="2027-01-01">🎉 رأس السنة 2027</option><option value="2027-03-01">🌙 رمضان 2027</option><option value="2026-12-31">📅 نهاية 2026</option><option value="custom">📝 تاريخ مخصص</option></select><input type="date" id="customDate" style="display:none;"><button onclick="calculateCountdown()">⏳ احسب</button><div class="lab-result" id="countdownResult"></div></div>
+
+        <!-- 5. حاسبة نوم -->
+        <div class="lab-card"><h3>💤 حاسبة النوم الذكية</h3><p>احسب وقت نومك بناءً على دورات النوم (90 دقيقة)</p><label>موعد الاستيقاظ:</label><input type="time" id="wakeTime" value="06:00"><button onclick="calculateSleep()">😴 احسب</button><div class="lab-result" id="sleepResult"></div></div>
+
+        <!-- 6. تمارين -->
+        <div class="lab-card"><h3>💪 مولد تمارين رياضية</h3><p>تمارين عشوائية مخصصة</p><select id="workoutType"><option value="full">كامل الجسم</option><option value="upper">الجزء العلوي</option><option value="lower">الجزء السفلي</option><option value="cardio">كارديو</option></select><button onclick="generateWorkout()">🏋️ ولّد</button><div class="lab-result" id="workoutResult"></div></div>
+
+        <!-- 7. وصفات -->
+        <div class="lab-card"><h3>🍳 مقترح وصفات</h3><input id="recipeIng" placeholder="المكونات المتوفرة (دجاج، رز، خضار...)"><button onclick="suggestRecipe()">👨‍🍳 اقترح وصفة</button><div class="lab-result" id="recipeResult"></div></div>
+
+        <!-- 8. قاموس -->
+        <div class="lab-card"><h3>📖 قاموس سريع</h3><input id="dictWord" placeholder="اكتب كلمة للبحث عن معناها..."><button onclick="defineWord()">📚 ابحث</button><div class="lab-result" id="dictResult"></div></div>
+
+        <!-- 9. كلمات أغاني -->
+        <div class="lab-card"><h3>🎵 بحث كلمات أغاني</h3><input id="songQuery" placeholder="اسم الأغنية أو الفنان..."><button onclick="findLyrics()">🎶 ابحث</button><div class="lab-result" id="lyricsResult"></div></div>
+
+        <!-- 10. توقعات -->
+        <div class="lab-card"><h3>🔮 توقعات (للتسلية)</h3><p>توقعات عشوائية للمستقبل القريب</p><button onclick="generatePrediction()">🔮 تنبأ لي</button><div class="lab-result" id="predictionResult"></div></div>
+
+        <!-- 11. بطاقات -->
+        <div class="lab-card"><h3>🃏 مولد بطاقات</h3><button onclick="drawCard()">🃏 اسحب بطاقة</button><div class="lab-result" id="cardResult" style="font-size:3rem;text-align:center;"></div></div>
+
+        <!-- 12. دول -->
+        <div class="lab-card"><h3>🌍 معلومات دولة</h3><button onclick="randomCountry()">🗺️ دولة عشوائية</button><div class="lab-result" id="countryResult"></div></div>
+
+        <!-- 13. اقتباسات -->
+        <div class="lab-card"><h3>✍️ اقتباسات تحفيزية</h3><button onclick="generateQuote()">💬 اقتباس</button><div class="lab-result" id="quoteResult"></div></div>
+
+        <!-- 14. سرعة كتابة -->
+        <div class="lab-card"><h3>🎯 اختبار سرعة كتابة</h3><p id="typingTarget" style="font-weight:700;color:var(--primary);">اكتب: مرحبا بالعالم</p><input id="typingInput" placeholder="اكتب النص أعلاه..."><button onclick="checkTyping()">✓ تحقق</button><div class="lab-result" id="typingResult"></div></div>
+
+        <!-- 15. معادلات -->
+        <div class="lab-card"><h3>🧮 مولد معادلات رياضية</h3><p>للتدريب على الحساب الذهني</p><select id="mathDifficulty"><option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option></select><button onclick="generateMath()">➕ ولّد معادلة</button><div class="lab-result" id="mathResult" style="font-size:1.3rem;text-align:center;"></div></div>
+
+        <!-- 16. حظ -->
+        <div class="lab-card"><h3>🍀 اختبار الحظ</h3><p>نسبة حظك اليوم (للتسلية)</p><button onclick="testLuck()">🍀 جرب حظك</button><div class="lab-result" id="luckResult"></div></div>
+
+        <!-- 17. توافق -->
+        <div class="lab-card"><h3>💕 اختبار توافق الأسماء</h3><input id="name1" placeholder="الاسم الأول"><input id="name2" placeholder="الاسم الثاني"><button onclick="testCompatibility()">💕 اختبر</button><div class="lab-result" id="compatResult"></div></div>
+
+        <!-- 18. أبراج -->
+        <div class="lab-card"><h3>⭐ حظك اليوم حسب برجك</h3><select id="zodiacSign"><option value="aries">♈ الحمل</option><option value="taurus">♉ الثور</option><option value="gemini">♊ الجوزاء</option><option value="cancer">♋ السرطان</option><option value="leo">♌ الأسد</option><option value="virgo">♍ العذراء</option><option value="libra">♎ الميزان</option><option value="scorpio">♏ العقرب</option><option value="sagittarius">♐ القوس</option><option value="capricorn">♑ الجدي</option><option value="aquarius">♒ الدلو</option><option value="pisces">♓ الحوت</option></select><button onclick="getHoroscope()">⭐ اعرف حظك</button><div class="lab-result" id="horoscopeResult"></div></div>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -83,25 +125,30 @@
             if(localStorage.getItem('darkMode')==='on'){document.body.classList.add('dark-mode');darkModeBtn.textContent='☀️';}
             darkModeBtn.addEventListener('click',toggleDark);
 
-            let typingStartTime=0;
+            let typingStartTime=0,mathAnswer=0;
 
-            window.generateIdea=function(){const ideas=[{name:'منصة تعلم بالذكاء الاصطناعي',desc:'تطبيق يخصص محتوى تعليمي حسب مستوى المستخدم'},{name:'تطبيق تتبع عادات',desc:'يسجل عادات يومية ويعطي إحصائيات'},{name:'موقع مقارنة أسعار',desc:'يقارن أسعار المنتجات من متاجر مختلفة'},{name:'بوت تلخيص كتب',desc:'يلخص أي كتاب في دقائق'},{name:'لعبة برمجة تفاعلية',desc:'تعلم البرمجة من خلال لعبة'}];const i=ideas[Math.floor(Math.random()*ideas.length)];$('ideaResult').textContent=`💡 ${i.name}\n📝 ${i.desc}`;};
-            window.generateJoke=function(){const jokes=['ليش المبرمج دايم تعبان؟ لأنه يشتغل في bugs طول اليوم','واحد قال لصاحبه: عندي فوبيا من الـ HTML، قاله ليش؟ قال: لأنه full of tags!','الفرق بين الجافا سكريبت والزواج؟ الاتنين asynchronous وما تعرف النتيجة','أذكى لغة برمجة؟ اللي تدفعلك فاتورة الكهرباء','المبرمج لما يسألوه عن سر نجاحه: Ctrl+C, Ctrl+V'];$('jokeResult').textContent='😂 '+jokes[Math.floor(Math.random()*jokes.length)];};
-            window.analyzeText=function(){const t=$('analyzeInput').value.trim();if(!t)return;const words=t.split(/\s+/).filter(x=>x).length;const chars=t.length;const charsNoSpace=t.replace(/\s/g,'').length;const sentences=t.split(/[.!?؟]/).filter(x=>x).length;const paragraphs=t.split(/\n\n+/).filter(x=>x).length;const avgWord=charsNoSpace/(words||1);const readingTime=Math.ceil(words/200);$('analyzeResult').textContent=`📊 كلمات: ${words}\n📝 أحرف: ${chars}\n📄 أحرف بدون مسافات: ${charsNoSpace}\n📖 جمل: ${sentences}\n📑 فقرات: ${paragraphs}\n📏 متوسط طول الكلمة: ${avgWord.toFixed(1)}\n⏱️ وقت القراءة: ${readingTime} دقيقة`;};
-            window.calculateCountdown=function(){const target=new Date($('countdownSelect').value);const now=new Date();const diff=target-now;const days=Math.floor(diff/(1000*60*60*24));const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));$('countdownResult').textContent=`⏳ باقي: ${days} يوم و ${hours} ساعة`;};
-            window.calculateSleep=function(){const w=$('wakeTime').value;if(!w)return;const[h,m]=w.split(':').map(Number);const wt=h*60+m;let r='😴 أوقات النوم المثالية:\n';[6,5,4,3,2].forEach(c=>{const s=wt-(c*90+15);if(s<0)return;const sh=Math.floor(s/60)%24;const sm=s%60;r+=`\n• ${c} دورات نوم → ${String(sh).padStart(2,'0')}:${String(sm).padStart(2,'0')}`;});$('sleepResult').textContent=r;};
-            window.generateWorkout=function(){const exercises=['ضغط 15×3','قرفصاء 20×3','بلانك 60 ثانية','قفز نجمي 50×2','تمارين بطن 20×3','جري في المكان 5 دقائق','lunges 12×3','burpees 10×3'];const warmup=['إحماء: جري خفيف 2 دقيقة','إحماء: قفز حبل 3 دقائق','إحماء: stretching 5 دقائق'];const w=warmup[Math.floor(Math.random()*warmup.length)];const selected=[];for(let i=0;i<5;i++){const e=exercises[Math.floor(Math.random()*exercises.length)];if(!selected.includes(e))selected.push(e);}$('workoutResult').textContent=`💪 ${w}\n\nتمارين:\n${selected.map((x,i)=>`${i+1}. ${x}`).join('\n')}`;};
-            window.suggestRecipe=function(){const ing=$('recipeIng').value.trim()||'دجاج,رز';const recipes={'دجاج':['دجاج مشوي بالليمون','كاري دجاج هندي','دجاج بالفرن مع الخضار'],'لحم':['لحم بالبصل','برجر منزلي','ستيك بالزبدة'],'سمك':['سمك مقلي','سمك بالفرن','فيليه مشوي'],'رز':['رز برياني','رز مقلي','مندي']};const ings=ing.split(/[,،]/);let suggestion='';for(const[key,values]of Object.entries(recipes)){if(ings.some(i=>i.trim().includes(key))){suggestion=values[Math.floor(Math.random()*values.length)];break;}}if(!suggestion)suggestion='سلطة خضار مشكلة';$('recipeResult').textContent=`🍳 ${suggestion}\n\nالمكونات: ${ing}\n\n1. جهز المكونات\n2. اطبخ\n3. قدم ساخناً`;};
-            window.defineWord=function(){const w=$('dictWord').value.trim();if(!w)return;$('dictResult').textContent=`📖 "${w}": جرب تبحث عنها في الشات الرئيسي.`;};
-            window.findLyrics=function(){const s=$('songQuery').value.trim();if(!s)return;$('lyricsResult').textContent=`🎵 "${s}": جرب تبحث في الويب.`;};
-            window.generatePrediction=function(){const p=['راح تتلقى خبر حلو قريباً جداً! 🌟','فرصة جديدة في الطريق، استعد! 🚀','شخص مهم راح يدخل حياتك قريباً 💫','مشروعك الجاي راح يكون ناجح جداً 📈','الأسبوع الجاي راح يكون مليان مفاجآت 🎉'];$('predictionResult').textContent='🔮 '+p[Math.floor(Math.random()*p.length)];};
-            window.drawCard=function(){const suits=['♠️','♥️','♦️','♣️'];const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];const suit=suits[Math.floor(Math.random()*4)];const rank=ranks[Math.floor(Math.random()*13)];$('cardResult').textContent=`${rank} ${suit}`;};
-            window.randomCountry=function(){const countries=[{name:'اليابان',capital:'طوكيو',currency:'ين',lang:'يابانية'},{name:'البرازيل',capital:'برازيليا',currency:'ريال',lang:'برتغالية'},{name:'مصر',capital:'القاهرة',currency:'جنيه',lang:'عربية'},{name:'فرنسا',capital:'باريس',currency:'يورو',lang:'فرنسية'},{name:'الهند',capital:'نيودلهي',currency:'روبيه',lang:'هندية'}];const c=countries[Math.floor(Math.random()*countries.length)];$('countryResult').textContent=`🌍 ${c.name}\n🏙️ العاصمة: ${c.capital}\n💰 العملة: ${c.currency}\n🗣️ اللغة: ${c.lang}`;};
-            window.generateQuote=function(){const quotes=['النجاح ليس نهاية الطريق، والفشل ليس قاتلاً، الشجاعة للاستمرار هي ما يهم.','تعلم كأنك ستعيش للأبد، عش كأنك ستموت غداً.','الطريقة الوحيدة لعمل عمل عظيم هي أن تحب ما تعمل.','لا تنتظر الفرصة، اصنعها بنفسك.','كل حلم عظيم يبدأ بحالم.'].map(q=>'💬 '+q);$('quoteResult').textContent=quotes[Math.floor(Math.random()*quotes.length)];};
-            window.checkTyping=function(){const target=$('typingTarget').textContent.replace('اكتب: ','');const input=$('typingInput').value.trim();if(!input)return;if(!typingStartTime)typingStartTime=Date.now();if(input===target){const time=(Date.now()-typingStartTime)/1000;$('typingResult').textContent=`✅ صح! الوقت: ${time.toFixed(1)} ثانية`;typingStartTime=0;}else{$('typingResult').textContent='❌ خطأ، حاول مرة أخرى';}};
-            window.generateMath=function(){const ops=['+','-','×'];const a=Math.floor(Math.random()*100);const b=Math.floor(Math.random()*50);const op=ops[Math.floor(Math.random()*3)];let ans;if(op==='+')ans=a+b;else if(op==='-')ans=a-b;else ans=a*b;$('mathResult').textContent=`${a} ${op} ${b} = ?`;$('mathResult').dataset.answer=ans;$('mathResult').addEventListener('click',function(){this.textContent=`${a} ${op} ${b} = ${ans}`;},{once:true});};
+            // عداد مخصص
+            $('countdownSelect').addEventListener('change',function(){if(this.value==='custom'){$('customDate').style.display='block';}else{$('customDate').style.display='none';}});
 
-            // تغيير نص اختبار السرعة عشوائياً
+            window.generateIdea=function(){const ideas=[{n:'منصة تعلم ذكية',d:'تطبيق يخصص محتوى تعليمي حسب مستوى المستخدم باستخدام AI'},{n:'متجر منتجات رقمية',d:'موقع لبيع القوالب والأكواد والتصاميم'},{n:'بوت تحليل أسعار',d:'بوت يقارن أسعار المنتجات من مختلف المتاجر'},{n:'تطبيق تتبع صحي',d:'يسجل الخطوات، السعرات، والنوم ويعطي نصائح'},{n:'لعبة برمجة',d:'لعبة تفاعلية تعلم أساسيات البرمجة'}];const i=ideas[Math.floor(Math.random()*ideas.length)];$('ideaResult').innerHTML=`<strong>💡 ${i.n}</strong><br>📝 ${i.d}`;};
+            window.generateJoke=function(type){const tech=['ليه المبرمج دايم تعبان؟ لأنه شغال في bugs','واحد قال لصاحبه: عندي فوبيا من HTML... قاله ليش؟ قال: لأنه full of tags!','الفرق بين الجافا والزواج؟ الاتنين asynchronous','المبرمج لما يسألوه عن سر نجاحه: Ctrl+C, Ctrl+V'];const general=['مرة واحد بخيل مات ولد قريبه، راح العزاء واخذ بقشيش','واحد غبي سأل صاحبه: كيف تكتب كلمة "غبي"؟ قاله: اكتبها زي ما تنطقها. قال: طيب أكتب "غ" ولا "ق"؟','الأستاذ: لماذا الشمس تشرق من الشرق؟ الطالب: لأن الغرب مقفل!'];const jokes=type==='tech'?tech:general;$('jokeResult').textContent='😂 '+jokes[Math.floor(Math.random()*jokes.length)];};
+            window.analyzeText=function(){const t=$('analyzeInput').value.trim();if(!t)return;const words=t.split(/\s+/).filter(x=>x).length;const chars=t.length;const charsNoSpace=t.replace(/\s/g,'').length;const sentences=t.split(/[.!?؟]/).filter(x=>x).length;const paragraphs=t.split(/\n\n+/).filter(x=>x).length;const uniqueWords=new Set(t.toLowerCase().split(/\s+/).filter(x=>x)).size;$('analyzeResult').innerHTML=`📊 <strong>كلمات:</strong> ${words} | <strong>كلمات فريدة:</strong> ${uniqueWords}<br>📝 <strong>أحرف:</strong> ${chars} | <strong>بدون مسافات:</strong> ${charsNoSpace}<br>📖 <strong>جمل:</strong> ${sentences} | <strong>فقرات:</strong> ${paragraphs}<br>⏱️ <strong>وقت قراءة:</strong> ~${Math.ceil(words/200)} دقيقة | <strong>متوسط:</strong> ${(charsNoSpace/(words||1)).toFixed(1)} حرف/كلمة`;};
+            window.calculateCountdown=function(){const val=$('countdownSelect').value;const target=new Date(val==='custom'?$('customDate').value:val);if(isNaN(target.getTime())){alert('اختر تاريخ صحيح');return;}const now=new Date();const diff=target-now;const days=Math.floor(diff/(1000*60*60*24));const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));const mins=Math.floor((diff%(1000*60*60))/(1000*60));$('countdownResult').innerHTML=`⏳ <strong>باقي:</strong> ${days} يوم و ${hours} ساعة و ${mins} دقيقة`;};
+            window.calculateSleep=function(){const w=$('wakeTime').value;if(!w)return;const[h,m]=w.split(':').map(Number);const wt=h*60+m;let r='😴 <strong>أفضل أوقات النوم:</strong>\n';[6,5,4,3,2].forEach(c=>{const s=wt-(c*90+15);if(s<0)return;const sh=Math.floor(s/60)%24;const sm=s%60;r+=`\n• ${c} دورات → ${String(sh).padStart(2,'0')}:${String(sm).padStart(2,'0')} (${c*1.5} ساعات نوم)`;});r+='\n\n💡 كل دورة نوم = 90 دقيقة + 15 دقيقة للنوم';$('sleepResult').textContent=r;};
+            window.generateWorkout=function(){const type=$('workoutType').value;const exercises={full:['ضغط 15×3','قرفصاء 20×3','بلانك 60 ث','burpees 10×3','lunges 12×3'],upper:['ضغط 15×3','push ups 20×3','diamond pushups 10×3','shoulder press'],lower:['قرفصاء 20×3','lunges 15×3','calf raises 30×2','glute bridge'],cardio:['جري 10 دقائق','قفز حبل 3 دقائق','burpees 10×3','high knees 60 ثانية']};const ex=exercises[type]||exercises.full;const selected=[];for(let i=0;i<5;i++){const e=ex[Math.floor(Math.random()*ex.length)];if(!selected.includes(e))selected.push(e);}$('workoutResult').textContent='💪 <strong>تمارين اليوم:</strong>\n'+selected.map((x,i)=>`${i+1}. ${x}`).join('\n');};
+            window.suggestRecipe=function(){const ing=$('recipeIng').value.trim()||'دجاج,رز';const recipes={'دجاج':['دجاج مشوي بالليمون والثوم','كاري دجاج هندي','دجاج بالفرن مع الخضار'],'لحم':['لحم بالبصل والفلفل','برجر منزلي','ستيك بالزبدة والأعشاب'],'سمك':['سمك مقلي مقرمش','سمك بالفرن مع الليمون','فيليه مشوي'],'رز':['رز برياني','رز مقلي بالخضار','مندي لحم']};const ings=ing.split(/[,،]/);let s='';for(const[k,v]of Object.entries(recipes)){if(ings.some(i=>i.trim().includes(k))){s=v[Math.floor(Math.random()*v.length)];break;}}if(!s)s='سلطة خضار مشكلة بزيت الزيتون';$('recipeResult').textContent=`🍳 <strong>${s}</strong>\n\nالمكونات: ${ing}\n👨‍🍳 يمي يمي!`;};
+            window.defineWord=function(){const w=$('dictWord').value.trim();if(!w)return;$('dictResult').textContent=`📖 "${w}": جرب تبحث عنها في الشات الرئيسي للحصول على تعريف مفصل.`;};
+            window.findLyrics=function(){const s=$('songQuery').value.trim();if(!s)return;$('lyricsResult').textContent=`🎵 "${s}": جرب تبحث في الويب عن "${s} lyrics".`;};
+            window.generatePrediction=function(){const p=['🌟 راح تتلقى خبر حلو قريباً!','🚀 فرصة جديدة في طريقك','💫 شخص مهم راح يدخل حياتك','📈 مشروعك الجاي ناجح','🎉 الأسبوع الجاي مليان مفاجآت','💎 راح تكتشف موهبة جديدة','🌈 مشكلة قديمة راح تنحل'];$('predictionResult').textContent='🔮 '+p[Math.floor(Math.random()*p.length)];};
+            window.drawCard=function(){const suits=['♠️','♥️','♦️','♣️'];const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];$('cardResult').textContent=`${ranks[Math.floor(Math.random()*13)]} ${suits[Math.floor(Math.random()*4)]}`;};
+            window.randomCountry=function(){const c=[{n:'اليابان',cap:'طوكيو',cur:'ين',lang:'يابانية',pop:'125 مليون'},{n:'البرازيل',cap:'برازيليا',cur:'ريال',lang:'برتغالية',pop:'214 مليون'},{n:'مصر',cap:'القاهرة',cur:'جنيه',lang:'عربية',pop:'104 مليون'},{n:'فرنسا',cap:'باريس',cur:'يورو',lang:'فرنسية',pop:'67 مليون'},{n:'الهند',cap:'نيودلهي',cur:'روبيه',lang:'هندية',pop:'1.4 مليار'},{n:'كندا',cap:'أوتاوا',cur:'دولار كندي',lang:'إنجليزية/فرنسية',pop:'38 مليون'}][Math.floor(Math.random()*6)];$('countryResult').innerHTML=`🌍 <strong>${c.n}</strong><br>🏙️ العاصمة: ${c.cap}<br>💰 العملة: ${c.cur}<br>🗣️ اللغة: ${c.lang}<br>👥 السكان: ${c.pop}`;};
+            window.generateQuote=function(){const q=['النجاح ليس نهاية الطريق، والفشل ليس قاتلاً - الشجاعة للاستمرار هي ما يهم.','تعلم كأنك ستعيش للأبد، عش كأنك ستموت غداً.','الطريقة الوحيدة لعمل عظيم هي أن تحب ما تعمل. - ستيف جوبز','لا تنتظر الفرصة، اصنعها بنفسك.','كل حلم عظيم يبدأ بحالم.'].map(x=>'💬 '+x);$('quoteResult').textContent=q[Math.floor(Math.random()*q.length)];};
+            window.checkTyping=function(){const target=$('typingTarget').textContent.replace('اكتب: ','');const input=$('typingInput').value.trim();if(!input)return;if(!typingStartTime)typingStartTime=Date.now();if(input===target){const time=((Date.now()-typingStartTime)/1000).toFixed(1);const wpm=Math.round(target.split(' ').length/(time/60));$('typingResult').innerHTML=`✅ <strong>صح!</strong> الوقت: ${time} ثانية | السرعة: ${wpm} كلمة/دقيقة`;typingStartTime=0;const targets=['مرحبا بالعالم','البرمجة ممتعة','تعلم كل يوم شيئاً جديداً','النجاح رحلة وليس وجهة','التكنولوجيا تغير العالم'];$('typingTarget').textContent='اكتب: '+targets[Math.floor(Math.random()*targets.length)];$('typingInput').value='';}else{$('typingResult').textContent='❌ خطأ، حاول مرة أخرى';}};
+            window.generateMath=function(){const diff=$('mathDifficulty').value;let a,b,op,ans;if(diff==='easy'){a=Math.floor(Math.random()*50);b=Math.floor(Math.random()*20);op='+';ans=a+b;}else if(diff==='medium'){a=Math.floor(Math.random()*100);b=Math.floor(Math.random()*50);op=['+','-'][Math.floor(Math.random()*2)];ans=op==='+'?a+b:a-b;}else{a=Math.floor(Math.random()*100);b=Math.floor(Math.random()*30);op=['×','+','-'][Math.floor(Math.random()*3)];if(op==='×')ans=a*b;else if(op==='+')ans=a+b;else ans=a-b;}mathAnswer=ans;$('mathResult').innerHTML=`${a} ${op} ${b} = ? <br><small>(اضغط للإجابة)</small>`;$('mathResult').onclick=function(){this.innerHTML=`${a} ${op} ${b} = <strong>${ans}</strong>`;};};
+            window.testLuck=function(){const luck=Math.floor(Math.random()*100)+1;let emoji,msg;if(luck>80){emoji='🍀✨';msg='حظك ممتاز اليوم!';}else if(luck>50){emoji='😊';msg='حظك جيد';}else if(luck>20){emoji='🤔';msg='حظك متوسط';}else{emoji='😅';msg='حظك أقل من المعتاد... جرب بكرة!';}$('luckResult').innerHTML=`${emoji} <strong>${luck}%</strong> - ${msg}`;};
+            window.testCompatibility=function(){const n1=$('name1').value.trim(),n2=$('name2').value.trim();if(!n1||!n2)return;const score=((n1+n2).split('').reduce((a,c)=>a+c.charCodeAt(0),0)%100)+1;$('compatResult').innerHTML=`💕 <strong>${n1}</strong> + <strong>${n2}</strong><br>نسبة التوافق: <strong>${score}%</strong> ${score>70?'🥰':score>40?'😊':'🤷'}`;};
+            window.getHoroscope=function(){const sign=$('zodiacSign').value;const horoscopes={aries:'🔥 اليوم يومك! طاقة إيجابية ومفاجآت حلوة.',taurus:'🌿 استقرار مالي وعاطفي. يوم جيد للتخطيط.',gemini:'💬 تواصل اجتماعي ممتاز. فرصة للقاء أشخاص جدد.',cancer:'🌊 مشاعرك قوية اليوم. خذ وقتك للاسترخاء.',leo:'🦁 تألق وثقة. الناس راح تلاحظ وجودك.',virgo:'📋 يوم مثالي للإنجاز وتنظيم أمورك.',libra:'⚖️ توازن في كل شيء. قرار مهم راح تتخذه.',scorpio:'🦂 حدسك قوي اليوم. ثق بحدسك.',sagittarius:'🏹 مغامرة جديدة في انتظارك. يوم للسفر أو التعلم.',capricorn:'⛰️ تركيز على العمل. إنجاز كبير قريب.',aquarius:'💡 فكرة عبقرية راح تخطر على بالك.',pisces:'🎨 إبداع وخيال. يوم مناسب للفن والموسيقى.'};$('horoscopeResult').innerHTML=`⭐ <strong>${$('zodiacSign').selectedOptions[0].text}</strong><br>${horoscopes[sign]||'يوم جميل بانتظارك!'}`;};
+
             const typingTargets=['مرحبا بالعالم','البرمجة ممتعة','تعلم كل يوم شيئاً جديداً','النجاح رحلة وليس وجهة'];
             $('typingTarget').textContent='اكتب: '+typingTargets[Math.floor(Math.random()*typingTargets.length)];
         })();
