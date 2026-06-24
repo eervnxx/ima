@@ -3,306 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المختبر المتطور - Pro Labs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <title>المختبر - AI Labs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #eef2ff;
-            --bg: #f8fafc; --surface: #ffffff; --surface-hover: #f1f5f9;
-            --text: #0f172a; --text-secondary: #64748b; --text-muted: #94a3b8;
-            --border: #e2e8f0; --radius-xs: 6px; --radius-sm: 10px; --radius: 16px; --radius-lg: 20px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1); --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --success: #22c55e; --danger: #ef4444; --star: #f59e0b;
+            --c1:#6366f1;--c1d:#4f46e5;--c1l:#eef2ff;--bg:#f1f5f9;--sur:#fff;--sur2:#f8fafc;
+            --tx:#0f172a;--tx2:#475569;--tx3:#94a3b8;--br:#e2e8f0;--sh:0 1px 2px rgba(0,0,0,0.05);
+            --sh2:0 4px 6px rgba(0,0,0,0.05);--r:14px;--r2:20px;--tr:0.2s;
         }
-        [data-theme="dark"] {
-            --bg: #0f172a; --surface: #1e293b; --surface-hover: #334155;
-            --text: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
-            --border: #334155; --primary-light: #312e81;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text);
-            min-height: 100vh; display: flex; flex-direction: column; line-height: 1.7;
-            transition: all var(--transition);
-        }
-        .header {
-            background: var(--surface); border-bottom: 1px solid var(--border);
-            padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
-            gap: 12px; position: sticky; top: 0; z-index: 100;
-        }
-        .header-brand { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-        .header-brand .logo { width: 36px; height: 36px; background: var(--primary); border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
-        .header-nav { display: flex; gap: 6px; align-items: center; }
-        .nav-link { padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 500; text-decoration: none; color: var(--text-secondary); transition: all var(--transition); white-space: nowrap; }
-        .nav-link:hover { background: var(--surface-hover); color: var(--text); }
-        .nav-link.active { background: var(--primary); color: white; }
-        .icon-btn { width: 38px; height: 38px; border-radius: var(--radius-xs); border: none; background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all var(--transition); }
-        .icon-btn:hover { background: var(--surface-hover); color: var(--text); }
-        .labs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; padding: 20px; flex: 1; overflow-y: auto; align-content: start; }
-        .lab-card {
-            background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius);
-            padding: 20px; transition: all var(--transition); display: flex; flex-direction: column; gap: 10px;
-        }
-        .lab-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
-        .lab-card h3 { font-size: 0.95rem; color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .lab-card p { font-size: 0.78rem; color: var(--text-muted); }
-        .lab-card input, .lab-card textarea, .lab-card select {
-            width: 100%; padding: 9px 12px; border: 2px solid var(--border); border-radius: var(--radius-sm);
-            font-family: inherit; font-size: 0.82rem; background: var(--bg); color: var(--text);
-            transition: border var(--transition);
-        }
-        .lab-card input:focus, .lab-card textarea:focus, .lab-card select:focus { outline: none; border-color: var(--primary); }
-        .btn {
-            padding: 9px 18px; border-radius: var(--radius-sm); border: none; font-family: inherit;
-            font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all var(--transition);
-            width: fit-content;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-        .btn-secondary { background: var(--surface-hover); color: var(--text); }
-        .btn-secondary:hover { background: var(--border); }
-        .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
-        .result-box { padding: 12px; background: var(--bg); border-radius: var(--radius-sm); font-size: 0.85rem; white-space: pre-wrap; border: 1px solid var(--border); min-height: 20px; }
-        .result-box:empty { display: none; }
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(120px); background: #1e293b; color: white; padding: 10px 22px; border-radius: 30px; font-size: 0.82rem; z-index: 999; opacity: 0; transition: all 0.3s; pointer-events: none; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .footer { text-align: center; padding: 12px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid var(--border); background: var(--surface); margin-top: auto; }
-        .footer span { color: var(--primary); font-weight: 600; }
-        @media (max-width: 640px) {
-            .labs-grid { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
-            .lab-card { padding: 14px; }
-        }
+        .dark {--bg:#0b1120;--sur:#111827;--sur2:#1a2332;--tx:#f1f5f9;--tx2:#94a3b8;--tx3:#64748b;--br:#1e293b;--c1l:#1e1b4b;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;line-height:1.7;transition:background var(--tr),color var(--tr);}
+        .topbar{background:var(--sur);border-bottom:1px solid var(--br);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sh);}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:800;color:var(--c1);}
+        .logo span{width:38px;height:38px;background:linear-gradient(135deg,var(--c1),var(--c1d));border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;}
+        .nav-links{display:flex;gap:4px;}
+        .nav-links a{padding:8px 16px;border-radius:20px;font-size:0.8rem;font-weight:500;text-decoration:none;color:var(--tx2);transition:all var(--tr);}
+        .nav-links a:hover{background:var(--sur2);color:var(--tx);}
+        .nav-links a.active{background:var(--c1);color:white;}
+        .icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--tx2);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all var(--tr);}
+        .icon-btn:hover{background:var(--sur2);}
+
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:24px;flex:1;overflow-y:auto;align-content:start;}
+        .card{background:var(--sur);border:2px solid var(--br);border-radius:var(--r2);padding:20px;display:flex;flex-direction:column;gap:10px;transition:all var(--tr);}
+        .card:hover{border-color:var(--c1);box-shadow:var(--sh2);}
+        .card h3{font-size:0.95rem;color:var(--c1);display:flex;align-items:center;gap:6px;}
+        .card p{font-size:0.78rem;color:var(--tx3);}
+        .card input,.card textarea,.card select{width:100%;padding:10px 12px;border:2px solid var(--br);border-radius:12px;font-family:inherit;font-size:0.85rem;background:var(--bg);color:var(--tx);transition:border var(--tr);}
+        .card input:focus,.card textarea:focus,.card select:focus{outline:none;border-color:var(--c1);}
+        .btn{padding:10px 18px;border-radius:20px;border:none;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all var(--tr);width:fit-content;}
+        .btn1{background:var(--c1);color:white;}
+        .btn1:hover{background:var(--c1d);transform:translateY(-1px);}
+        .btn2{background:var(--sur2);color:var(--tx);border:1px solid var(--br);}
+        .btn2:hover{background:var(--br);}
+        .result{padding:12px;background:var(--bg);border-radius:12px;font-size:0.85rem;white-space:pre-wrap;min-height:20px;border:1px solid var(--br);}
+        .result:empty{display:none;}
+        .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(120px);background:#1e293b;color:white;padding:10px 24px;border-radius:30px;font-size:0.8rem;z-index:999;opacity:0;transition:0.3s;pointer-events:none;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        footer{text-align:center;padding:12px;font-size:0.7rem;color:var(--tx3);border-top:1px solid var(--br);background:var(--sur);margin-top:auto;}
+        footer strong{color:var(--c1);}
+        .row{display:flex;gap:6px;flex-wrap:wrap;}
+        @media(max-width:640px){.grid{grid-template-columns:1fr;gap:10px;padding:12px;}}
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-brand"><span class="logo">🧪</span>المختبر المتطور</div>
-        <nav class="header-nav">
-            <a href="index.html" class="nav-link">💬 المحادثة</a>
-            <a href="tools.html" class="nav-link">🧰 الأدوات</a>
-            <a href="labs.html" class="nav-link active">🧪 المختبر</a>
-            <button class="icon-btn" id="themeBtn" title="تغيير المظهر">🌙</button>
+    <header class="topbar">
+        <div class="logo"><span>🧪</span>المختبر</div>
+        <nav class="nav-links">
+            <a href="index.html">💬 محادثة</a>
+            <a href="tools.html">🧰 أدوات</a>
+            <a href="labs.html" class="active">🧪 مختبر</a>
         </nav>
+        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </header>
 
-    <div class="labs-grid">
-        <!-- 1 -->
-        <div class="lab-card">
-            <h3>🎲 مولد أفكار المشاريع</h3>
-            <p>يولد فكرة مشروع كاملة مع اسم مقترح ووصف</p>
-            <button class="btn btn-primary" onclick="generateIdea()">🎯 ولّد فكرة</button>
-            <div class="result-box" id="ideaResult"></div>
-        </div>
-        <!-- 2 -->
-        <div class="lab-card">
-            <h3>😂 مولد النكات</h3>
-            <p>نكات تقنية، برمجة، وعامة</p>
-            <div class="btn-row">
-                <button class="btn btn-primary" onclick="generateJoke('tech')">💻 تقنية</button>
-                <button class="btn btn-secondary" onclick="generateJoke('general')">🤣 عامة</button>
-            </div>
-            <div class="result-box" id="jokeResult"></div>
-        </div>
-        <!-- 3 -->
-        <div class="lab-card">
-            <h3>📊 تحليل النصوص</h3>
-            <textarea id="analyzeInput" rows="3" placeholder="الصق أي نص لتحليله..."></textarea>
-            <button class="btn btn-primary" onclick="analyzeText()">📈 حلل النص</button>
-            <div class="result-box" id="analyzeResult"></div>
-        </div>
-        <!-- 4 -->
-        <div class="lab-card">
-            <h3>🕐 عداد تنازلي</h3>
-            <select id="countdownSelect">
-                <option value="2027-01-01">🎉 رأس السنة 2027</option>
-                <option value="2027-03-01">🌙 رمضان 2027</option>
-                <option value="2026-12-31">📅 نهاية السنة</option>
-                <option value="custom">📝 تاريخ مخصص</option>
-            </select>
-            <input type="date" id="customDate" style="display:none;">
-            <button class="btn btn-primary" onclick="calculateCountdown()">⏳ احسب المدة</button>
-            <div class="result-box" id="countdownResult"></div>
-        </div>
-        <!-- 5 -->
-        <div class="lab-card">
-            <h3>💤 حاسبة النوم</h3>
-            <p>احسب أفضل وقت للنوم بناءً على دورات 90 دقيقة</p>
-            <label>موعد الاستيقاظ:</label>
-            <input type="time" id="wakeTime" value="06:00">
-            <button class="btn btn-primary" onclick="calculateSleep()">😴 احسب</button>
-            <div class="result-box" id="sleepResult"></div>
-        </div>
-        <!-- 6 -->
-        <div class="lab-card">
-            <h3>💪 مولد التمارين</h3>
-            <select id="workoutType">
-                <option value="full">كامل الجسم</option>
-                <option value="upper">الجزء العلوي</option>
-                <option value="lower">الجزء السفلي</option>
-                <option value="cardio">كارديو</option>
-            </select>
-            <button class="btn btn-primary" onclick="generateWorkout()">🏋️ ولّد تمارين</button>
-            <div class="result-box" id="workoutResult"></div>
-        </div>
-        <!-- 7 -->
-        <div class="lab-card">
-            <h3>🍳 مقترح وصفات</h3>
-            <input id="recipeIng" placeholder="المكونات: دجاج، رز، خضار...">
-            <button class="btn btn-primary" onclick="suggestRecipe()">👨‍🍳 اقترح وصفة</button>
-            <div class="result-box" id="recipeResult"></div>
-        </div>
-        <!-- 8 -->
-        <div class="lab-card">
-            <h3>✍️ اقتباسات تحفيزية</h3>
-            <p>اقتباس ملهم عشوائي</p>
-            <button class="btn btn-primary" onclick="generateQuote()">💬 اقتباس</button>
-            <div class="result-box" id="quoteResult"></div>
-        </div>
-        <!-- 9 -->
-        <div class="lab-card">
-            <h3>🌍 معلومات دولة عشوائية</h3>
-            <button class="btn btn-primary" onclick="randomCountry()">🗺️ اكتشف دولة</button>
-            <div class="result-box" id="countryResult"></div>
-        </div>
-        <!-- 10 -->
-        <div class="lab-card">
-            <h3>🎯 اختبار سرعة الكتابة</h3>
-            <p id="typingTarget" style="font-weight:700;color:var(--primary);">اكتب: مرحبا بالعالم</p>
-            <input id="typingInput" placeholder="اكتب النص الظاهر أعلاه...">
-            <button class="btn btn-primary" onclick="checkTyping()">✓ تحقق</button>
-            <div class="result-box" id="typingResult"></div>
-        </div>
-        <!-- 11 -->
-        <div class="lab-card">
-            <h3>🧮 مولد معادلات رياضية</h3>
-            <select id="mathDifficulty"><option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option></select>
-            <button class="btn btn-primary" onclick="generateMath()">➕ ولّد معادلة</button>
-            <div class="result-box" id="mathResult" style="font-size:1.3rem;text-align:center;cursor:pointer;"></div>
-        </div>
-        <!-- 12 -->
-        <div class="lab-card">
-            <h3>🃏 سحب بطاقة عشوائية</h3>
-            <button class="btn btn-primary" onclick="drawCard()">🃏 اسحب</button>
-            <div class="result-box" id="cardResult" style="font-size:2.5rem;text-align:center;"></div>
-        </div>
-        <!-- 13 -->
-        <div class="lab-card">
-            <h3>🔮 توقعات (للتسلية)</h3>
-            <button class="btn btn-primary" onclick="generatePrediction()">🔮 تنبأ لي</button>
-            <div class="result-box" id="predictionResult"></div>
-        </div>
-        <!-- 14 -->
-        <div class="lab-card">
-            <h3>💕 اختبار توافق الأسماء</h3>
-            <input id="name1" placeholder="الاسم الأول">
-            <input id="name2" placeholder="الاسم الثاني">
-            <button class="btn btn-primary" onclick="testCompatibility()">💕 اختبر التوافق</button>
-            <div class="result-box" id="compatResult"></div>
-        </div>
-        <!-- 15 -->
-        <div class="lab-card">
-            <h3>🍀 اختبار الحظ</h3>
-            <button class="btn btn-primary" onclick="testLuck()">🍀 جرب حظك</button>
-            <div class="result-box" id="luckResult"></div>
-        </div>
-        <!-- 16 -->
-        <div class="lab-card">
-            <h3>⭐ حظك حسب برجك</h3>
-            <select id="zodiacSign">
-                <option value="aries">♈ الحمل</option><option value="taurus">♉ الثور</option>
-                <option value="gemini">♊ الجوزاء</option><option value="cancer">♋ السرطان</option>
-                <option value="leo">♌ الأسد</option><option value="virgo">♍ العذراء</option>
-                <option value="libra">♎ الميزان</option><option value="scorpio">♏ العقرب</option>
-                <option value="sagittarius">♐ القوس</option><option value="capricorn">♑ الجدي</option>
-                <option value="aquarius">♒ الدلو</option><option value="pisces">♓ الحوت</option>
-            </select>
-            <button class="btn btn-primary" onclick="getHoroscope()">⭐ اعرف حظك</button>
-            <div class="result-box" id="horoscopeResult"></div>
-        </div>
+    <div class="grid">
+        <div class="card"><h3>💡 مولد أفكار</h3><p>فكرة مشروع عشوائية</p><button class="btn btn1" onclick="idea()">ولّد</button><div class="result" id="r1"></div></div>
+        <div class="card"><h3>😂 نكت</h3><div class="row"><button class="btn btn1" onclick="joke(1)">تقنية</button><button class="btn btn2" onclick="joke(2)">عامة</button></div><div class="result" id="r2"></div></div>
+        <div class="card"><h3>⏳ عداد تنازلي</h3><input type="date" id="cd"><button class="btn btn1" onclick="cdown()">احسب</button><div class="result" id="r3"></div></div>
+        <div class="card"><h3>💤 حاسبة النوم</h3><input type="time" id="wt" value="06:00"><button class="btn btn1" onclick="sleep()">احسب</button><div class="result" id="r4"></div></div>
+        <div class="card"><h3>💪 تمارين</h3><select id="wtype"><option value="full">كامل</option><option value="cardio">كارديو</option></select><button class="btn btn1" onclick="work()">ولّد</button><div class="result" id="r5"></div></div>
+        <div class="card"><h3>🍳 وصفة</h3><input id="ing" placeholder="مكونات..."><button class="btn btn1" onclick="recipe()">اقترح</button><div class="result" id="r6"></div></div>
+        <div class="card"><h3>✍️ اقتباس</h3><button class="btn btn1" onclick="quote()">اقتباس</button><div class="result" id="r7"></div></div>
+        <div class="card"><h3>📊 تحليل نص</h3><textarea id="txt" rows="3" placeholder="نص..."></textarea><button class="btn btn1" onclick="analyze()">حلل</button><div class="result" id="r8"></div></div>
+        <div class="card"><h3>💕 توافق</h3><input id="n1" placeholder="الاسم 1"><input id="n2" placeholder="الاسم 2"><button class="btn btn1" onclick="compat()">اختبر</button><div class="result" id="r9"></div></div>
+        <div class="card"><h3>🃏 بطاقة</h3><button class="btn btn1" onclick="card()">اسحب</button><div class="result" id="r10" style="font-size:2.5rem;text-align:center;"></div></div>
+        <div class="card"><h3>⌨️ سرعة كتابة</h3><p id="tgt" style="font-weight:700;">اكتب: مرحبا بالعالم</p><input id="tin"><button class="btn btn1" onclick="typeTest()">تحقق</button><div class="result" id="r11"></div></div>
+        <div class="card"><h3>🧮 معادلة</h3><button class="btn btn1" onclick="math()">ولّد</button><div class="result" id="r12" style="font-size:1.2rem;text-align:center;cursor:pointer;"></div></div>
+        <div class="card"><h3>🍀 حظ</h3><button class="btn btn1" onclick="luck()">جرب</button><div class="result" id="r13"></div></div>
+        <div class="card"><h3>🔮 توقعات</h3><button class="btn btn1" onclick="predict()">تنبأ</button><div class="result" id="r14"></div></div>
+        <div class="card"><h3>🌍 دولة</h3><button class="btn btn1" onclick="country()">اكتشف</button><div class="result" id="r15"></div></div>
     </div>
 
     <div class="toast" id="toast"></div>
-    <footer class="footer">© <span>أحمد الجابري</span> - جميع الحقوق محفوظة</footer>
+    <footer>© <strong>أحمد الجابري</strong> - جميع الحقوق محفوظة 2026</footer>
 
     <script>
-        (() => {
-            const $ = id => document.getElementById(id);
-            const toast = $('toast'), themeBtn = $('themeBtn');
-            let typingStart = 0, mathAnswer = 0;
+        const $=id=>document.getElementById(id);
+        function toggleTheme(){const d=document.body.classList.toggle('dark');$('themeBtn').textContent=d?'☀️':'🌙';localStorage.setItem('dark',d?'1':'0');}
+        if(localStorage.getItem('dark')==='1'){document.body.classList.add('dark');$('themeBtn').textContent='☀️';}
 
-            function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => toast.classList.remove('show'), 2200); }
-            function toggleTheme() { const isDark = document.body.getAttribute('data-theme') === 'dark'; document.body.setAttribute('data-theme', isDark ? '' : 'dark'); themeBtn.textContent = isDark ? '🌙' : '☀️'; localStorage.setItem('theme', isDark ? 'light' : 'dark'); }
-            if (localStorage.getItem('theme') === 'dark') { document.body.setAttribute('data-theme', 'dark'); themeBtn.textContent = '☀️'; }
-            themeBtn.addEventListener('click', toggleTheme);
-            $('countdownSelect').addEventListener('change', function () { $('customDate').style.display = this.value === 'custom' ? 'block' : 'none'; });
+        let ts=0,ma=0;
 
-            window.generateIdea = () => {
-                const ideas = [{ n: 'منصة تعلم ذكية', d: 'تطبيق يخصص محتوى تعليمي حسب مستوى كل مستخدم باستخدام الذكاء الاصطناعي' }, { n: 'متجر منتجات رقمية', d: 'موقع لبيع القوالب البرمجية والتصاميم والإضافات' }, { n: 'بوت تحليل مالي', d: 'بوت تلغرام يحلل الأسواق ويعطي توصيات' }, { n: 'تطبيق تتبع صحي', d: 'يسجل الخطوات والنوم والسعرات مع نصائح يومية' }, { n: 'لعبة تعلم برمجة', d: 'لعبة تفاعلية تعلم الأطفال أساسيات البرمجة' }];
-                const i = ideas[Math.floor(Math.random() * ideas.length)];
-                $('ideaResult').innerHTML = `<strong>💡 ${i.n}</strong><br>📝 ${i.d}`;
-            };
-            window.generateJoke = (type) => {
-                const tech = ['ليه المبرمج تعبان؟ لأنه شغال في bugs', 'HTML بدون CSS = جسم بدون روح', 'الجافا سكريبت دايم asynchronous', 'سر نجاح المبرمج: Ctrl+C, Ctrl+V'];
-                const general = ['مرة واحد غبي سأل: كيف أكتب "غبي"؟ قالوله: اكتبها زي ما تنطقها. قال: طيب أكتب "غ" ولا "ق"؟', 'الأستاذ: لماذا الشمس تشرق من الشرق؟ الطالب: لأن الغرب مقفل!', 'واحد بخيل شاف ابنه ياكل ساندوتش... قاله: بالهنا والشفا... بس لا تخلصه كله!'];
-                $('jokeResult').textContent = '😂 ' + (type === 'tech' ? tech : general)[Math.floor(Math.random() * (type === 'tech' ? tech : general).length)];
-            };
-            window.analyzeText = () => {
-                const t = $('analyzeInput').value.trim(); if (!t) return;
-                const words = t.split(/\s+/).filter(x => x).length, chars = t.length, charsNo = t.replace(/\s/g, '').length;
-                $('analyzeResult').innerHTML = `📊 <strong>${words}</strong> كلمة | <strong>${chars}</strong> حرف | <strong>${charsNo}</strong> بدون مسافات | ⏱️ ~${Math.ceil(words / 200)} دقيقة قراءة`;
-            };
-            window.calculateCountdown = () => {
-                const val = $('countdownSelect').value, target = new Date(val === 'custom' ? $('customDate').value : val);
-                if (isNaN(target.getTime())) return alert('اختر تاريخاً صحيحاً');
-                const diff = target - new Date(), days = Math.floor(diff / 86400000), hours = Math.floor((diff % 86400000) / 3600000);
-                $('countdownResult').innerHTML = `⏳ <strong>${days} يوم و ${hours} ساعة</strong>`;
-            };
-            window.calculateSleep = () => {
-                const w = $('wakeTime').value; if (!w) return;
-                const [h, m] = w.split(':').map(Number), wt = h * 60 + m;
-                let r = '😴 <strong>أفضل أوقات النوم:</strong>\n';
-                [6, 5, 4, 3].forEach(c => { const s = wt - (c * 90 + 15); if (s < 0) return; const sh = Math.floor(s / 60) % 24; r += `\n• ${c} دورات → ${String(sh).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; });
-                $('sleepResult').textContent = r;
-            };
-            window.generateWorkout = () => {
-                const type = $('workoutType').value, ex = { full: ['ضغط 15×3', 'قرفصاء 20×3', 'بلانك 60ث', 'burpees 10×3'], upper: ['ضغط 15×3', 'متوازي 10×3', 'shoulder press'], lower: ['قرفصاء 20×3', 'lunges 12×3', 'رفع سمانة 30×2'], cardio: ['جري 10د', 'قفز حبل 3د', 'burpees 10×3', 'high knees 60ث'] }[type] || ex.full;
-                const sel = [...new Set(Array.from({ length: 5 }, () => ex[Math.floor(Math.random() * ex.length)]))];
-                $('workoutResult').textContent = '💪 <strong>تمارين اليوم:</strong>\n' + sel.map((x, i) => `${i + 1}. ${x}`).join('\n');
-            };
-            window.suggestRecipe = () => {
-                const ing = $('recipeIng').value.trim() || 'دجاج';
-                const recipes = { 'دجاج': ['دجاج مشوي بالليمون', 'كاري دجاج', 'دجاج بالفرن'], 'لحم': ['لحم بالبصل', 'برجر', 'ستيك'], 'سمك': ['سمك مقلي', 'سمك بالفرن'], 'رز': ['برياني', 'مندي', 'رز مقلي'] };
-                let s = ''; for (const [k, v] of Object.entries(recipes)) { if (ing.includes(k)) { s = v[Math.floor(Math.random() * v.length)]; break; } }
-                $('recipeResult').textContent = `🍳 <strong>${s || 'سلطة خضار'}</strong>\n👨‍🍳 بالعافية!`;
-            };
-            window.generateQuote = () => { const q = ['النجاح ليس نهاية، والفشل ليس قاتلاً - الشجاعة للاستمرار هي ما يهم.', 'تعلم كأنك ستعيش للأبد.', 'لا تنتظر الفرصة، اصنعها.', 'كل حلم عظيم يبدأ بحالم.']; $('quoteResult').textContent = '💬 ' + q[Math.floor(Math.random() * q.length)]; };
-            window.randomCountry = () => { const c = [{ n: 'اليابان', cap: 'طوكيو', cur: 'ين' }, { n: 'البرازيل', cap: 'برازيليا', cur: 'ريال' }, { n: 'مصر', cap: 'القاهرة', cur: 'جنيه' }, { n: 'فرنسا', cap: 'باريس', cur: 'يورو' }][Math.floor(Math.random() * 4)]; $('countryResult').innerHTML = `🌍 <strong>${c.n}</strong><br>🏙️ ${c.cap} | 💰 ${c.cur}`; };
-            window.checkTyping = () => {
-                const target = $('typingTarget').textContent.replace('اكتب: ', ''), input = $('typingInput').value.trim();
-                if (!input) return; if (!typingStart) typingStart = Date.now();
-                if (input === target) { const time = ((Date.now() - typingStart) / 1000).toFixed(1); $('typingResult').innerHTML = `✅ <strong>صح!</strong> ${time} ثانية`; typingStart = 0; const targets = ['مرحبا بالعالم', 'البرمجة ممتعة', 'تعلم كل يوم', 'النجاح رحلة']; $('typingTarget').textContent = 'اكتب: ' + targets[Math.floor(Math.random() * targets.length)]; $('typingInput').value = ''; } else { $('typingResult').textContent = '❌ خطأ، حاول مرة أخرى'; }
-            };
-            window.generateMath = () => {
-                const diff = $('mathDifficulty').value; let a, b, op, ans;
-                if (diff === 'easy') { a = Math.floor(Math.random() * 50); b = Math.floor(Math.random() * 20); op = '+'; ans = a + b; }
-                else if (diff === 'medium') { a = Math.floor(Math.random() * 100); b = Math.floor(Math.random() * 50); op = ['+', '-'][Math.floor(Math.random() * 2)]; ans = op === '+' ? a + b : a - b; }
-                else { a = Math.floor(Math.random() * 100); b = Math.floor(Math.random() * 30); op = ['×', '+', '-'][Math.floor(Math.random() * 3)]; ans = op === '×' ? a * b : op === '+' ? a + b : a - b; }
-                mathAnswer = ans; $('mathResult').innerHTML = `${a} ${op} ${b} = ? <br><small>(اضغط للجواب)</small>`;
-                $('mathResult').onclick = function () { this.innerHTML = `${a} ${op} ${b} = <strong>${ans}</strong>`; };
-            };
-            window.drawCard = () => { const suits = ['♠️', '♥️', '♦️', '♣️'], ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']; $('cardResult').textContent = `${ranks[Math.floor(Math.random() * 13)]} ${suits[Math.floor(Math.random() * 4)]}`; };
-            window.generatePrediction = () => { const p = ['🌟 خبر حلو قريباً!', '🚀 فرصة جديدة', '💫 شخص مهم', '📈 نجاح مالي', '🎉 مفاجآت']; $('predictionResult').textContent = '🔮 ' + p[Math.floor(Math.random() * p.length)]; };
-            window.testCompatibility = () => { const n1 = $('name1').value.trim(), n2 = $('name2').value.trim(); if (!n1 || !n2) return; const score = ((n1 + n2).split('').reduce((a, c) => a + c.charCodeAt(0), 0) % 100) + 1; $('compatResult').innerHTML = `💕 <strong>${n1}</strong> + <strong>${n2}</strong><br>التوافق: <strong>${score}%</strong> ${score > 70 ? '🥰' : score > 40 ? '😊' : '🤷'}`; };
-            window.testLuck = () => { const luck = Math.floor(Math.random() * 100) + 1; $('luckResult').innerHTML = `🍀 حظك اليوم: <strong>${luck}%</strong> ${luck > 70 ? '✨ ممتاز!' : luck > 40 ? '😊 جيد' : '😅 عادي'}`; };
-            window.getHoroscope = () => {
-                const h = { aries: '🔥 يوم مليء بالطاقة', taurus: '🌿 استقرار مالي', gemini: '💬 لقاءات جديدة', cancer: '🌊 مشاعر قوية', leo: '🦁 تألق وثقة', virgo: '📋 إنجاز وتنظيم', libra: '⚖️ قرار مهم', scorpio: '🦂 حدس قوي', sagittarius: '🏹 مغامرة', capricorn: '⛰️ نجاح مهني', aquarius: '💡 فكرة عبقرية', pisces: '🎨 إبداع' };
-                $('horoscopeResult').innerHTML = `⭐ <strong>${$('zodiacSign').selectedOptions[0].text}</strong><br>${h[$('zodiacSign').value]}`;
-            };
-
-            const targets = ['مرحبا بالعالم', 'البرمجة ممتعة', 'تعلم كل يوم', 'النجاح رحلة'];
-            $('typingTarget').textContent = 'اكتب: ' + targets[Math.floor(Math.random() * targets.length)];
-        })();
+        function idea(){const i=[{n:'منصة تعلم AI',d:'تطبيق تعليمي مخصص'},{n:'متجر رقمي',d:'بيع قوالب وتصاميم'},{n:'بوت تحليل',d:'تحليل أسعار المنتجات'}][Math.floor(Math.random()*3)];$('r1').innerHTML=`<b>${i.n}</b><br>${i.d}`;}
+        function joke(t){const j=t===1?['ليه المبرمج تعبان؟ bugs!','HTML بدون CSS جسم بدون روح']:['واحد غبي سأل: كيف أكتب غبي؟ قالوله: زي ما تنطقها'];$('r2').textContent='😂 '+j[Math.floor(Math.random()*j.length)];}
+        function cdown(){const d=$('cd').value;if(!d)return;const t=new Date(d),n=new Date(),diff=t-n,days=Math.floor(diff/86400000);$('r3').innerHTML=days<0?'انتهى!':`⏳ <b>${days} يوم</b>`;}
+        function sleep(){const v=$('wt').value;if(!v)return;const[h,m]=v.split(':').map(Number),wt=h*60+m;let r='😴 أوقات النوم:\n';[6,5,4,3].forEach(c=>{const s=wt-(c*90+15);if(s<0)return;r+=`\n• ${c} دورات → ${String(Math.floor(s/60)%24).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;});$('r4').textContent=r;}
+        function work(){const t=$('wtype').value;const e={full:['ضغط 15×3','قرفصاء 20×3','بلانك 60ث','burpees 10×3'],cardio:['جري 10د','قفز حبل 3د','burpees 10×3']}[t];const s=[];for(let i=0;i<5;i++){const x=e[Math.floor(Math.random()*e.length)];if(!s.includes(x))s.push(x);}$('r5').textContent='💪 تمارين:\n'+s.map((x,i)=>`${i+1}. ${x}`).join('\n');}
+        function recipe(){const i=$('ing').value.trim()||'دجاج';const r={'دجاج':['دجاج مشوي','كاري دجاج'],'لحم':['لحم بالبصل','برجر'],'سمك':['سمك مقلي','سمك بالفرن']};let s='سلطة';for(const[k,v]of Object.entries(r)){if(i.includes(k)){s=v[Math.floor(Math.random()*v.length)];break;}}$('r6').textContent='🍳 '+s;}
+        function quote(){const q=['النجاح ليس نهاية، والفشل ليس قاتلاً.','تعلم كأنك ستعيش للأبد.','لا تنتظر الفرصة، اصنعها.'];$('r7').textContent='💬 '+q[Math.floor(Math.random()*3)];}
+        function analyze(){const t=$('txt').value.trim();if(!t)return;const w=t.split(/\s+/).filter(x=>x).length;$('r8').innerHTML=`<b>${w}</b> كلمة | <b>${t.length}</b> حرف | ⏱️ ~${Math.ceil(w/200)}د`;}
+        function compat(){const a=$('n1').value.trim(),b=$('n2').value.trim();if(!a||!b)return;const s=((a+b).split('').reduce((x,c)=>x+c.charCodeAt(0),0)%100)+1;$('r9').innerHTML=`💕 ${a} + ${b}<br>التوافق: <b>${s}%</b> ${s>70?'🥰':s>40?'😊':'🤷'}`;}
+        function card(){const suits=['♠️','♥️','♦️','♣️'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];$('r10').textContent=ranks[Math.floor(Math.random()*13)]+' '+suits[Math.floor(Math.random()*4)];}
+        function typeTest(){const t=$('tgt').textContent.replace('اكتب: ',''),i=$('tin').value.trim();if(!i)return;if(!ts)ts=Date.now();if(i===t){const s=((Date.now()-ts)/1000).toFixed(1);$('r11').innerHTML=`✅ <b>${s} ثانية</b>`;ts=0;$('tgt').textContent='اكتب: '+['البرمجة ممتعة','تعلم كل يوم'][Math.floor(Math.random()*2)];$('tin').value='';}else{$('r11').textContent='❌ خطأ';}}
+        function math(){const a=Math.floor(Math.random()*50)+10,b=Math.floor(Math.random()*30)+5;const op=['+','-','×'][Math.floor(Math.random()*3)];ma=op==='+'?a+b:op==='-'?a-b:a*b;$('r12').innerHTML=`${a} ${op} ${b} = ?<br><small>اضغط للإجابة</small>`;$('r12').onclick=function(){this.innerHTML=`${a} ${op} ${b} = <b>${ma}</b>`;};}
+        function luck(){const l=Math.floor(Math.random()*100)+1;$('r13').innerHTML=`🍀 حظك: <b>${l}%</b> ${l>70?'✨':l>40?'😊':'😅'}`;}
+        function predict(){const p=['🌟 خبر حلو!','🚀 فرصة جديدة','💫 شخص مهم'];$('r14').textContent='🔮 '+p[Math.floor(Math.random()*3)];}
+        function country(){const c=[{n:'اليابان',cap:'طوكيو',cur:'ين'},{n:'مصر',cap:'القاهرة',cur:'جنيه'},{n:'فرنسا',cap:'باريس',cur:'يورو'}][Math.floor(Math.random()*3)];$('r15').innerHTML=`🌍 <b>${c.n}</b><br>🏙️ ${c.cap} | 💰 ${c.cur}`;}
     </script>
 </body>
 </html>
