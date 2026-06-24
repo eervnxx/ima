@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأدوات - Ultimate AI Tools</title>
+    <style>
+        :root {
+            --primary:#6366f1;--primary-hover:#4f46e5;--primary-light:rgba(99,102,241,0.1);
+            --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+            --border:#e2e8f0;--shadow:0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1);--radius:16px;--radius-sm:8px;
+            --transition:0.3s ease;--danger:#ef4444;--success:#22c55e;
+        }
+        body.dark-mode {
+            --bg:#0f172a;--surface:#1e293b;--text:#e2e8f0;--text-secondary:#94a3b8;
+            --border:#334155;--shadow:0 4px 6px -1px rgba(0,0,0,0.4);
+            --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4);--primary-light:rgba(99,102,241,0.2);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Segoe UI','Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.6;transition:background var(--transition),color var(--transition);}
+        .navbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;display:flex;align-items:center;justify-content:space-between;height:48px;position:sticky;top:0;z-index:100;}
+        .nav-brand{font-weight:700;color:var(--primary);font-size:0.95rem;display:flex;align-items:center;gap:5px;}
+        .nav-links{display:flex;gap:3px;align-items:center;flex-wrap:wrap;}
+        .nav-link{background:transparent;border:1px solid var(--border);color:var(--text-secondary);padding:4px 9px;border-radius:14px;cursor:pointer;font-size:0.7rem;font-family:inherit;transition:all var(--transition);white-space:nowrap;text-decoration:none;}
+        .nav-link:hover,.nav-link.active{background:var(--primary);color:white;border-color:var(--primary);}
+        .nav-icon{background:var(--primary-light);border:none;color:var(--primary);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:0.85rem;transition:all var(--transition);}
+        .nav-icon:hover{background:var(--primary);color:white;}
+        .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:20px;flex:1;overflow-y:auto;}
+        .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;cursor:pointer;transition:all var(--transition);}
+        .tool-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--primary);}
+        .tool-card .icon{font-size:2.2rem;margin-bottom:8px;}
+        .tool-card .name{font-size:0.8rem;font-weight:600;color:var(--text);}
+        .tool-card .desc{font-size:0.7rem;color:var(--text-secondary);margin-top:4px;}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:200;justify-content:center;align-items:center;}
+        .modal.active{display:flex;}
+        .modal-box{background:var(--surface);padding:22px;border-radius:var(--radius);max-width:500px;width:93%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+        .modal-box h3{margin-bottom:12px;color:var(--primary);}
+        .modal-box input,.modal-box textarea,.modal-box select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.85rem;background:var(--bg);color:var(--text);margin:4px 0;}
+        .modal-box button{background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:16px;cursor:pointer;font-family:inherit;font-size:0.78rem;margin:3px;transition:all var(--transition);}
+        .modal-box button:hover{background:var(--primary-hover);}
+        .modal-box button.close-btn{background:#cbd5e1;color:#1e293b;}
+        .result{margin-top:10px;padding:10px;background:var(--bg);border-radius:var(--radius-sm);font-size:0.85rem;white-space:pre-wrap;}
+        .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e293b;color:white;padding:9px 20px;border-radius:22px;font-size:0.78rem;z-index:300;opacity:0;transition:all 0.3s;pointer-events:none;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .footer{text-align:center;padding:10px;font-size:0.7rem;color:var(--text-secondary);border-top:1px solid var(--border);background:var(--surface);margin-top:auto;}
+        .footer span{font-weight:600;color:var(--primary);}
+        @media(max-width:600px){.tools-grid{grid-template-columns:repeat(3,1fr);gap:6px;padding:10px;}.tool-card{padding:10px;}.tool-card .icon{font-size:1.5rem;}}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🧰 الأدوات</div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">💬 شات</a>
+            <a href="tools.html" class="nav-link active">🧰 أدوات</a>
+            <a href="labs.html" class="nav-link">🧪 مختبر</a>
+            <button class="nav-icon" id="darkModeBtn" title="ليلي">🌙</button>
+        </div>
+    </nav>
+
+    <div class="tools-grid">
+        <div class="tool-card" data-tool="calc"><div class="icon">🔢</div><div class="name">آلة حاسبة</div><div class="desc">علمية متكاملة</div></div>
+        <div class="tool-card" data-tool="convert"><div class="icon">💱</div><div class="name">عملات</div><div class="desc">تحويل فوري</div></div>
+        <div class="tool-card" data-tool="units"><div class="icon">📏</div><div class="name">وحدات</div><div class="desc">طول وزن حرارة</div></div>
+        <div class="tool-card" data-tool="password"><div class="icon">🔐</div><div class="name">كلمة سر</div><div class="desc">مولد آمن</div></div>
+        <div class="tool-card" data-tool="qrcode"><div class="icon">📱</div><div class="name">QR Code</div><div class="desc">توليد ومسح</div></div>
+        <div class="tool-card" data-tool="timer"><div class="icon">⏱️</div><div class="name">مؤقت</div><div class="desc">منبه وساعة</div></div>
+        <div class="tool-card" data-tool="percentage"><div class="icon">💯</div><div class="name">نسبة مئوية</div><div class="desc">حساب %</div></div>
+        <div class="tool-card" data-tool="dice"><div class="icon">🎲</div><div class="name">نرد عشوائي</div><div class="desc">أرقام عشوائية</div></div>
+        <div class="tool-card" data-tool="colors"><div class="icon">🎨</div><div class="name">مولد ألوان</div><div class="desc">HEX & RGB</div></div>
+        <div class="tool-card" data-tool="names"><div class="icon">🏷️</div><div class="name">مولد أسماء</div><div class="desc">عربي وإنجليزي</div></div>
+        <div class="tool-card" data-tool="emoji"><div class="icon">😀</div><div class="name">إيموجي</div><div class="desc">مكتبة كاملة</div></div>
+        <div class="tool-card" data-tool="urlshort"><div class="icon">🔗</div><div class="name">اختصار روابط</div><div class="desc">روابط قصيرة</div></div>
+        <div class="tool-card" data-tool="bmi"><div class="icon">⚖️</div><div class="name">مؤشر كتلة</div><div class="desc">BMI Calculator</div></div>
+        <div class="tool-card" data-tool="age"><div class="icon">🎂</div><div class="name">حاسبة العمر</div><div class="desc">بالسنين والأيام</div></div>
+        <div class="tool-card" data-tool="tip"><div class="icon">💰</div><div class="name">حاسبة بقشيش</div><div class="desc">Tip Calculator</div></div>
+        <div class="tool-card" data-tool="discount"><div class="icon">🏷️</div><div class="name">حساب الخصم</div><div class="desc">تخفيضات</div></div>
+        <div class="tool-card" data-tool="words"><div class="icon">📝</div><div class="name">عداد كلمات</div><div class="desc">Word Counter</div></div>
+        <div class="tool-card" data-tool="stopwatch"><div class="icon">⏲️</div><div class="name">ساعة توقيت</div><div class="desc">Stopwatch</div></div>
+        <div class="tool-card" data-tool="loan"><div class="icon">🏦</div><div class="name">حاسبة قرض</div><div class="desc">أقساط شهرية</div></div>
+        <div class="tool-card" data-tool="notes"><div class="icon">📋</div><div class="name">ملاحظات</div><div class="desc">حفظ سريع</div></div>
+    </div>
+
+    <div class="modal" id="toolModal"><div class="modal-box" id="toolModalContent"></div></div>
+    <div class="toast" id="toast"></div>
+    <footer class="footer">© <span>أحمد الجابري - المطور</span> | <a href="index.html" style="color:var(--primary);">💬 الشات</a> | <a href="labs.html" style="color:var(--primary);">🧪 المختبر</a></footer>
+
+    <script>
+        (function(){
+            const $=id=>document.getElementById(id);
+            const toast=$('toast'),darkModeBtn=$('darkModeBtn');
+            function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toast._timeout);toast._timeout=setTimeout(()=>toast.classList.remove('show'),2000);}
+            function toggleDark(){document.body.classList.toggle('dark-mode');const d=document.body.classList.contains('dark-mode');darkModeBtn.textContent=d?'☀️':'🌙';localStorage.setItem('darkMode',d?'on':'off');}
+            if(localStorage.getItem('darkMode')==='on'){document.body.classList.add('dark-mode');darkModeBtn.textContent='☀️';}
+            darkModeBtn.addEventListener('click',toggleDark);
+
+            let timerInterval,stopwatchInterval,stopwatchRunning=false,stopwatchSeconds=0;
+
+            document.querySelectorAll('.tool-card').forEach(card=>{card.addEventListener('click',()=>{
+                const tool=card.dataset.tool;const modal=$('toolModal'),content=$('toolModalContent');let h='';
+                if(tool==='calc'){h='<h3>🔢 آلة حاسبة</h3><input id="calcInput" placeholder="مثال: (5*10)+3^2"><button onclick="try{document.getElementById(\'calcResult\').textContent=eval(document.getElementById(\'calcInput\').value)}catch(e){document.getElementById(\'calcResult\').textContent=\'خطأ\'}">=</button><div class="result" id="calcResult" style="font-size:1.4rem;"></div>';}
+                else if(tool==='convert'){h='<h3>💱 تحويل العملات</h3><input id="convAmount" placeholder="المبلغ"><select id="convFrom"><option>USD</option><option>EUR</option><option>IQD</option><option>SAR</option><option>AED</option><option>EGP</option><option>GBP</option></select> → <select id="convTo"><option>IQD</option><option>USD</option><option>EUR</option><option>SAR</option><option>AED</option><option>EGP</option></select><button onclick="window.cv()">حول</button><div class="result" id="convResult"></div>';}
+                else if(tool==='units'){h='<h3>📏 تحويل الوحدات</h3><input id="unitVal" placeholder="القيمة"><select id="unitType"><option value="km-miles">كم → ميل</option><option value="miles-km">ميل → كم</option><option value="kg-lb">كغم → باوند</option><option value="lb-kg">باوند → كغم</option><option value="c-f">°C → °F</option><option value="f-c">°F → °C</option><option value="m-ft">متر → قدم</option></select><button onclick="window.ut()">حول</button><div class="result" id="unitResult"></div>';}
+                else if(tool==='password'){h='<h3>🔐 مولد كلمات سر</h3><input id="passLen" type="number" value="16" min="8" max="64"><label><input type="checkbox" id="passSymbols" checked> رموز</label><button onclick="window.gp()">ولّد</button><div class="result" id="passResult" style="font-family:monospace;"></div>';}
+                else if(tool==='qrcode'){h='<h3>📱 QR Code</h3><input id="qrText" placeholder="نص أو رابط"><button onclick="window.gq()">ولّد QR</button><div class="result" id="qrResult"></div>';}
+                else if(tool==='timer'){h='<h3>⏱️ مؤقت</h3><input id="timerMin" type="number" placeholder="دقائق" value="1"><input id="timerSec" type="number" placeholder="ثواني" value="0"><button onclick="window.st()">ابدأ</button><button onclick="clearInterval(timerInterval);document.getElementById(\'timerResult\').textContent=\'تم الإيقاف\';">إيقاف</button><div class="result" id="timerResult" style="font-size:1.5rem;"></div>';}
+                else if(tool==='percentage'){h='<h3>💯 نسبة مئوية</h3><input id="percVal" placeholder="الرقم"><input id="percPct" placeholder="النسبة %"><button onclick="$(\'percResult\').textContent=($(\'percVal\').value*$(\'percPct\').value/100).toFixed(2)">احسب</button><div class="result" id="percResult"></div>';}
+                else if(tool==='dice'){h='<h3>🎲 نرد</h3><select id="diceSides"><option value="6">6 أوجه</option><option value="8">8</option><option value="10">10</option><option value="20">20</option></select><button onclick="$(\'diceResult\').textContent=Math.floor(Math.random()*parseInt($(\'diceSides\').value))+1">🎲</button><div class="result" id="diceResult" style="font-size:3rem;text-align:center;"></div>';}
+                else if(tool==='colors'){h='<h3>🎨 مولد ألوان</h3><button onclick="const c=\'#\'+Math.floor(Math.random()*16777215).toString(16).padStart(6,\'0\');$(\'colorBox\').style.background=c;$(\'colorCode\').textContent=c;navigator.clipboard.writeText(c);">ولّد وانسخ</button><div id="colorBox" style="width:100px;height:100px;border-radius:12px;margin:10px auto;"></div><div id="colorCode" style="text-align:center;font-family:monospace;"></div>';}
+                else if(tool==='names'){h='<h3>🏷️ مولد أسماء</h3><button onclick="const n=[\'نور\',\'لين\',\'سما\',\'رغد\',\'فارس\',\'آدم\',\'جود\',\'ليان\',\'ياسر\',\'هبة\'];$(\'nameResult\').textContent=n[Math.floor(Math.random()*n.length)]">ولّد اسم</button><div class="result" id="nameResult" style="font-size:1.5rem;text-align:center;"></div>';}
+                else if(tool==='emoji'){h='<h3>😀 مكتبة الإيموجي</h3><div style="font-size:2rem;display:flex;flex-wrap:wrap;gap:8px;">😂❤️🔥👍😊🎉💪🤖✨🌟😍🥳🤔😎👋💀🎂⚡🌈🦋🐱🐶</div><p style="font-size:0.75rem;">انسخ اللي يعجبك</p>';}
+                else if(tool==='urlshort'){h='<h3>🔗 اختصار روابط</h3><input id="longUrl" placeholder="https://..."><button onclick="window.ushort()">اختصر</button><div class="result" id="shortResult"></div>';}
+                else if(tool==='bmi'){h='<h3>⚖️ مؤشر كتلة الجسم</h3><input id="bmiWeight" placeholder="الوزن (كغم)"><input id="bmiHeight" placeholder="الطول (متر)"><button onclick="window.calcBMI()">احسب</button><div class="result" id="bmiResult"></div>';}
+                else if(tool==='age'){h='<h3>🎂 حاسبة العمر</h3><input type="date" id="birthDate"><button onclick="window.calcAge()">احسب</button><div class="result" id="ageResult"></div>';}
+                else if(tool==='tip'){h='<h3>💰 حاسبة البقشيش</h3><input id="billAmount" placeholder="المبلغ"><select id="tipPercent"><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option><option value="20">20%</option></select><button onclick="window.calcTip()">احسب</button><div class="result" id="tipResult"></div>';}
+                else if(tool==='discount'){h='<h3>🏷️ حساب الخصم</h3><input id="origPrice" placeholder="السعر الأصلي"><input id="discountPct" placeholder="نسبة الخصم %"><button onclick="window.calcDiscount()">احسب</button><div class="result" id="discountResult"></div>';}
+                else if(tool==='words'){h='<h3>📝 عداد كلمات</h3><textarea id="wordInput" rows="6" placeholder="الصق النص..."></textarea><button onclick="window.countWords()">عد</button><div class="result" id="wordResult"></div>';}
+                else if(tool==='stopwatch'){h='<h3>⏲️ ساعة توقيت</h3><button onclick="window.startStopwatch()" id="swStartBtn">▶️ ابدأ</button><button onclick="window.stopStopwatch()">⏹️ إيقاف</button><button onclick="window.resetStopwatch()">🔄 تصفير</button><div class="result" id="swResult" style="font-size:1.5rem;text-align:center;">00:00:00</div>';}
+                else if(tool==='loan'){h='<h3>🏦 حاسبة القرض</h3><input id="loanAmount" placeholder="مبلغ القرض"><input id="loanRate" placeholder="الفائدة السنوية %"><input id="loanYears" placeholder="عدد السنوات"><button onclick="window.calcLoan()">احسب</button><div class="result" id="loanResult"></div>';}
+                else if(tool==='notes'){h='<h3>📋 ملاحظات سريعة</h3><textarea id="noteInput" rows="4" placeholder="ملاحظاتك..."></textarea><button onclick="window.saveNote()">💾 احفظ</button><div class="result" id="notesList"></div>';}
+                content.innerHTML=h+'<br><button class="close-btn" onclick="$(\'toolModal\').classList.remove(\'active\')">إغلاق</button>';
+                modal.classList.add('active');
+                if(tool==='notes')window.loadNotes();
+                if(tool==='stopwatch'){stopwatchSeconds=0;$('swResult').textContent='00:00:00';}
+            });});
+
+            window.$=id=>document.getElementById(id);
+            window.showToast=showToast;
+
+            window.cv=function(){const a=parseFloat($('convAmount').value),f=$('convFrom').value,t=$('convTo').value;const r={USD:1,EUR:0.92,IQD:1310,SAR:3.75,AED:3.67,EGP:47.5,GBP:0.79};if(a&&r[f]&&r[t])$('convResult').textContent=`${a} ${f} = ${((a/r[f])*r[t]).toFixed(2)} ${t}`;};
+            window.ut=function(){const v=parseFloat($('unitVal').value),t=$('unitType').value;const c={'km-miles':v*0.621,'miles-km':v*1.609,'kg-lb':v*2.205,'lb-kg':v*0.454,'c-f':v*9/5+32,'f-c':(v-32)*5/9,'m-ft':v*3.281};$('unitResult').textContent=`= ${c[t]?.toFixed(2)||v}`;};
+            window.gp=function(){const l=parseInt($('passLen').value)||16;const ch='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'+( $('passSymbols')?.checked?'!@#$%^&*()':'');let p='';for(let i=0;i<l;i++)p+=ch[Math.floor(Math.random()*ch.length)];$('passResult').textContent=p;navigator.clipboard.writeText(p);showToast('🔐 تم النسخ');};
+            window.gq=function(){const t=$('qrText').value.trim();if(t)$('qrResult').innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(t)}" alt="QR"><br><small>${t}</small>`;};
+            window.st=function(){clearInterval(timerInterval);let m=parseInt($('timerMin').value)||0;let s=parseInt($('timerSec').value)||0;let total=m*60+s;const el=$('timerResult');if(total<=0)return;timerInterval=setInterval(()=>{if(total<=0){clearInterval(timerInterval);el.textContent='⏰ انتهى!';showToast('⏰ انتهى الوقت');return;}const mm=Math.floor(total/60),ss=total%60;el.textContent=`${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;total--;},1000);};
+            window.ushort=function(){const url=$('longUrl').value.trim();if(!url)return;fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`).then(r=>r.text()).then(t=>{$('shortResult').innerHTML=`<a href="${t}" target="_blank">${t}</a>`;navigator.clipboard.writeText(t);showToast('🔗 تم النسخ');}).catch(()=>{$('shortResult').textContent='⚠️ فشل الاختصار';});};
+            window.calcBMI=function(){const w=parseFloat($('bmiWeight').value),h=parseFloat($('bmiHeight').value);if(!w||!h)return;const bmi=w/(h*h);let status='';if(bmi<18.5)status='نقص وزن';else if(bmi<25)status='وزن طبيعي';else if(bmi<30)status='زيادة وزن';else status='سمنة';$('bmiResult').textContent=`BMI: ${bmi.toFixed(1)} (${status})`;};
+            window.calcAge=function(){const d=$('birthDate').value;if(!d)return;const birth=new Date(d),now=new Date();let years=now.getFullYear()-birth.getFullYear();const m=now.getMonth()-birth.getMonth();if(m<0||(m===0&&now.getDate()<birth.getDate()))years--;const days=Math.floor((now-birth)/(1000*60*60*24));$('ageResult').textContent=`${years} سنة | ${days} يوم`;};
+            window.calcTip=function(){const b=parseFloat($('billAmount').value),p=parseFloat($('tipPercent').value);if(!b)return;const tip=b*p/100;$('tipResult').textContent=`البقشيش: ${tip.toFixed(2)} | الإجمالي: ${(b+tip).toFixed(2)}`;};
+            window.calcDiscount=function(){const p=parseFloat($('origPrice').value),d=parseFloat($('discountPct').value);if(!p||!d)return;const save=p*d/100;$('discountResult').textContent=`وفرت: ${save.toFixed(2)} | السعر بعد: ${(p-save).toFixed(2)}`;};
+            window.countWords=function(){const t=$('wordInput').value.trim();if(!t){$('wordResult').textContent='0 كلمات';return;}const words=t.split(/\s+/).length;const chars=t.length;const sentences=t.split(/[.!?]/).filter(x=>x).length;$('wordResult').textContent=`كلمات: ${words} | أحرف: ${chars} | جمل: ${sentences}`;};
+            window.startStopwatch=function(){if(stopwatchRunning)return;stopwatchRunning=true;stopwatchInterval=setInterval(()=>{stopwatchSeconds++;const h=Math.floor(stopwatchSeconds/3600);const m=Math.floor((stopwatchSeconds%3600)/60);const s=stopwatchSeconds%60;$('swResult').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);};
+            window.stopStopwatch=function(){clearInterval(stopwatchInterval);stopwatchRunning=false;};
+            window.resetStopwatch=function(){clearInterval(stopwatchInterval);stopwatchRunning=false;stopwatchSeconds=0;$('swResult').textContent='00:00:00';};
+            window.calcLoan=function(){const a=parseFloat($('loanAmount').value),r=parseFloat($('loanRate').value)/1200,y=parseFloat($('loanYears').value)*12;if(!a||!r||!y)return;const monthly=a*r*Math.pow(1+r,y)/(Math.pow(1+r,y)-1);$('loanResult').textContent=`القسط الشهري: ${monthly.toFixed(2)} | الإجمالي: ${(monthly*y).toFixed(2)}`;};
+            window.saveNote=function(){const t=$('noteInput').value.trim();if(!t)return;const n=JSON.parse(localStorage.getItem('quickNotes')||'[]');n.unshift({text:t,date:new Date().toLocaleString()});localStorage.setItem('quickNotes',JSON.stringify(n));$('noteInput').value='';window.loadNotes();showToast('💾 حفظ');};
+            window.loadNotes=function(){const n=JSON.parse(localStorage.getItem('quickNotes')||'[]');const el=$('notesList');el.innerHTML=n.length?n.map((x,i)=>`<div style="padding:6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;"><span>${x.text.substring(0,60)}...</span><small>${x.date}</small></div>`).join(''):'<p>لا ملاحظات</p>';};
+        })();
+    </script>
+</body>
+</html>
