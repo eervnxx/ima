@@ -3,323 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الأدوات المتقدمة - Pro Tools</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <title>الأدوات - AI Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #eef2ff;
-            --bg: #f8fafc; --surface: #ffffff; --surface-hover: #f1f5f9;
-            --text: #0f172a; --text-secondary: #64748b; --text-muted: #94a3b8;
-            --border: #e2e8f0; --radius-xs: 6px; --radius-sm: 10px; --radius: 16px; --radius-lg: 20px;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.07); --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --c1:#6366f1;--c1d:#4f46e5;--c1l:#eef2ff;--bg:#f1f5f9;--sur:#fff;--sur2:#f8fafc;
+            --tx:#0f172a;--tx2:#475569;--tx3:#94a3b8;--br:#e2e8f0;--sh:0 1px 2px rgba(0,0,0,0.05);
+            --sh2:0 4px 6px rgba(0,0,0,0.05);--r:14px;--r2:20px;--tr:0.2s;
         }
-        [data-theme="dark"] {
-            --bg: #0f172a; --surface: #1e293b; --surface-hover: #334155;
-            --text: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
-            --border: #334155; --primary-light: #312e81;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text);
-            min-height: 100vh; display: flex; flex-direction: column; line-height: 1.7;
-            transition: all var(--transition);
-        }
-        .header {
-            background: var(--surface); border-bottom: 1px solid var(--border);
-            padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
-            gap: 12px; position: sticky; top: 0; z-index: 100;
-        }
-        .header-brand { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-        .header-brand .logo { width: 36px; height: 36px; background: var(--primary); border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
-        .header-nav { display: flex; gap: 6px; align-items: center; }
-        .nav-link { padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 500; text-decoration: none; color: var(--text-secondary); transition: all var(--transition); white-space: nowrap; }
-        .nav-link:hover { background: var(--surface-hover); color: var(--text); }
-        .nav-link.active { background: var(--primary); color: white; }
-        .icon-btn { width: 38px; height: 38px; border-radius: var(--radius-xs); border: none; background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all var(--transition); }
-        .icon-btn:hover { background: var(--surface-hover); color: var(--text); }
-        .ticker { background: var(--surface); border-bottom: 1px solid var(--border); padding: 6px 20px; display: flex; gap: 16px; overflow-x: auto; font-size: 0.72rem; font-weight: 500; white-space: nowrap; }
-        .ticker::-webkit-scrollbar { display: none; }
-        .ticker-item { display: flex; align-items: center; gap: 4px; color: var(--text-secondary); }
-        .ticker-item .up { color: #22c55e; } .ticker-item .down { color: #ef4444; }
-        .tools-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;
-            padding: 20px; flex: 1; overflow-y: auto; align-content: start;
-        }
-        .tool-card {
-            background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius);
-            padding: 22px 16px; text-align: center; cursor: pointer; transition: all var(--transition);
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-        }
-        .tool-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-3px); }
-        .tool-card .icon { font-size: 2.4rem; line-height: 1; }
-        .tool-card .title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
-        .tool-card .desc { font-size: 0.7rem; color: var(--text-muted); }
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            z-index: 200; justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-box {
-            background: var(--surface); border-radius: var(--radius-lg); padding: 24px;
-            max-width: 480px; width: 100%; max-height: 85vh; overflow-y: auto;
-            box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-        }
-        .modal-box h3 { margin-bottom: 16px; color: var(--primary); font-size: 1.1rem; }
-        .modal-box input, .modal-box textarea, .modal-box select {
-            width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
-            font-family: inherit; font-size: 0.85rem; background: var(--bg); color: var(--text); margin-bottom: 8px;
-            transition: border var(--transition);
-        }
-        .modal-box input:focus, .modal-box textarea:focus, .modal-box select:focus { outline: none; border-color: var(--primary); }
-        .btn {
-            padding: 10px 20px; border-radius: var(--radius-sm); border: none; font-family: inherit;
-            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all var(--transition);
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: var(--surface-hover); color: var(--text); }
-        .btn-secondary:hover { background: var(--border); }
-        .btn-danger { background: #fecaca; color: #dc2626; }
-        .btn-danger:hover { background: #fca5a5; }
-        .result-box { margin-top: 12px; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); font-size: 0.85rem; white-space: pre-wrap; border: 1px solid var(--border); }
-        .result-box:empty { display: none; }
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(120px); background: #1e293b; color: white; padding: 10px 22px; border-radius: 30px; font-size: 0.82rem; z-index: 999; opacity: 0; transition: all 0.3s; pointer-events: none; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .footer { text-align: center; padding: 12px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid var(--border); background: var(--surface); margin-top: auto; }
-        .footer span { color: var(--primary); font-weight: 600; }
-        .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
-        @media (max-width: 640px) {
-            .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
-            .tool-card { padding: 14px 8px; }
-            .tool-card .icon { font-size: 1.8rem; }
-            .modal-box { padding: 16px; }
-        }
+        .dark {--bg:#0b1120;--sur:#111827;--sur2:#1a2332;--tx:#f1f5f9;--tx2:#94a3b8;--tx3:#64748b;--br:#1e293b;--c1l:#1e1b4b;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;line-height:1.7;transition:background var(--tr),color var(--tr);}
+        .topbar{background:var(--sur);border-bottom:1px solid var(--br);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sh);}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:800;color:var(--c1);}
+        .logo span{width:38px;height:38px;background:linear-gradient(135deg,var(--c1),var(--c1d));border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;}
+        .nav-links{display:flex;gap:4px;}
+        .nav-links a{padding:8px 16px;border-radius:20px;font-size:0.8rem;font-weight:500;text-decoration:none;color:var(--tx2);transition:all var(--tr);}
+        .nav-links a:hover{background:var(--sur2);color:var(--tx);}
+        .nav-links a.active{background:var(--c1);color:white;}
+        .icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;color:var(--tx2);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all var(--tr);}
+        .icon-btn:hover{background:var(--sur2);}
+        .ticker{background:var(--sur);border-bottom:1px solid var(--br);padding:8px 24px;display:flex;gap:20px;overflow-x:auto;font-size:0.7rem;font-weight:500;white-space:nowrap;}
+        .ticker::-webkit-scrollbar{display:none;}
+        .ticker-item{color:var(--tx2);display:flex;align-items:center;gap:4px;}
+        .ticker-item .up{color:#10b981;}.ticker-item .down{color:#ef4444;}
+
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;padding:24px;flex:1;overflow-y:auto;align-content:start;}
+        .card{background:var(--sur);border:2px solid var(--br);border-radius:var(--r2);padding:20px 14px;text-align:center;cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;align-items:center;gap:8px;}
+        .card:hover{border-color:var(--c1);box-shadow:var(--sh2);transform:translateY(-2px);}
+        .card .icon{font-size:2.2rem;line-height:1;}
+        .card .title{font-size:0.82rem;font-weight:700;color:var(--tx);}
+        .card .desc{font-size:0.68rem;color:var(--tx3);}
+
+        .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;justify-content:center;align-items:center;padding:20px;}
+        .modal.active{display:flex;}
+        .modal-box{background:var(--sur);border-radius:var(--r2);padding:24px;max-width:460px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 40px rgba(0,0,0,0.2);}
+        .modal-box h3{margin-bottom:16px;color:var(--c1);font-size:1.05rem;}
+        .modal-box input,.modal-box textarea,.modal-box select{width:100%;padding:10px 14px;border:2px solid var(--br);border-radius:12px;font-family:inherit;font-size:0.85rem;background:var(--bg);color:var(--tx);margin-bottom:8px;transition:border var(--tr);}
+        .modal-box input:focus,.modal-box textarea:focus,.modal-box select:focus{outline:none;border-color:var(--c1);}
+        .btn{padding:10px 20px;border-radius:20px;border:none;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all var(--tr);}
+        .btn1{background:var(--c1);color:white;}
+        .btn1:hover{background:var(--c1d);}
+        .btn2{background:var(--sur2);color:var(--tx);border:1px solid var(--br);}
+        .btn2:hover{background:var(--br);}
+        .result{margin-top:10px;padding:12px;background:var(--bg);border-radius:12px;font-size:0.85rem;white-space:pre-wrap;min-height:20px;border:1px solid var(--br);}
+        .result:empty{display:none;}
+        .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(120px);background:#1e293b;color:white;padding:10px 24px;border-radius:30px;font-size:0.8rem;z-index:999;opacity:0;transition:0.3s;pointer-events:none;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        footer{text-align:center;padding:12px;font-size:0.7rem;color:var(--tx3);border-top:1px solid var(--br);background:var(--sur);margin-top:auto;}
+        footer strong{color:var(--c1);}
+        .row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;}
+        @media(max-width:640px){.grid{grid-template-columns:repeat(3,1fr);gap:8px;padding:14px;}.card{padding:14px 8px;}.card .icon{font-size:1.6rem;}.modal-box{padding:16px;}}
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-brand"><span class="logo">🧰</span>الأدوات المتقدمة</div>
-        <nav class="header-nav">
-            <a href="index.html" class="nav-link">💬 المحادثة</a>
-            <a href="tools.html" class="nav-link active">🧰 الأدوات</a>
-            <a href="labs.html" class="nav-link">🧪 المختبر</a>
-            <button class="icon-btn" id="themeBtn" title="تغيير المظهر">🌙</button>
+    <header class="topbar">
+        <div class="logo"><span>🧰</span>الأدوات</div>
+        <nav class="nav-links">
+            <a href="index.html">💬 محادثة</a>
+            <a href="tools.html" class="active">🧰 أدوات</a>
+            <a href="labs.html">🧪 مختبر</a>
         </nav>
+        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </header>
-    <div class="ticker" id="ticker">⏳ جاري تحميل أسعار الصرف...</div>
-    <div class="tools-grid">
-        <div class="tool-card" data-tool="calc"><div class="icon">🔢</div><div class="title">آلة حاسبة</div><div class="desc">علمية متطورة</div></div>
-        <div class="tool-card" data-tool="convert"><div class="icon">💱</div><div class="title">تحويل عملات</div><div class="desc">أسعار حية</div></div>
-        <div class="tool-card" data-tool="units"><div class="icon">📏</div><div class="title">تحويل وحدات</div><div class="desc">10+ وحدات</div></div>
-        <div class="tool-card" data-tool="password"><div class="icon">🔐</div><div class="title">كلمة سر</div><div class="desc">آمنة وقوية</div></div>
-        <div class="tool-card" data-tool="qrcode"><div class="icon">📱</div><div class="title">QR Code</div><div class="desc">توليد فوري</div></div>
-        <div class="tool-card" data-tool="timer"><div class="icon">⏱️</div><div class="title">مؤقت</div><div class="desc">مع إشعار</div></div>
-        <div class="tool-card" data-tool="percentage"><div class="icon">💯</div><div class="title">نسبة مئوية</div><div class="desc">حساب %</div></div>
-        <div class="tool-card" data-tool="bmi"><div class="icon">⚖️</div><div class="title">كتلة الجسم</div><div class="desc">BMI</div></div>
-        <div class="tool-card" data-tool="age"><div class="icon">🎂</div><div class="title">حاسبة العمر</div><div class="desc">سنين وأيام</div></div>
-        <div class="tool-card" data-tool="loan"><div class="icon">🏦</div><div class="title">حاسبة قرض</div><div class="desc">أقساط شهرية</div></div>
-        <div class="tool-card" data-tool="discount"><div class="icon">🏷️</div><div class="title">حاسبة خصم</div><div class="desc">تخفيضات</div></div>
-        <div class="tool-card" data-tool="tip"><div class="icon">💰</div><div class="title">بقشيش</div><div class="desc">Tip</div></div>
-        <div class="tool-card" data-tool="words"><div class="icon">📝</div><div class="title">عداد كلمات</div><div class="desc">تحليل نص</div></div>
-        <div class="tool-card" data-tool="crypto"><div class="icon">₿</div><div class="title">عملات رقمية</div><div class="desc">بيتكوين</div></div>
-        <div class="tool-card" data-tool="colors"><div class="icon">🎨</div><div class="title">ألوان</div><div class="desc">HEX + RGB</div></div>
-        <div class="tool-card" data-tool="dice"><div class="icon">🎲</div><div class="title">نرد</div><div class="desc">عشوائي</div></div>
-        <div class="tool-card" data-tool="names"><div class="icon">🏷️</div><div class="title">أسماء</div><div class="desc">مولد</div></div>
-        <div class="tool-card" data-tool="urlshort"><div class="icon">🔗</div><div class="title">اختصار رابط</div><div class="desc">TinyURL</div></div>
-        <div class="tool-card" data-tool="zip"><div class="icon">📦</div><div class="title">Base64</div><div class="desc">تشفير/فك</div></div>
-        <div class="tool-card" data-tool="hash"><div class="icon">#️⃣</div><div class="title">Hash</div><div class="desc">SHA-256</div></div>
+    <div class="ticker" id="ticker">⏳ أسعار الصرف...</div>
+
+    <div class="grid">
+        <div class="card" data-t="calc"><div class="icon">🔢</div><div class="title">آلة حاسبة</div><div class="desc">علمية</div></div>
+        <div class="card" data-t="convert"><div class="icon">💱</div><div class="title">تحويل عملات</div><div class="desc">أسعار حية</div></div>
+        <div class="card" data-t="units"><div class="icon">📏</div><div class="title">تحويل وحدات</div><div class="desc">10+ وحدات</div></div>
+        <div class="card" data-t="password"><div class="icon">🔐</div><div class="title">كلمة سر</div><div class="desc">آمنة</div></div>
+        <div class="card" data-t="qrcode"><div class="icon">📱</div><div class="title">QR Code</div><div class="desc">توليد</div></div>
+        <div class="card" data-t="timer"><div class="icon">⏱️</div><div class="title">مؤقت</div><div class="desc">+إشعار</div></div>
+        <div class="card" data-t="percent"><div class="icon">💯</div><div class="title">نسبة %</div><div class="desc">حساب</div></div>
+        <div class="card" data-t="bmi"><div class="icon">⚖️</div><div class="title">BMI</div><div class="desc">كتلة</div></div>
+        <div class="card" data-t="age"><div class="icon">🎂</div><div class="title">عمر</div><div class="desc">حساب</div></div>
+        <div class="card" data-t="loan"><div class="icon">🏦</div><div class="title">قرض</div><div class="desc">أقساط</div></div>
+        <div class="card" data-t="discount"><div class="icon">🏷️</div><div class="title">خصم</div><div class="desc">تخفيض</div></div>
+        <div class="card" data-t="tip"><div class="icon">💰</div><div class="title">بقشيش</div><div class="desc">Tip</div></div>
+        <div class="card" data-t="words"><div class="icon">📝</div><div class="title">عداد كلمات</div><div class="desc">تحليل</div></div>
+        <div class="card" data-t="crypto"><div class="icon">₿</div><div class="title">كريبتو</div><div class="desc">بيتكوين</div></div>
+        <div class="card" data-t="colors"><div class="icon">🎨</div><div class="title">ألوان</div><div class="desc">HEX+RGB</div></div>
+        <div class="card" data-t="dice"><div class="icon">🎲</div><div class="title">نرد</div><div class="desc">عشوائي</div></div>
+        <div class="card" data-t="names"><div class="icon">🏷️</div><div class="title">أسماء</div><div class="desc">مولد</div></div>
+        <div class="card" data-t="url"><div class="icon">🔗</div><div class="title">رابط</div><div class="desc">اختصار</div></div>
+        <div class="card" data-t="base64"><div class="icon">📦</div><div class="title">Base64</div><div class="desc">تشفير</div></div>
+        <div class="card" data-t="hash"><div class="icon">#️⃣</div><div class="title">Hash</div><div class="desc">SHA-256</div></div>
     </div>
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-box" id="modalContent"></div>
-    </div>
+
+    <div class="modal" id="modal"><div class="modal-box" id="modalBox"></div></div>
     <div class="toast" id="toast"></div>
-    <footer class="footer">© <span>أحمد الجابري</span> - جميع الحقوق محفوظة</footer>
+    <footer>© <strong>أحمد الجابري</strong> - جميع الحقوق محفوظة 2026</footer>
 
     <script>
-        (() => {
-            const $ = id => document.getElementById(id);
-            const modalOverlay = $('modalOverlay'), modalContent = $('modalContent'), toast = $('toast'), ticker = $('ticker'), themeBtn = $('themeBtn');
-            let forexRates = {}, prevRates = {}, timerInt, stopwatchInt, stopwatchRunning = false, stopwatchSec = 0;
+        (()=>{
+            const $=id=>document.getElementById(id);
+            const modal=$('modal'),modalBox=$('modalBox'),toast=$('toast'),ticker=$('ticker'),themeBtn=$('themeBtn');
+            let rates={},prevRates={},timerInt;
 
-            function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => toast.classList.remove('show'), 2200); }
-            function toggleTheme() { const isDark = document.body.getAttribute('data-theme') === 'dark'; document.body.setAttribute('data-theme', isDark ? '' : 'dark'); themeBtn.textContent = isDark ? '🌙' : '☀️'; localStorage.setItem('theme', isDark ? 'light' : 'dark'); }
-            if (localStorage.getItem('theme') === 'dark') { document.body.setAttribute('data-theme', 'dark'); themeBtn.textContent = '☀️'; }
-            themeBtn.addEventListener('click', toggleTheme);
-            function openModal(html) { modalContent.innerHTML = html; modalOverlay.classList.add('active'); }
-            modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+            function toastMsg(m){toast.textContent=m;toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>toast.classList.remove('show'),2200);}
+            function toggleTheme(){const d=document.body.classList.toggle('dark');themeBtn.textContent=d?'☀️':'🌙';localStorage.setItem('dark',d?'1':'0');}
+            if(localStorage.getItem('dark')==='1'){document.body.classList.add('dark');themeBtn.textContent='☀️';}
 
-            // أسعار حية
-            async function fetchRates() {
-                try { const r = await fetch('https://open.er-api.com/v6/latest/USD'); const d = await r.json(); if (d?.rates) { prevRates = { ...forexRates }; forexRates = d.rates; updateTicker(); } } catch (e) { if (!Object.keys(forexRates).length) { forexRates = { USD: 1, EUR: 0.92, GBP: 0.79, IQD: 1310, SAR: 3.75, AED: 3.67, EGP: 47.5, JPY: 149, TRY: 30.5 }; updateTicker(); } }
-            }
-            function updateTicker() { const pairs = [['USD/IQD', 'IQD'], ['USD/SAR', 'SAR'], ['USD/AED', 'AED'], ['USD/EGP', 'EGP'], ['EUR/USD', 'EUR'], ['GBP/USD', 'GBP']]; ticker.innerHTML = pairs.map(([l, c]) => { const rate = c === 'EUR' ? (1 / forexRates.EUR).toFixed(4) : c === 'GBP' ? (1 / forexRates.GBP).toFixed(4) : forexRates[c]?.toFixed(2) || '--'; const prev = prevRates[c]; let arrow = ''; if (prev && forexRates[c]) { arrow = forexRates[c] > prev ? ' <span class="up">▲</span>' : forexRates[c] < prev ? ' <span class="down">▼</span>' : ''; } return `<span class="ticker-item">${l}: ${rate}${arrow}</span>`; }).join(''); }
-            fetchRates(); setInterval(fetchRates, 60000);
-            function getRate(from, to) { if (!forexRates[from] || !forexRates[to]) return null; return (1 / forexRates[from]) * forexRates[to]; }
+            async function fetchRates(){try{const r=await fetch('https://open.er-api.com/v6/latest/USD');const d=await r.json();if(d?.rates){prevRates={...rates};rates=d.rates;renderTicker();}}catch(e){if(!Object.keys(rates).length){rates={USD:1,EUR:0.92,GBP:0.79,IQD:1310,SAR:3.75,AED:3.67,EGP:47.5,JPY:149,TRY:30.5};renderTicker();}}}
+            function renderTicker(){const p=[['USD/IQD','IQD'],['USD/SAR','SAR'],['USD/AED','AED'],['USD/EGP','EGP'],['EUR/USD','EUR'],['GBP/USD','GBP']];ticker.innerHTML=p.map(([l,c])=>{const v=c==='EUR'?(1/rates.EUR).toFixed(4):c==='GBP'?(1/rates.GBP).toFixed(4):rates[c]?.toFixed(2)||'--';const pr=prevRates[c];let ar='';if(pr&&rates[c])ar=rates[c]>pr?' <span class="up">▲</span>':rates[c]<pr?' <span class="down">▼</span>':'';return`<span class="ticker-item">${l}: ${v}${ar}</span>`;}).join('');}
+            fetchRates();setInterval(fetchRates,60000);
+            function getRate(f,t){if(!rates[f]||!rates[t])return null;return (1/rates[f])*rates[t];}
 
-            document.querySelectorAll('.tool-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const tool = card.dataset.tool; let html = '';
-                    if (tool === 'calc') {
-                        html = `<h3>🔢 آلة حاسبة علمية</h3>
-                            <input id="calcInput" placeholder="مثال: 5*10+3^2 أو Math.sqrt(64)">
-                            <div class="btn-row" style="margin:8px 0"><button class="btn btn-secondary" onclick="document.getElementById('calcInput').value+='Math.sqrt('">√</button><button class="btn btn-secondary" onclick="document.getElementById('calcInput').value+='Math.pow('">^</button><button class="btn btn-secondary" onclick="document.getElementById('calcInput').value+='Math.PI'">π</button></div>
-                            <button class="btn btn-primary" onclick="try{document.getElementById('calcResult').textContent='= '+eval(document.getElementById('calcInput').value)}catch(e){document.getElementById('calcResult').textContent='خطأ في الحساب'}">= احسب</button>
-                            <div class="result-box" id="calcResult" style="font-size:1.3rem;font-weight:700;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'convert') {
-                        html = `<h3>💱 تحويل العملات - أسعار حية</h3>
-                            <input id="convAmount" type="number" placeholder="المبلغ" value="1">
-                            <select id="convFrom">${['USD','EUR','IQD','SAR','AED','EGP','GBP','JPY','TRY'].map(c=>`<option>${c}</option>`).join('')}</select>
-                            <span style="font-size:1.2rem;">→</span>
-                            <select id="convTo">${['IQD','USD','EUR','SAR','AED','EGP'].map(c=>`<option>${c}</option>`).join('')}</select>
-                            <button class="btn btn-primary" style="margin-top:8px" onclick="convertCurrency()">💱 حول</button>
-                            <div class="result-box" id="convResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'units') {
-                        html = `<h3>📏 تحويل الوحدات</h3>
-                            <input id="unitVal" type="number" placeholder="القيمة" value="1">
-                            <select id="unitType"><option value="km-miles">كم → ميل</option><option value="miles-km">ميل → كم</option><option value="kg-lb">كغم → باوند</option><option value="lb-kg">باوند → كغم</option><option value="c-f">°C → °F</option><option value="f-c">°F → °C</option><option value="m-ft">متر → قدم</option><option value="l-gal">لتر → غالون</option></select>
-                            <button class="btn btn-primary" style="margin-top:8px" onclick="convertUnit()">📏 حول</button>
-                            <div class="result-box" id="unitResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'password') {
-                        html = `<h3>🔐 مولد كلمات سر</h3>
-                            <label>الطول: <span id="passLenVal">16</span></label><input type="range" id="passLen" value="16" min="8" max="64" oninput="$('passLenVal').textContent=this.value">
-                            <label><input type="checkbox" id="passUpper" checked> أحرف كبيرة</label>
-                            <label><input type="checkbox" id="passNum" checked> أرقام</label>
-                            <label><input type="checkbox" id="passSym" checked> رموز</label>
-                            <button class="btn btn-primary" onclick="generatePassword()">🔐 ولّد وانسخ</button>
-                            <div class="result-box" id="passResult" style="font-family:monospace;word-break:break-all;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'qrcode') {
-                        html = `<h3>📱 مولد QR Code</h3>
-                            <input id="qrText" placeholder="أدخل نصاً أو رابطاً...">
-                            <button class="btn btn-primary" onclick="generateQR()">📱 ولّد QR</button>
-                            <div class="result-box" id="qrResult" style="text-align:center;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'timer') {
-                        html = `<h3>⏱️ مؤقت مع إشعار</h3>
-                            <div style="display:flex;gap:8px;"><input id="timerMin" type="number" placeholder="دقائق" value="1"><input id="timerSec" type="number" placeholder="ثواني" value="0"></div>
-                            <div class="btn-row" style="margin-top:8px"><button class="btn btn-primary" onclick="startTimer()">▶️ ابدأ</button><button class="btn btn-danger" onclick="clearInterval(timerInt);$('timerDisplay').textContent='⏹️ تم الإيقاف';">⏹️ إيقاف</button></div>
-                            <div class="result-box" id="timerDisplay" style="font-size:2rem;text-align:center;">00:00</div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'percentage') {
-                        html = `<h3>💯 حاسبة النسبة المئوية</h3>
-                            <input id="percVal" type="number" placeholder="الرقم">
-                            <input id="percPct" type="number" placeholder="النسبة %">
-                            <div class="btn-row"><button class="btn btn-primary" onclick="$('percResult').textContent='النتيجة: '+($('percVal').value*$('percPct').value/100).toFixed(2)">💯 احسب النسبة</button><button class="btn btn-secondary" onclick="$('percResult').textContent='النسبة: '+($('percPct').value/$('percVal').value*100).toFixed(2)+'%'">% ما يعادله</button></div>
-                            <div class="result-box" id="percResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'bmi') {
-                        html = `<h3>⚖️ مؤشر كتلة الجسم BMI</h3>
-                            <input id="bmiW" type="number" placeholder="الوزن (كغم)">
-                            <input id="bmiH" type="number" placeholder="الطول (متر) مثال: 1.75">
-                            <button class="btn btn-primary" onclick="calcBMI()">⚖️ احسب</button>
-                            <div class="result-box" id="bmiResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'age') {
-                        html = `<h3>🎂 حاسبة العمر</h3>
-                            <input type="date" id="birthDate">
-                            <button class="btn btn-primary" onclick="calcAge()">🎂 احسب عمري</button>
-                            <div class="result-box" id="ageResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'loan') {
-                        html = `<h3>🏦 حاسبة القرض</h3>
-                            <input id="loanAmt" type="number" placeholder="مبلغ القرض">
-                            <input id="loanRate" type="number" placeholder="الفائدة السنوية %">
-                            <input id="loanYears" type="number" placeholder="عدد السنوات">
-                            <button class="btn btn-primary" onclick="calcLoan()">🏦 احسب القسط</button>
-                            <div class="result-box" id="loanResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'discount') {
-                        html = `<h3>🏷️ حاسبة الخصم</h3>
-                            <input id="origPrice" type="number" placeholder="السعر الأصلي">
-                            <input id="discPct" type="number" placeholder="نسبة الخصم %">
-                            <button class="btn btn-primary" onclick="calcDiscount()">🏷️ احسب الخصم</button>
-                            <div class="result-box" id="discResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'tip') {
-                        html = `<h3>💰 حاسبة البقشيش</h3>
-                            <input id="billAmt" type="number" placeholder="المبلغ">
-                            <select id="tipPct"><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option><option value="20">20%</option></select>
-                            <input id="splitPpl" type="number" placeholder="عدد الأشخاص" value="1">
-                            <button class="btn btn-primary" onclick="calcTip()">💰 احسب</button>
-                            <div class="result-box" id="tipResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'words') {
-                        html = `<h3>📝 عداد كلمات متقدم</h3>
-                            <textarea id="wordInput" rows="6" placeholder="الصق النص هنا..."></textarea>
-                            <button class="btn btn-primary" onclick="countWords()">📝 حلل النص</button>
-                            <div class="result-box" id="wordResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'crypto') {
-                        html = `<h3>₿ أسعار العملات الرقمية</h3>
-                            <div class="result-box" id="cryptoResult">جاري التحميل...</div>
-                            <button class="btn btn-primary" onclick="fetchCrypto()">₿ تحديث</button>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'colors') {
-                        html = `<h3>🎨 مولد ألوان</h3>
-                            <button class="btn btn-primary" onclick="generateColor()">🎨 ولّد لون</button>
-                            <div id="colorBox" style="width:100px;height:100px;border-radius:12px;margin:12px auto;"></div>
-                            <div class="result-box" id="colorCode" style="text-align:center;font-family:monospace;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'dice') {
-                        html = `<h3>🎲 مولد نرد</h3>
-                            <select id="diceSides"><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="20">20</option></select>
-                            <button class="btn btn-primary" onclick="$('diceResult').textContent=Math.floor(Math.random()*parseInt($('diceSides').value))+1">🎲 ارمي</button>
-                            <div class="result-box" id="diceResult" style="font-size:3rem;text-align:center;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'names') {
-                        html = `<h3>🏷️ مولد أسماء</h3>
-                            <button class="btn btn-primary" onclick="const n=['نور','لين','سما','فارس','آدم','جود','ليان','ياسر'];$('nameResult').textContent=n[Math.floor(Math.random()*n.length)]">🏷️ ولّد اسم</button>
-                            <div class="result-box" id="nameResult" style="font-size:1.4rem;text-align:center;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'urlshort') {
-                        html = `<h3>🔗 اختصار رابط</h3>
-                            <input id="longUrl" placeholder="https://...">
-                            <button class="btn btn-primary" onclick="shortenUrl()">🔗 اختصر</button>
-                            <div class="result-box" id="shortResult"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'zip') {
-                        html = `<h3>📦 Base64 تشفير/فك</h3>
-                            <textarea id="zipInput" rows="4" placeholder="النص..."></textarea>
-                            <div class="btn-row"><button class="btn btn-primary" onclick="$('zipResult').textContent=btoa($('zipInput').value)">🔒 تشفير</button><button class="btn btn-secondary" onclick="try{$('zipResult').textContent=atob($('zipInput').value)}catch(e){$('zipResult').textContent='نص غير صالح'}">🔓 فك</button></div>
-                            <div class="result-box" id="zipResult" style="word-break:break-all;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    } else if (tool === 'hash') {
-                        html = `<h3>#️⃣ توليد SHA-256 Hash</h3>
-                            <textarea id="hashInput" rows="4" placeholder="النص..."></textarea>
-                            <button class="btn btn-primary" onclick="generateHash()">#️⃣ ولّد Hash</button>
-                            <div class="result-box" id="hashResult" style="font-family:monospace;word-break:break-all;"></div>
-                            <button class="btn btn-secondary" style="margin-top:8px" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕ إغلاق</button>`;
-                    }
-                    openModal(html);
-                    if (tool === 'crypto') fetchCrypto();
-                    if (tool === 'timer') { $('timerDisplay').textContent = '00:00'; clearInterval(timerInt); }
-                });
-            });
+            modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('active');});
 
-            // دوال الأدوات
-            window.$ = id => document.getElementById(id);
-            window.convertCurrency = () => { const a = parseFloat($('convAmount').value), f = $('convFrom').value, t = $('convTo').value; const rate = getRate(f, t); if (rate) $('convResult').innerHTML = `<strong>${a} ${f} = ${(a * rate).toFixed(4)} ${t}</strong><br><small>1 ${f} = ${rate.toFixed(4)} ${t}</small>`; else $('convResult').textContent = 'خطأ في التحويل'; };
-            window.convertUnit = () => { const v = parseFloat($('unitVal').value), t = $('unitType').value; const c = { 'km-miles': v * 0.621, 'miles-km': v * 1.609, 'kg-lb': v * 2.205, 'lb-kg': v * 0.454, 'c-f': v * 9 / 5 + 32, 'f-c': (v - 32) * 5 / 9, 'm-ft': v * 3.281, 'l-gal': v * 0.264 }; $('unitResult').textContent = `= ${c[t]?.toFixed(4) || v}`; };
-            window.generatePassword = () => { const l = parseInt($('passLen').value) || 16; let ch = 'abcdefghijklmnopqrstuvwxyz'; if ($('passUpper')?.checked) ch += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; if ($('passNum')?.checked) ch += '0123456789'; if ($('passSym')?.checked) ch += '!@#$%^&*'; let p = ''; for (let i = 0; i < l; i++) p += ch[Math.floor(Math.random() * ch.length)]; $('passResult').textContent = p; navigator.clipboard.writeText(p); showToast('🔐 تم النسخ'); };
-            window.generateQR = () => { const t = $('qrText').value.trim(); if (t) $('qrResult').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(t)}" alt="QR" style="max-width:100%;">`; };
-            window.startTimer = () => { clearInterval(timerInt); let m = parseInt($('timerMin').value) || 0, s = parseInt($('timerSec').value) || 0; let total = m * 60 + s; if (total <= 0) return; timerInt = setInterval(() => { if (total <= 0) { clearInterval(timerInt); $('timerDisplay').textContent = '⏰ انتهى!'; showToast('انتهى المؤقت'); if (Notification.permission === 'granted') new Notification('انتهى المؤقت!'); return; } total--; const mm = Math.floor(total / 60), ss = total % 60; $('timerDisplay').textContent = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`; }, 1000); };
-            window.calcBMI = () => { const w = parseFloat($('bmiW').value), h = parseFloat($('bmiH').value); if (!w || !h) return; const bmi = w / (h * h); let s = bmi < 18.5 ? 'نقص وزن' : bmi < 25 ? 'طبيعي' : bmi < 30 ? 'زيادة' : 'سمنة'; $('bmiResult').innerHTML = `<strong>BMI: ${bmi.toFixed(1)}</strong> - ${s}`; };
-            window.calcAge = () => { const d = $('birthDate').value; if (!d) return; const birth = new Date(d), now = new Date(); let y = now.getFullYear() - birth.getFullYear(); const m = now.getMonth() - birth.getMonth(); if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) y--; const days = Math.floor((now - birth) / 86400000); $('ageResult').innerHTML = `<strong>${y} سنة</strong> | ${days} يوم`; };
-            window.calcLoan = () => { const a = parseFloat($('loanAmt').value), r = parseFloat($('loanRate').value) / 1200, y = parseFloat($('loanYears').value) * 12; if (!a || !r || !y) return; const m = a * r * Math.pow(1 + r, y) / (Math.pow(1 + r, y) - 1); $('loanResult').innerHTML = `القسط الشهري: <strong>${m.toFixed(2)}</strong><br>الإجمالي: <strong>${(m * y).toFixed(2)}</strong>`; };
-            window.calcDiscount = () => { const p = parseFloat($('origPrice').value), d = parseFloat($('discPct').value); if (!p || !d) return; const s = p * d / 100; $('discResult').innerHTML = `الخصم: <strong>${s.toFixed(2)}</strong><br>السعر بعد: <strong>${(p - s).toFixed(2)}</strong>`; };
-            window.calcTip = () => { const b = parseFloat($('billAmt').value), p = parseFloat($('tipPct').value), s = parseInt($('splitPpl').value) || 1; if (!b) return; const tip = b * p / 100; $('tipResult').innerHTML = `بقشيش: <strong>${tip.toFixed(2)}</strong><br>إجمالي: <strong>${(b + tip).toFixed(2)}</strong><br>للشخص: <strong>${((b + tip) / s).toFixed(2)}</strong>`; };
-            window.countWords = () => { const t = $('wordInput').value.trim(); if (!t) { $('wordResult').textContent = '0'; return; } const w = t.split(/\s+/).filter(x => x).length; const c = t.length; const cn = t.replace(/\s/g, '').length; $('wordResult').innerHTML = `كلمات: <strong>${w}</strong> | أحرف: <strong>${c}</strong> | بدون مسافات: <strong>${cn}</strong> | وقت قراءة: <strong>~${Math.ceil(w / 200)} دقيقة</strong>`; };
-            window.fetchCrypto = async () => { try { const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd'); const d = await r.json(); $('cryptoResult').innerHTML = `₿ بيتكوين: <strong>$${d.bitcoin.usd.toLocaleString()}</strong><br>Ξ إيثيريوم: <strong>$${d.ethereum.usd.toLocaleString()}</strong>`; } catch (e) { $('cryptoResult').textContent = 'فشل التحميل - تأكد من الإنترنت'; } };
-            window.generateColor = () => { const c = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'); const r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16); $('colorBox').style.background = c; $('colorCode').innerHTML = `HEX: ${c}<br>RGB: (${r}, ${g}, ${b})`; navigator.clipboard.writeText(c); showToast('تم نسخ ' + c); };
-            window.shortenUrl = async () => { const u = $('longUrl').value.trim(); if (!u) return; try { const r = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(u)}`); const t = await r.text(); $('shortResult').innerHTML = `<a href="${t}" target="_blank">${t}</a>`; navigator.clipboard.writeText(t); showToast('تم النسخ'); } catch (e) { $('shortResult').textContent = 'فشل الاختصار'; } };
-            window.generateHash = async () => { const t = $('hashInput').value; if (!t) return; const enc = new TextEncoder().encode(t); const buf = await crypto.subtle.digest('SHA-256', enc); const arr = Array.from(new Uint8Array(buf)); $('hashResult').textContent = arr.map(b => b.toString(16).padStart(2, '0')).join(''); };
+            document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
+                const t=c.dataset.t;let h='';
+                if(t==='calc'){h=`<h3>🔢 آلة حاسبة</h3><input id="cIn" placeholder="مثال: 5*10+3"><div class="row"><button class="btn btn2" onclick="$('cIn').value+='Math.sqrt('">√</button><button class="btn btn2" onclick="$('cIn').value+='Math.pow('">^</button><button class="btn btn2" onclick="$('cIn').value+='Math.PI'">π</button></div><button class="btn btn1" onclick="try{$('cOut').textContent='= '+eval($('cIn').value)}catch(e){$('cOut').textContent='خطأ'}">=</button><div class="result" id="cOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='convert'){h=`<h3>💱 تحويل عملات</h3><input id="cvA" type="number" placeholder="مبلغ" value="1"><select id="cvF">${['USD','EUR','IQD','SAR','AED','EGP','GBP','JPY','TRY'].map(x=>`<option>${x}</option>`).join('')}</select> → <select id="cvT">${['IQD','USD','EUR','SAR','AED','EGP'].map(x=>`<option>${x}</option>`).join('')}</select><button class="btn btn1" onclick="cv()">حول</button><div class="result" id="cvOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='units'){h=`<h3>📏 تحويل وحدات</h3><input id="uV" type="number" value="1"><select id="uT"><option value="km-m">كم→ميل</option><option value="m-km">ميل→كم</option><option value="kg-lb">كغم→باوند</option><option value="lb-kg">باوند→كغم</option><option value="c-f">°C→°F</option><option value="f-c">°F→°C</option></select><button class="btn btn1" onclick="ut()">حول</button><div class="result" id="uOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='password'){h=`<h3>🔐 مولد كلمة سر</h3><label>الطول: <span id="pL">16</span></label><input type="range" id="pLen" value="16" min="8" max="64" oninput="$('pL').textContent=this.value"><label><input type="checkbox" id="pUp" checked> أحرف كبيرة</label><label><input type="checkbox" id="pNum" checked> أرقام</label><label><input type="checkbox" id="pSym" checked> رموز</label><button class="btn btn1" onclick="gp()">ولّد وانسخ</button><div class="result" id="pOut" style="word-break:break-all;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='qrcode'){h=`<h3>📱 QR Code</h3><input id="qrIn" placeholder="نص أو رابط"><button class="btn btn1" onclick="$('qrOut').innerHTML='<img src=https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent($('qrIn').value)+'>'">ولّد</button><div class="result" id="qrOut" style="text-align:center;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='timer'){h=`<h3>⏱️ مؤقت</h3><div class="row"><input id="tM" type="number" placeholder="دقائق" value="1"><input id="tS" type="number" placeholder="ثواني" value="0"></div><div class="row"><button class="btn btn1" onclick="st()">▶️</button><button class="btn btn2" onclick="clearInterval(timerInt);$('tOut').textContent='⏹️';">⏹️</button></div><div class="result" id="tOut" style="font-size:2rem;text-align:center;">00:00</div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='percent'){h=`<h3>💯 نسبة مئوية</h3><input id="pV" type="number" placeholder="الرقم"><input id="pP" type="number" placeholder="النسبة %"><div class="row"><button class="btn btn1" onclick="$('pOut').textContent='النتيجة: '+($('pV').value*$('pP').value/100).toFixed(2)">احسب</button><button class="btn btn2" onclick="$('pOut').textContent='النسبة: '+($('pP').value/$('pV').value*100).toFixed(2)+'%'">عكس</button></div><div class="result" id="pOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='bmi'){h=`<h3>⚖️ BMI</h3><input id="bW" type="number" placeholder="وزن (كغم)"><input id="bH" type="number" placeholder="طول (م) مثال:1.75"><button class="btn btn1" onclick="bmi()">احسب</button><div class="result" id="bOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='age'){h=`<h3>🎂 حاسبة العمر</h3><input type="date" id="aD"><button class="btn btn1" onclick="age()">احسب</button><div class="result" id="aOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='loan'){h=`<h3>🏦 حاسبة القرض</h3><input id="lA" type="number" placeholder="مبلغ"><input id="lR" type="number" placeholder="فائدة %"><input id="lY" type="number" placeholder="سنوات"><button class="btn btn1" onclick="loan()">احسب</button><div class="result" id="lOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='discount'){h=`<h3>🏷️ خصم</h3><input id="dP" type="number" placeholder="سعر"><input id="dD" type="number" placeholder="خصم %"><button class="btn btn1" onclick="disc()">احسب</button><div class="result" id="dOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='tip'){h=`<h3>💰 بقشيش</h3><input id="tipA" type="number" placeholder="مبلغ"><select id="tipP"><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option><option value="20">20%</option></select><input id="tipS" type="number" placeholder="أشخاص" value="1"><button class="btn btn1" onclick="tip()">احسب</button><div class="result" id="tipOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='words'){h=`<h3>📝 عداد كلمات</h3><textarea id="wIn" rows="4" placeholder="نص..."></textarea><button class="btn btn1" onclick="wc()">حلل</button><div class="result" id="wOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='crypto'){h=`<h3>₿ عملات رقمية</h3><div class="result" id="crOut">جاري التحميل...</div><button class="btn btn1" onclick="cr()">تحديث</button><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='colors'){h=`<h3>🎨 مولد ألوان</h3><button class="btn btn1" onclick="col()">ولّد</button><div id="colBox" style="width:80px;height:80px;border-radius:12px;margin:10px auto;"></div><div class="result" id="colOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='dice'){h=`<h3>🎲 نرد</h3><select id="dS"><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="20">20</option></select><button class="btn btn1" onclick="$('dOut').textContent=Math.floor(Math.random()*parseInt($('dS').value))+1">ارمي</button><div class="result" id="dOut" style="font-size:3rem;text-align:center;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='names'){h=`<h3>🏷️ مولد أسماء</h3><button class="btn btn1" onclick="const n=['نور','لين','سما','فارس','آدم','جود'];$('nOut').textContent=n[Math.floor(Math.random()*6)]">ولّد</button><div class="result" id="nOut" style="font-size:1.4rem;text-align:center;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='url'){h=`<h3>🔗 اختصار رابط</h3><input id="urlIn" placeholder="https://..."><button class="btn btn1" onclick="url()">اختصر</button><div class="result" id="urlOut"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='base64'){h=`<h3>📦 Base64</h3><textarea id="b64In" rows="3" placeholder="نص..."></textarea><div class="row"><button class="btn btn1" onclick="$('b64Out').textContent=btoa($('b64In').value)">🔒 تشفير</button><button class="btn btn2" onclick="try{$('b64Out').textContent=atob($('b64In').value)}catch(e){$('b64Out').textContent='خطأ'}">🔓 فك</button></div><div class="result" id="b64Out" style="word-break:break-all;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                else if(t==='hash'){h=`<h3>#️⃣ SHA-256 Hash</h3><textarea id="hIn" rows="3" placeholder="نص..."></textarea><button class="btn btn1" onclick="hash()">ولّد</button><div class="result" id="hOut" style="word-break:break-all;"></div><button class="btn btn2" onclick="$('modal').classList.remove('active')">✕</button>`;}
+                modalBox.innerHTML=h;modal.classList.add('active');
+                if(t==='crypto')cr();
+                if(t==='timer'){$('tOut').textContent='00:00';clearInterval(timerInt);}
+            }));
 
-            if (Notification.permission === 'default') Notification.requestPermission();
+            window.$=id=>document.getElementById(id);
+            window.cv=()=>{const a=parseFloat($('cvA').value),f=$('cvF').value,t=$('cvT').value;const r=getRate(f,t);if(r)$('cvOut').innerHTML=`<b>${a} ${f} = ${(a*r).toFixed(4)} ${t}</b><br><small>1 ${f} = ${r.toFixed(4)} ${t}</small>`;};
+            window.ut=()=>{const v=parseFloat($('uV').value),t=$('uT').value;const c={'km-m':v*0.621,'m-km':v*1.609,'kg-lb':v*2.205,'lb-kg':v*0.454,'c-f':v*9/5+32,'f-c':(v-32)*5/9};$('uOut').textContent=`= ${c[t]?.toFixed(4)||v}`;};
+            window.gp=()=>{const l=parseInt($('pLen').value)||16;let ch='abcdefghijklmnopqrstuvwxyz';if($('pUp')?.checked)ch+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';if($('pNum')?.checked)ch+='0123456789';if($('pSym')?.checked)ch+='!@#$%^&*';let p='';for(let i=0;i<l;i++)p+=ch[Math.floor(Math.random()*ch.length)];$('pOut').textContent=p;navigator.clipboard.writeText(p);toastMsg('🔐 تم النسخ');};
+            window.st=()=>{clearInterval(timerInt);let m=parseInt($('tM').value)||0,s=parseInt($('tS').value)||0;let total=m*60+s;if(total<=0)return;timerInt=setInterval(()=>{if(total<=0){clearInterval(timerInt);$('tOut').textContent='⏰ انتهى!';toastMsg('انتهى المؤقت');if(Notification.permission==='granted')new Notification('انتهى المؤقت!');return;}total--;$('tOut').textContent=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;},1000);};
+            window.bmi=()=>{const w=parseFloat($('bW').value),h=parseFloat($('bH').value);if(!w||!h)return;const b=w/(h*h);let s=b<18.5?'نقص':b<25?'طبيعي':b<30?'زيادة':'سمنة';$('bOut').innerHTML=`<b>BMI: ${b.toFixed(1)}</b> - ${s}`;};
+            window.age=()=>{const d=$('aD').value;if(!d)return;const b=new Date(d),n=new Date();let y=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))y--;$('aOut').innerHTML=`<b>${y} سنة</b>`;};
+            window.loan=()=>{const a=parseFloat($('lA').value),r=parseFloat($('lR').value)/1200,y=parseFloat($('lY').value)*12;if(!a||!r||!y)return;const m=a*r*Math.pow(1+r,y)/(Math.pow(1+r,y)-1);$('lOut').innerHTML=`شهري: <b>${m.toFixed(2)}</b><br>إجمالي: <b>${(m*y).toFixed(2)}</b>`;};
+            window.disc=()=>{const p=parseFloat($('dP').value),d=parseFloat($('dD').value);if(!p||!d)return;const s=p*d/100;$('dOut').innerHTML=`خصم: <b>${s.toFixed(2)}</b><br>بعد: <b>${(p-s).toFixed(2)}</b>`;};
+            window.tip=()=>{const a=parseFloat($('tipA').value),p=parseFloat($('tipP').value),s=parseInt($('tipS').value)||1;if(!a)return;const t=a*p/100;$('tipOut').innerHTML=`بقشيش: <b>${t.toFixed(2)}</b><br>للشخص: <b>${((a+t)/s).toFixed(2)}</b>`;};
+            window.wc=()=>{const t=$('wIn').value.trim();if(!t)return;const w=t.split(/\s+/).filter(x=>x).length;$('wOut').innerHTML=`<b>${w}</b> كلمة | <b>${t.length}</b> حرف | ⏱️ ~${Math.ceil(w/200)}د`;};
+            window.cr=async()=>{try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');const d=await r.json();$('crOut').innerHTML=`₿ بيتكوين: <b>$${d.bitcoin.usd.toLocaleString()}</b><br>Ξ إيثيريوم: <b>$${d.ethereum.usd.toLocaleString()}</b>`;}catch(e){$('crOut').textContent='فشل التحميل';}};
+            window.col=()=>{const c='#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');$('colBox').style.background=c;$('colOut').innerHTML=`HEX: ${c}<br>RGB: (${parseInt(c.slice(1,3),16)},${parseInt(c.slice(3,5),16)},${parseInt(c.slice(5,7),16)})`;navigator.clipboard.writeText(c);toastMsg('تم النسخ');};
+            window.url=async()=>{const u=$('urlIn').value.trim();if(!u)return;try{const r=await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(u)}`);const t=await r.text();$('urlOut').innerHTML=`<a href="${t}" target="_blank">${t}</a>`;navigator.clipboard.writeText(t);toastMsg('تم النسخ');}catch(e){$('urlOut').textContent='فشل';}};
+            window.hash=async()=>{const t=$('hIn').value;if(!t)return;const e=new TextEncoder().encode(t);const b=await crypto.subtle.digest('SHA-256',e);$('hOut').textContent=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');};
+
+            if(Notification.permission==='default')Notification.requestPermission();
             fetchRates();
         })();
     </script>
