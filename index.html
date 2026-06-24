@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المساعد الذكي الأسطوري - Ultimate AI Chat</title>
+    <title>المساعد الذكي الأسطوري - Ultimate AI Chat v4.0</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -52,7 +52,6 @@
             line-height:1.6;
             transition:background var(--transition),color var(--transition);
         }
-
         .splash {
             position:fixed;top:0;left:0;width:100%;height:100%;
             background:var(--bg);z-index:999;display:flex;
@@ -63,7 +62,6 @@
         .splash h1 { font-size:3rem;animation:bounceIn 0.6s; }
         @keyframes bounceIn { 0%{transform:scale(0);} 50%{transform:scale(1.2);} 100%{transform:scale(1);} }
         .splash p { color:var(--text-secondary);margin-top:10px; }
-
         .navbar {
             background:var(--surface);border-bottom:1px solid var(--border);
             padding:0 14px;display:flex;align-items:center;justify-content:space-between;
@@ -88,7 +86,6 @@
             font-size:0.55rem;width:16px;height:16px;border-radius:50%;
             display:flex;align-items:center;justify-content:center;
         }
-
         .status-bar {
             background:var(--surface);border-bottom:1px solid var(--border);
             padding:3px 14px;display:flex;align-items:center;justify-content:space-between;
@@ -96,7 +93,16 @@
         }
         .status-dot { width:7px;height:7px;border-radius:50%;background:var(--online);display:inline-block;margin-left:3px; }
         .status-dot.offline { background:var(--offline); }
-
+        .rates-ticker {
+            display:flex;gap:8px;overflow-x:auto;padding:2px 0;font-size:0.6rem;
+            white-space:nowrap;
+        }
+        .rate-item {
+            background:var(--primary-light);padding:2px 6px;border-radius:8px;
+            display:flex;align-items:center;gap:3px;
+        }
+        .rate-item .up { color:var(--success); }
+        .rate-item .down { color:var(--danger); }
         .chat-container {
             flex:1;max-width:900px;width:100%;margin:0 auto;
             padding:10px 12px;display:flex;flex-direction:column;overflow:hidden;
@@ -108,7 +114,6 @@
         .messages-area::-webkit-scrollbar { width:5px; }
         .messages-area::-webkit-scrollbar-track { background:transparent; }
         .messages-area::-webkit-scrollbar-thumb { background:#cbd5e1;border-radius:20px; }
-
         .message { display:flex;gap:7px;animation:fadeIn 0.35s ease;max-width:88%; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
         .message.user { align-self:flex-end;flex-direction:row-reverse; }
@@ -138,8 +143,6 @@
         }
         .bubble strong { color:var(--primary); }
         .bubble h3 { font-size:1rem;color:var(--primary);margin:6px 0; }
-        .bubble ul,.bubble ol { margin:4px 16px; }
-
         .message-actions {
             display:flex;gap:2px;margin-top:3px;opacity:0;
             transition:opacity 0.2s;flex-wrap:wrap;
@@ -150,10 +153,6 @@
             padding:2px 5px;border-radius:3px;cursor:pointer;font-size:0.6rem;transition:all 0.2s;
         }
         .msg-action:hover { background:rgba(0,0,0,0.12);color:var(--text); }
-        .msg-action.fav.active { background:rgba(245,158,11,0.2);color:var(--star); }
-        .msg-action.rate-up.active { color:var(--success); }
-        .msg-action.rate-down.active { color:var(--danger); }
-
         .typing-indicator { display:flex;gap:4px;padding:8px 12px;align-self:flex-start; }
         .typing-indicator .dot {
             width:6px;height:6px;border-radius:50%;background:#94a3b8;
@@ -163,7 +162,6 @@
         .typing-indicator .dot:nth-child(2){animation-delay:0.2s;}
         .typing-indicator .dot:nth-child(3){animation-delay:0.4s;}
         @keyframes bounce { 0%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-8px);} }
-
         .suggestions { display:flex;gap:5px;flex-wrap:wrap;padding:5px 0;justify-content:center; }
         .sug-btn {
             background:var(--surface);border:1px solid var(--border);color:var(--text);
@@ -177,8 +175,6 @@
             padding:3px 8px;border-radius:10px;cursor:pointer;font-size:0.65rem;
             font-family:inherit;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
         }
-        .hist-btn:hover { background:var(--primary-light);color:var(--primary); }
-
         .input-row {
             background:var(--surface);border:1px solid var(--border);border-radius:24px;
             display:flex;align-items:center;padding:3px 3px 3px 14px;margin-top:6px;
@@ -205,7 +201,6 @@
         .mic-btn:hover { background:var(--primary);color:white; }
         .mic-btn.recording { background:var(--danger);color:white;animation:pulse 1s infinite; }
         @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
-
         .search-bar {
             display:none;padding:5px 12px;background:var(--surface);
             border-bottom:1px solid var(--border);gap:5px;align-items:center;
@@ -215,11 +210,6 @@
             flex:1;border:1px solid var(--border);border-radius:16px;padding:5px 10px;
             font-family:inherit;font-size:0.78rem;background:var(--bg);color:var(--text);
         }
-        .search-bar button {
-            background:var(--primary);color:white;border:none;padding:4px 10px;
-            border-radius:12px;cursor:pointer;font-family:inherit;font-size:0.68rem;
-        }
-
         .modal {
             display:none;position:fixed;top:0;left:0;width:100%;height:100%;
             background:rgba(0,0,0,0.6);z-index:200;justify-content:center;align-items:center;
@@ -234,22 +224,17 @@
             background:var(--primary);color:white;border:none;padding:8px 16px;
             border-radius:16px;cursor:pointer;font-family:inherit;margin:2px;font-size:0.78rem;
         }
-        .modal-box button.close-btn { background:#cbd5e1;color:#1e293b; }
-
         .toast {
             position:fixed;bottom:60px;left:50%;transform:translateX(-50%) translateY(100px);
             background:#1e293b;color:white;padding:9px 20px;border-radius:22px;
             font-size:0.78rem;z-index:300;opacity:0;transition:all 0.3s;pointer-events:none;
         }
         .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
-
         .footer {
             text-align:center;padding:10px;font-size:0.7rem;color:var(--text-secondary);
             border-top:1px solid var(--border);background:var(--surface);
         }
         .footer span { font-weight:600;color:var(--primary); }
-        .footer a { color:var(--primary);text-decoration:none;margin:0 4px; }
-
         @media (max-width:600px) {
             .chat-container { padding:6px 5px; }
             .message { max-width:96%; }
@@ -261,9 +246,7 @@
     </style>
 </head>
 <body>
-
-    <div class="splash"><h1>🤖</h1><p>المساعد الذكي الأسطوري</p><p style="font-size:0.8rem;">+100 ميزة في 3 صفحات</p></div>
-
+    <div class="splash"><h1>🤖</h1><p>المساعد الذكي الأسطوري v4.0</p><p style="font-size:0.8rem;">أسعار حية + 120 ميزة</p></div>
     <nav class="navbar">
         <div class="nav-brand">🤖 الأسطوري</div>
         <div class="nav-links">
@@ -276,43 +259,39 @@
             <button class="nav-icon" id="historyBtn" title="سجل">🕐<span class="badge" id="historyBadge">0</span></button>
         </div>
     </nav>
-
     <div class="status-bar" id="statusBar">
         <span><span class="status-dot" id="statusDot"></span> <span id="statusText">متصل</span></span>
-        <span id="statsInfo">📊 0 رسالة</span>
+        <div class="rates-ticker" id="ratesTicker">⏳ جاري تحميل الأسعار...</div>
         <span id="clockDisplay"></span>
     </div>
-
     <div class="search-bar" id="searchBar">
-        <input type="text" id="searchInput" placeholder="🔍 ابحث...">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث في المحادثة...">
         <button id="searchPrevBtn">▲</button>
         <button id="searchNextBtn">▼</button>
         <button id="searchCloseBtn">✕</button>
         <span id="searchCount" style="font-size:0.65rem;"></span>
     </div>
-
     <div class="chat-container">
         <div class="messages-area" id="messagesArea"></div>
         <div class="history-bar" id="historyBar"></div>
         <div class="suggestions" id="suggestionsArea">
             <button class="sug-btn" data-q="ما هو الذكاء الاصطناعي؟">🧠 AI</button>
             <button class="sug-btn" data-q="كيف أتعلم البرمجة؟">💻 برمجة</button>
-            <button class="sug-btn" data-q="/convert 100 USD to IQD">💱 عملات</button>
+            <button class="sug-btn" data-q="/rates">💱 أسعار اليوم</button>
             <button class="sug-btn" data-q="/calc 25% من 500">🔢 حاسبة</button>
             <button class="sug-btn" data-q="/weather بغداد">🌤️ طقس</button>
             <button class="sug-btn" data-q="/joke">😂 نكتة</button>
         </div>
         <div class="input-row">
-            <textarea id="userInput" rows="1" placeholder="اكتب سؤالك... /help للأوامر"></textarea>
+            <textarea id="userInput" rows="1" placeholder="اكتب سؤالك... /help للأوامر | /rates لأسعار الصرف"></textarea>
             <button class="mic-btn" id="micBtn" title="صوت">🎤</button>
             <span id="charCount" style="font-size:0.6rem;color:var(--text-secondary);margin:0 2px;"></span>
             <button class="send-btn" id="sendBtn">➤</button>
         </div>
     </div>
-
     <div class="modal" id="personalityModal">
         <div class="modal-box">
-            <h3>🎭 الشخصية</h3>
+            <h3>🎭 اختر شخصية المساعد</h3>
             <button data-p="default">🤖 افتراضي</button><button data-p="friend">😊 صديق</button>
             <button data-p="teacher">👨‍🏫 أستاذ</button><button data-p="expert">💼 خبير</button>
             <button data-p="chef">👨‍🍳 شيف</button><button data-p="doctor">🩺 طبيب</button>
@@ -320,9 +299,7 @@
             <br><br><button class="close-btn" onclick="document.getElementById('personalityModal').classList.remove('active')">إغلاق</button>
         </div>
     </div>
-
     <div class="toast" id="toast"></div>
-
     <footer class="footer" id="footerBar">
         © <span>أحمد الجابري - المطور</span> |
         <a href="#" onclick="document.getElementById('personalityModal').classList.add('active');return false;">🎭</a>
@@ -336,11 +313,11 @@
             const $=id=>document.getElementById(id);
             const messagesArea=$('messagesArea'),userInput=$('userInput'),sendBtn=$('sendBtn');
             const darkModeBtn=$('darkModeBtn'),statusDot=$('statusDot'),statusText=$('statusText');
-            const statsInfo=$('statsInfo'),clockDisplay=$('clockDisplay'),toast=$('toast');
-            const charCount=$('charCount'),micBtn=$('micBtn'),searchBar=$('searchBar');
-            const searchInput=$('searchInput'),searchCount=$('searchCount'),historyBar=$('historyBar');
-            const historyBadge=$('historyBadge'),focusModeBtn=$('focusModeBtn');
-            const statusBar=$('statusBar'),footerBar=$('footerBar'),suggestionsArea=$('suggestionsArea');
+            const clockDisplay=$('clockDisplay'),toast=$('toast'),charCount=$('charCount');
+            const micBtn=$('micBtn'),searchBar=$('searchBar'),searchInput=$('searchInput');
+            const searchCount=$('searchCount'),historyBar=$('historyBar'),historyBadge=$('historyBadge');
+            const focusModeBtn=$('focusModeBtn'),statusBar=$('statusBar'),footerBar=$('footerBar');
+            const suggestionsArea=$('suggestionsArea'),ratesTicker=$('ratesTicker');
 
             let isWaiting=false,isSpeaking=false,synth=window.speechSynthesis;
             let personality=localStorage.getItem('personality')||'default';
@@ -351,22 +328,57 @@
             let ratings=JSON.parse(localStorage.getItem('ratings')||'{}');
             let pinnedMsg=localStorage.getItem('pinnedMsg')||null;
             let isFocusMode=false;
+            let forexRates={};
+            let previousRates={};
 
-            const personalities={
-                default:{name:'افتراضي',emoji:'🤖'},friend:{name:'صديق',emoji:'😊'},
-                teacher:{name:'أستاذ',emoji:'👨‍🏫'},expert:{name:'خبير',emoji:'💼'},
-                chef:{name:'شيف',emoji:'👨‍🍳'},doctor:{name:'طبيب',emoji:'🩺'},
-                poet:{name:'شاعر',emoji:'🎤'},coder:{name:'مبرمج',emoji:'💻'}
-            };
+            const personalities={default:{name:'افتراضي',emoji:'🤖'},friend:{name:'صديق',emoji:'😊'},teacher:{name:'أستاذ',emoji:'👨‍🏫'},expert:{name:'خبير',emoji:'💼'},chef:{name:'شيف',emoji:'👨‍🍳'},doctor:{name:'طبيب',emoji:'🩺'},poet:{name:'شاعر',emoji:'🎤'},coder:{name:'مبرمج',emoji:'💻'}};
 
             function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toast._timeout);toast._timeout=setTimeout(()=>toast.classList.remove('show'),2000);}
             function updateClock(){clockDisplay.textContent=new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
             setInterval(updateClock,1000);updateClock();
-
             function updateOnline(){const o=navigator.onLine;statusDot.classList.toggle('offline',!o);statusText.textContent=o?'متصل':'غير متصل';}
             window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
 
-            function updateStats(){statsInfo.textContent=`📊 ${totalMessages} رسالة`;}updateStats();
+            // ===== أسعار الصرف الحية =====
+            async function fetchForexRates(){
+                try{
+                    const res=await fetch('https://open.er-api.com/v6/latest/USD');
+                    const data=await res.json();
+                    if(data?.rates){
+                        previousRates={...forexRates};
+                        forexRates=data.rates;
+                        updateRatesTicker();
+                    }
+                }catch(e){
+                    // استخدام قيم احتياطية
+                    if(Object.keys(forexRates).length===0){
+                        forexRates={USD:1,EUR:0.92,GBP:0.79,IQD:1310,SAR:3.75,AED:3.67,EGP:47.5,JPY:149.3,CNY:7.24,TRY:30.5};
+                        updateRatesTicker();
+                    }
+                }
+            }
+
+            function updateRatesTicker(){
+                const pairs=[['USD/IQD','IQD'],['USD/SAR','SAR'],['USD/AED','AED'],['USD/EGP','EGP'],['EUR/USD','EUR'],['GBP/USD','GBP']];
+                ratesTicker.innerHTML=pairs.map(([label,code])=>{
+                    const rate=code==='EUR'?(1/forexRates.EUR).toFixed(4):code==='GBP'?(1/forexRates.GBP).toFixed(4):forexRates[code]?.toFixed(2)||'--';
+                    const prev=previousRates[code];
+                    let arrow='';
+                    if(prev&&forexRates[code]){
+                        if(forexRates[code]>prev) arrow=' <span class="up">▲</span>';
+                        else if(forexRates[code]<prev) arrow=' <span class="down">▼</span>';
+                    }
+                    return `<span class="rate-item">${label}: ${rate}${arrow}</span>`;
+                }).join('');
+            }
+
+            fetchForexRates();
+            setInterval(fetchForexRates,60000); // تحديث كل دقيقة
+
+            function getRate(from,to){
+                if(!forexRates[from]||!forexRates[to]) return null;
+                return (1/forexRates[from])*forexRates[to];
+            }
 
             function toggleDark(){document.body.classList.toggle('dark-mode');const d=document.body.classList.contains('dark-mode');darkModeBtn.textContent=d?'☀️':'🌙';localStorage.setItem('darkMode',d?'on':'off');}
             if(localStorage.getItem('darkMode')==='on'){document.body.classList.add('dark-mode');darkModeBtn.textContent='☀️';}
@@ -377,7 +389,6 @@
             searchInput.addEventListener('input',doSearch);
             $('searchPrevBtn').addEventListener('click',()=>navSearch(-1));
             $('searchNextBtn').addEventListener('click',()=>navSearch(1));
-
             function doSearch(){clearHighlights();const q=searchInput.value.trim().toLowerCase();if(!q){searchMatches=[];searchCount.textContent='';return;}searchMatches=[];messagesArea.querySelectorAll('.bubble').forEach(b=>{if(b.textContent.toLowerCase().includes(q))searchMatches.push(b);});searchIdx=searchMatches.length>0?0:-1;searchCount.textContent=searchMatches.length?`${searchIdx+1}/${searchMatches.length}`:'0';highlight();}
             function navSearch(d){if(!searchMatches.length)return;searchIdx=(searchIdx+d+searchMatches.length)%searchMatches.length;highlight();searchMatches[searchIdx].scrollIntoView({behavior:'smooth',block:'center'});searchCount.textContent=`${searchIdx+1}/${searchMatches.length}`;}
             function highlight(){searchMatches.forEach(b=>b.style.outline='none');if(searchIdx>=0&&searchMatches[searchIdx])searchMatches[searchIdx].style.outline='2px solid var(--primary)';}
@@ -395,32 +406,47 @@
 
             function formatMarkdown(text){let t=text;t=t.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>');t=t.replace(/`([^`]+)`/g,'<code>$1</code>');t=t.replace(/^### (.+)/gm,'<h3>$1</h3>');t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');t=t.replace(/^\- (.+)/gm,'<ul><li>$1</li></ul>');t=t.replace(/^(\d+)\. (.+)/gm,'<ol><li>$2</li></ol>');return t;}
 
-            function addMsg(content,sender,save=true){const d=document.createElement('div');d.className=`message ${sender}`;if(pinnedMsg===content)d.classList.add('pinned');const av=document.createElement('div');av.className='avatar';av.textContent=sender==='user'?'👤':(personalities[personality]?.emoji||'🤖');const bw=document.createElement('div');bw.className='bubble-wrapper';const b=document.createElement('div');b.className='bubble';b.innerHTML=formatMarkdown(content);bw.appendChild(b);const act=document.createElement('div');act.className='message-actions';[['📋','نسخ',(btn)=>copyText(content,btn)],['🔊','قراءة',(btn)=>speakText(content,btn)],['🌐','ترجمة',(btn)=>translateText(content,btn)],['⭐','مفضلة',(btn)=>{toggleBookmark(content);btn.textContent=isBookmarked(content)?'★':'☆';btn.classList.toggle('fav');btn.classList.toggle('active',isBookmarked(content));}],['👍','مفيد',(btn)=>{rateMessage(content,'up');btn.classList.toggle('rate-up');btn.classList.toggle('active');}],['👎','غير مفيد',(btn)=>{rateMessage(content,'down');btn.classList.toggle('rate-down');btn.classList.toggle('active');}],['📌','تثبيت',(btn)=>pinMessage(btn)]].forEach(([ico,ttl,fn])=>{const btn=document.createElement('button');btn.className='msg-action';if(ico==='⭐'&&isBookmarked(content)){btn.classList.add('fav','active');btn.textContent='★';}else btn.textContent=ico;btn.title=ttl;btn.addEventListener('click',()=>fn(btn));act.appendChild(btn);});bw.appendChild(act);d.appendChild(av);d.appendChild(bw);messagesArea.appendChild(d);scrollDown();if(save){totalMessages++;localStorage.setItem('totalMessages',totalMessages.toString());updateStats();saveHistory();}}
+            function addMsg(content,sender,save=true){const d=document.createElement('div');d.className=`message ${sender}`;if(pinnedMsg===content)d.classList.add('pinned');const av=document.createElement('div');av.className='avatar';av.textContent=sender==='user'?'👤':(personalities[personality]?.emoji||'🤖');const bw=document.createElement('div');bw.className='bubble-wrapper';const b=document.createElement('div');b.className='bubble';b.innerHTML=formatMarkdown(content);bw.appendChild(b);const act=document.createElement('div');act.className='message-actions';[['📋','نسخ',(btn)=>copyText(content,btn)],['🔊','قراءة',(btn)=>speakText(content,btn)],['🌐','ترجمة',(btn)=>translateText(content,btn)],['⭐','مفضلة',(btn)=>{toggleBookmark(content);btn.textContent=isBookmarked(content)?'★':'☆';}],['👍','مفيد',(btn)=>rateMessage(content,'up')],['👎','غير مفيد',(btn)=>rateMessage(content,'down')],['📌','تثبيت',(btn)=>pinMessage(btn)]].forEach(([ico,ttl,fn])=>{const btn=document.createElement('button');btn.className='msg-action';btn.textContent=ico;btn.title=ttl;btn.addEventListener('click',()=>fn(btn));act.appendChild(btn);});bw.appendChild(act);d.appendChild(av);d.appendChild(bw);messagesArea.appendChild(d);scrollDown();if(save){totalMessages++;localStorage.setItem('totalMessages',totalMessages.toString());saveHistory();}}
 
             function showTyping(){const el=document.createElement('div');el.className='message ai';el.id='typingIndicator';el.innerHTML=`<div class="avatar">🤖</div><div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;messagesArea.appendChild(el);scrollDown();}
             function hideTyping(){const el=$('typingIndicator');if(el)el.remove();}
             function scrollDown(){messagesArea.scrollTop=messagesArea.scrollHeight;}
             function autoResize(){userInput.style.height='auto';userInput.style.height=Math.min(userInput.scrollHeight,90)+'px';}
             function saveHistory(){const msgs=[];messagesArea.querySelectorAll('.message').forEach(m=>{const b=m.querySelector('.bubble');if(b)msgs.push({sender:m.classList.contains('user')?'user':'ai',text:b.textContent});});localStorage.setItem('chatHistory',JSON.stringify(msgs));}
-            function loadHistory(){const s=localStorage.getItem('chatHistory');if(s){try{messagesArea.innerHTML='';JSON.parse(s).forEach(m=>addMsg(m.text,m.sender,false));}catch(e){localStorage.removeItem('chatHistory');}}if(messagesArea.children.length===0){addMsg('مرحباً! 👋 أنا المساعد الأسطوري. اسألني أي شيء أو استخدم الأوامر: /calc, /convert, /weather, /joke, /time, /date, /idea, /name, /help', 'ai', false);}scrollDown();}
-
+            function loadHistory(){const s=localStorage.getItem('chatHistory');if(s){try{messagesArea.innerHTML='';JSON.parse(s).forEach(m=>addMsg(m.text,m.sender,false));}catch(e){localStorage.removeItem('chatHistory');}}if(messagesArea.children.length===0){addMsg('مرحباً! 👋 أنا المساعد الأسطوري v4.0.\n💱 أسعار الصرف تتحدث كل دقيقة!\n📋 /help | /rates | /convert | /calc | /weather | /joke | /news | /time', 'ai', false);}scrollDown();}
             function addToSearchHistory(q){if(!searchHistory.includes(q)){searchHistory.unshift(q);if(searchHistory.length>10)searchHistory.pop();localStorage.setItem('searchHistory',JSON.stringify(searchHistory));}renderHistory();}
             function renderHistory(){historyBadge.textContent=searchHistory.length;historyBar.innerHTML=searchHistory.map(h=>`<button class="hist-btn" title="${h}">${h.substring(0,30)}</button>`).join('');document.querySelectorAll('.hist-btn').forEach((btn,i)=>{btn.addEventListener('click',()=>handleSend(searchHistory[i]));});}
 
             function handleInternal(msg){const m=msg.trim();
-                if(m.startsWith('/calc ')){const e=m.replace('/calc ','');try{return `🔢 ${e} = ${new Function(`return (${e})`)()}`;}catch(ex){return '⚠️ خطأ';}}
-                if(m.startsWith('/convert ')){const p=m.replace('/convert ','').split(' ');const a=parseFloat(p[0]),f=p[1]?.toUpperCase(),t=p[3]?.toUpperCase()||p[2]?.toUpperCase();const r={USD:1,EUR:0.92,GBP:0.79,IQD:1310,SAR:3.75,AED:3.67,EGP:47.5};if(r[f]&&r[t])return `💱 ${a} ${f} = ${((a/r[f])*r[t]).toFixed(2)} ${t}`;return '⚠️ عملات: USD,EUR,GBP,IQD,SAR,AED,EGP';}
-                if(m.startsWith('/weather '))return `🌤️ الطقس: ${m.replace('/weather ','')} - يحتاج API. جرب تبحث في الويب.`;
+                if(m==='/rates'){
+                    let reply='💱 **أسعار الصرف الحية:**\n';
+                    reply+=`دولار أمريكي (USD):\n`;
+                    reply+=`• IQD: ${forexRates.IQD?.toFixed(2)||'--'}\n`;
+                    reply+=`• SAR: ${forexRates.SAR?.toFixed(2)||'--'}\n`;
+                    reply+=`• AED: ${forexRates.AED?.toFixed(2)||'--'}\n`;
+                    reply+=`• EGP: ${forexRates.EGP?.toFixed(2)||'--'}\n`;
+                    reply+=`• EUR: ${forexRates.EUR?.toFixed(4)||'--'}\n`;
+                    reply+=`• GBP: ${forexRates.GBP?.toFixed(4)||'--'}\n`;
+                    reply+=`• JPY: ${forexRates.JPY?.toFixed(2)||'--'}\n`;
+                    reply+=`• TRY: ${forexRates.TRY?.toFixed(2)||'--'}\n`;
+                    reply+=`\n🕐 آخر تحديث: ${new Date().toLocaleTimeString('ar-SA')}`;
+                    reply+=`\n⏱️ يتحدث كل دقيقة تلقائياً`;
+                    return reply;
+                }
+                if(m.startsWith('/calc ')){const e=m.replace('/calc ','');try{return `🔢 ${e} = ${new Function(`return (${e})`)()}`;}catch(ex){return '⚠️ خطأ في الحساب';}}
+                if(m.startsWith('/convert ')){const p=m.replace('/convert ','').split(' ');const a=parseFloat(p[0]),f=p[1]?.toUpperCase(),t=p[3]?.toUpperCase()||p[2]?.toUpperCase();const rate=getRate(f,t);if(rate)return `💱 ${a} ${f} = ${(a*rate).toFixed(4)} ${t}\n📊 السعر: 1 ${f} = ${rate.toFixed(4)} ${t}`;return '⚠️ عملات مدعومة: USD,EUR,GBP,IQD,SAR,AED,EGP,JPY,TRY,CNY';}
+                if(m.startsWith('/weather ')){return `🌤️ الطقس في ${m.replace('/weather ','')}: جرب تبحث في الويب عن "weather ${m.replace('/weather ','')}"`;}
                 if(m.startsWith('/time'))return `🕐 ${new Date().toLocaleString('ar-SA')}`;
                 if(m.startsWith('/date'))return `📅 ${new Date().toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
-                if(m.startsWith('/joke')){const j=['ليش المبرمج ماينام؟ bugs','HTML بدون CSS جسم بدون روح','أفضل لغة؟ اللي تدفعلك'];return `😂 ${j[Math.floor(Math.random()*j.length)]}`;}
-                if(m.startsWith('/idea')){const i=['تطبيق تعلم لغات','موقع وصفات','بوت تحليل','متجر منتجات','لعبة تعليمية'];return `💡 ${i[Math.floor(Math.random()*i.length)]}`;}
-                if(m.startsWith('/name')){const n=['نور','لين','سما','فارس','آدم','جود','ليان'];return `🏷️ ${n[Math.floor(Math.random()*n.length)]}`;}
-                if(m.startsWith('/help'))return `📋 الأوامر:\n/calc [معادلة]\n/convert [مبلغ] [من] to [الى]\n/weather [مدينة]\n/time\n/date\n/joke\n/idea\n/name\n/define [كلمة]\n/lyrics [أغنية]\n/diet\n/cv`;
+                if(m.startsWith('/joke')){const j=['ليش المبرمج ماينام؟ لأنه دايم في bugs','HTML بدون CSS جسم بدون روح','أفضل لغة برمجة؟ اللي تدفعلك فاتورة كهرباء','واحد قال لصاحبه: عندي فوبيا من الـ JavaScript... قاله ليش؟ قال: لأنه دايم undefined!'];return `😂 ${j[Math.floor(Math.random()*j.length)]}`;}
+                if(m.startsWith('/idea')){const i=['تطبيق ذكاء اصطناعي للتعلم','موقع مقارنة أسعار','بوت تحليل بيانات','منصة تواصل للمبرمجين','متجر منتجات رقمية'];return `💡 ${i[Math.floor(Math.random()*i.length)]}`;}
+                if(m.startsWith('/name')){const n=['نور','لين','سما','رغد','فارس','آدم','جود','ليان','ياسر','هبة'];return `🏷️ ${n[Math.floor(Math.random()*n.length)]}`;}
+                if(m.startsWith('/news')){return `📰 جاري جلب آخر الأخبار... جرب تبحث في الويب عن "آخر الأخبار"`;}
+                if(m.startsWith('/help'))return `📋 **الأوامر المتاحة:**\n💱 /rates - أسعار الصرف الحية\n💱 /convert [مبلغ] [من] to [الى]\n🔢 /calc [معادلة]\n🌤️ /weather [مدينة]\n🕐 /time\n📅 /date\n😂 /joke\n💡 /idea\n🏷️ /name\n📰 /news\n📖 /define [كلمة]\n🍳 /diet\n💼 /cv\n📝 /notes - عرض الملاحظات`;
                 if(m.startsWith('/define '))return `📖 "${m.replace('/define ','')}": جرب تبحث في الويب.`;
-                if(m.startsWith('/lyrics '))return `🎵 "${m.replace('/lyrics ','')}": جرب تبحث في الويب.`;
-                if(m.startsWith('/diet'))return `🍳 نظام 1800 سعرة:\n🥗 فطور: بيض + خبز\n🍗 غداء: دجاج + رز\n🥦 عشاء: خضار + سمك`;
-                if(m.startsWith('/cv'))return `💼 نموذج CV:\n👤 الاسم:\n🎓 التعليم:\n💼 الخبرات:\n🔧 المهارات:\n📞 التواصل:`;
+                if(m.startsWith('/diet'))return `🍳 **نظام غذائي 1800 سعرة:**\n🥗 فطور: بيض مسلوق + خبز أسمر\n🍗 غداء: صدر دجاج + رز بني\n🥦 عشاء: خضار مشكلة + سمك\n🍎 وجبة خفيفة: تفاحة`;
+                if(m.startsWith('/cv'))return `💼 **نموذج CV:**\n👤 الاسم:\n🎓 التعليم:\n💼 الخبرات:\n🔧 المهارات:\n📞 التواصل:`;
+                if(m.startsWith('/notes')){const n=JSON.parse(localStorage.getItem('quickNotes')||'[]');if(!n.length)return '📝 لا توجد ملاحظات. استخدم صفحة الأدوات لإضافة ملاحظات.';return '📝 **ملاحظاتك:**\n'+n.map((x,i)=>`${i+1}. ${x.text}`).join('\n');}
                 return null;
             }
 
@@ -428,26 +454,23 @@
                 try{const r=await fetch(`https://ar.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&format=json&origin=*&srlimit=2`);const d=await r.json();if(d?.query?.search?.length){const pid=d.query.search[0].pageid;const er=await fetch(`https://ar.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&pageids=${pid}&format=json&origin=*`);const ed=await er.json();const page=ed?.query?.pages?.[pid];if(page?.extract?.trim().length>20){let t=page.extract.trim().replace(/\s+/g,' ');if(t.length>500)t=t.substring(0,500)+'...';return `${t}\n\n📚 ويكيبيديا`;}}}catch(e){}
                 try{const r=await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1`);const d=await r.json();let t=d.AbstractText?.trim()||'';if(!t&&d.RelatedTopics?.length)t=d.RelatedTopics[0].Text||'';if(t.length>10){t=t.replace(/\s+/g,' ');if(t.length>500)t=t.substring(0,500)+'...';return `${t}\n\n📚 DuckDuckGo`;}}catch(e){}
                 for(const ins of ['https://searx.be','https://search.sapti.me']){try{const r=await fetch(`${ins}/search?q=${encodeURIComponent(q)}&format=json&language=auto`);if(!r.ok)continue;const d=await r.json();if(d?.results?.length){let reply='';for(let i=0;i<Math.min(d.results.length,3);i++){const x=d.results[i];const s=(x.content||x.snippet||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').substring(0,180);reply+=`📌 ${x.title||''}\n${s}\n🔗 ${x.url||''}\n\n`;}if(reply.trim())return `${reply.trim()}\n\n📚 بحث الويب`;}}catch(e){continue;}}
-                return '⚠️ لم أجد نتائج. تأكد من الإنترنت.';
+                return '⚠️ لم أجد نتائج. تأكد من الإنترنت، أو استخدم /help للأوامر المتاحة.';
             }
 
             async function handleSend(msgText){const msg=msgText||userInput.value.trim();if(!msg||isWaiting)return;isWaiting=true;sendBtn.disabled=true;userInput.disabled=true;if(!msgText){userInput.value='';userInput.style.height='auto';charCount.textContent='';}addToSearchHistory(msg);addMsg(msg,'user');showTyping();const reply=await searchAPI(msg);hideTyping();addMsg(reply,'ai');isWaiting=false;sendBtn.disabled=false;userInput.disabled=false;userInput.focus();}
 
             let recognition=null;if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.lang='ar-SA';recognition.interimResults=false;recognition.onresult=e=>{const t=e.results[0][0].transcript;userInput.value=t;handleSend(t);};recognition.onerror=()=>{micBtn.classList.remove('recording');};recognition.onend=()=>{micBtn.classList.remove('recording');};}
             micBtn.addEventListener('click',()=>{if(!recognition){showToast('⚠️ غير مدعوم');return;}if(micBtn.classList.contains('recording')){recognition.stop();micBtn.classList.remove('recording');}else{recognition.start();micBtn.classList.add('recording');showToast('🎤 تكلم...');}});
-
             sendBtn.addEventListener('click',()=>handleSend());
             userInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}});
             userInput.addEventListener('input',()=>{autoResize();charCount.textContent=`${userInput.value.length}/3000`;});
             document.querySelectorAll('.sug-btn').forEach(b=>b.addEventListener('click',()=>handleSend(b.dataset.q)));
-
             document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='k'){e.preventDefault();searchBar.classList.toggle('active');if(searchBar.classList.contains('active'))searchInput.focus();}if(e.ctrlKey&&e.key==='d'){e.preventDefault();toggleDark();}if(e.ctrlKey&&e.key==='l'){e.preventDefault();clearAll();}});
-
             document.querySelectorAll('#personalityModal [data-p]').forEach(btn=>{btn.addEventListener('click',()=>{personality=btn.dataset.p;localStorage.setItem('personality',personality);$('personalityModal').classList.remove('active');showToast(`🎭 ${personalities[personality].name}`);});});
 
             function exportChat(){const msgs=[];messagesArea.querySelectorAll('.message').forEach(m=>{const b=m.querySelector('.bubble');if(b)msgs.push({s:m.classList.contains('user')?'أنت':'AI',t:b.textContent});});let c='سجل المحادثة\n'+'='.repeat(50)+'\n\n';msgs.forEach(m=>{c+=`[${m.s}]:\n${m.t}\n${'-'.repeat(30)}\n\n`;});c+='\n© أحمد الجابري';const blob=new Blob([c],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`chat-${new Date().toISOString().slice(0,10)}.txt`;a.click();showToast('📄 تصدير');}
             function shareChat(){const msgs=[];messagesArea.querySelectorAll('.message').forEach(m=>{const b=m.querySelector('.bubble');if(b)msgs.push(b.textContent);});const text=msgs.join('\n\n---\n\n');if(navigator.share){navigator.share({title:'محادثة',text:text}).catch(()=>{});}else{copyText(text,{textContent:''});showToast('🔗 نسخ للمشاركة');}}
-            function clearAll(){if(confirm('مسح كل شيء؟')){messagesArea.innerHTML='';localStorage.removeItem('chatHistory');totalMessages=0;localStorage.setItem('totalMessages','0');updateStats();addMsg('مرحباً! 👋','ai',false);showToast('🗑️ مسح');}}
+            function clearAll(){if(confirm('مسح كل شيء؟')){messagesArea.innerHTML='';localStorage.removeItem('chatHistory');totalMessages=0;localStorage.setItem('totalMessages','0');addMsg('مرحباً! 👋','ai',false);showToast('🗑️ مسح');}}
 
             window.exportChat=exportChat;window.shareChat=shareChat;window.clearAll=clearAll;
             loadHistory();renderHistory();userInput.focus();
