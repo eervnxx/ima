@@ -9,7 +9,7 @@
 // ==================== الإعدادات والتكوين ====================
 const CONFIG = {
     // مفتاح API
-    API_KEY: 'AQ.Ab8RN6IGZRMkT7ra-jIZIa1hIfs-MqcT_8telpN0hoF2XS2TCQ',
+    API_KEY: 'AIzaSyBc0HqGg0FZXKxPRVGZJXyGdxXGPWJNlPY',
     
     // إعدادات API
     API: {
