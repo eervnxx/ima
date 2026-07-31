@@ -1,7 +1,7 @@
 // ==================== VACT - الإعدادات ====================
 // © 2026 VACT | تطوير: أحمد الجابري
-const GEMINI_API_KEY = 'AQ.Ab8RN6JaNYBiyr2ajVKuOEtqTqooUOjp-k2x_P-0Ohu8c-JMsw';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const GEMINI_API_KEY = 'AQ.Ab8RN6IG';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // ==================== المتغيرات العامة ====================
 let conversationHistory = [];
@@ -62,8 +62,8 @@ async function sendMessage() {
         saveCurrentChat();
     } catch (error) {
         removeTypingIndicator();
-        addMessage('bot', '❌ عذراً، حدث خطأ في الاتصال. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.');
-        console.error('Error:', error);
+        console.error('Error details:', error);
+        addMessage('bot', '❌ عذراً، حدث خطأ: ' + error.message);
     } finally {
         document.getElementById('sendBtn').disabled = false;
     }
@@ -88,14 +88,10 @@ async function callGeminiAPI(userMessage) {
             topP: 0.95,
             topK: 40,
             maxOutputTokens: userPreferences.style === 'concise' ? 500 : 2048,
-        },
-        safetySettings: [
-            {
-                category: "HARM_CATEGORY_HARASSMENT",
-                threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-        ]
+        }
     };
+    
+    console.log('Sending request to Gemini...');
     
     const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
@@ -105,12 +101,16 @@ async function callGeminiAPI(userMessage) {
         body: JSON.stringify(requestBody)
     });
     
+    console.log('Response status:', response.status);
+    
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || 'فشل الاتصال بـ Gemini API');
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`خطأ ${response.status}: ${errorText.substring(0, 100)}`);
     }
     
     const data = await response.json();
+    console.log('Response received successfully');
     return data.candidates[0].content.parts[0].text;
 }
 
@@ -138,7 +138,7 @@ function buildSystemPrompt() {
         prompt += `المستخدم مهتم بـ ${userPreferences.interest}. `;
     }
     
-    prompt += 'أجب باللغة العربية. استخدم تنسيق markdown للتنظيم. تم تطويرك بواسطة أحمد الجابري.';
+    prompt += 'أجب باللغة العربية. استخدم تنسيق markdown للتنظيم.';
     
     return prompt;
 }
