@@ -3,13 +3,12 @@
  * @version 2.0.0
  * @author أحمد الجابري
  * @copyright 2026 VACT. All rights reserved.
- * @description تطبيق محادثة ذكي يستخدم Gemini API
  */
 
 // ==================== الإعدادات والتكوين ====================
 const CONFIG = {
     // مفتاح API
-    API_KEY: 'AIzaSyBc0HqGg0FZXKxPRVGZJXyGdxXGPWJNlPY',
+    API_KEY: 'AQ.Ab8RN6JTedhHhrcHxpsKHT_qveZLPdsoTz9YadOLfBjiEm4hHQ',
     
     // إعدادات API
     API: {
@@ -71,15 +70,6 @@ class StorageManager {
     static remove(key) {
         try {
             localStorage.removeItem(key);
-            return true;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    static clear() {
-        try {
-            localStorage.clear();
             return true;
         } catch (error) {
             return false;
@@ -198,38 +188,69 @@ class GeminiAPI {
         this.apiKey = CONFIG.API_KEY;
         this.baseUrl = CONFIG.API.BASE_URL;
         this.model = CONFIG.API.MODEL;
-    }
-
-    get endpoint() {
-        return `${this.baseUrl}/models/${this.model}:generateContent`;
+        this.endpoints = [
+            `${this.baseUrl}/models/${this.model}:generateContent`,
+            `https://generativelanguage.googleapis.com/v1/models/${this.model}:generateContent`,
+        ];
     }
 
     async sendMessage(userMessage, conversationHistory, preferences) {
         const contents = this.buildContents(conversationHistory, userMessage, preferences);
         const requestBody = this.buildRequestBody(contents, preferences);
 
-        try {
-            const response = await fetch(`${this.endpoint}?key=${this.apiKey}`, {
+        // تجربة كل نقاط النهاية المتاحة
+        let lastError = null;
+        
+        for (const endpoint of this.endpoints) {
+            try {
+                const response = await this.makeRequest(endpoint, requestBody);
+                if (response.ok) {
+                    const data = await response.json();
+                    return this.extractResponse(data);
+                } else {
+                    const error = await this.parseError(response);
+                    if (error.type === 'auth_error') {
+                        lastError = error;
+                        continue; // نجرب نقطة النهاية التالية
+                    }
+                    throw error;
+                }
+            } catch (error) {
+                if (error instanceof VACTError && error.type !== 'auth_error') {
+                    throw error;
+                }
+                lastError = error;
+            }
+        }
+
+        // إذا وصلنا هنا، كل المحاولات فشلت
+        throw lastError || new VACTError('فشل الاتصال بجميع نقاط النهاية.', 'network');
+    }
+
+    async makeRequest(endpoint, requestBody) {
+        // تجربة المصادقة في البارامتر
+        let response = await fetch(`${endpoint}?key=${this.apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            // تجربة المصادقة في الهيدر
+            response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'x-goog-api-key': this.apiKey,
                 },
                 body: JSON.stringify(requestBody),
             });
-
-            if (!response.ok) {
-                await this.handleErrorResponse(response);
-            }
-
-            const data = await response.json();
-            return this.extractResponse(data);
-        } catch (error) {
-            if (error instanceof VACTError) throw error;
-            throw new VACTError(
-                'تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت.',
-                'network'
-            );
         }
+
+        return response;
     }
 
     buildContents(conversationHistory, userMessage, preferences) {
@@ -338,7 +359,7 @@ class GeminiAPI {
         return candidate.content.parts[0].text;
     }
 
-    async handleErrorResponse(response) {
+    async parseError(response) {
         const status = response.status;
         let errorMessage = 'حدث خطأ غير معروف.';
         let errorType = 'api_error';
@@ -346,9 +367,7 @@ class GeminiAPI {
         try {
             const errorData = await response.json();
             errorMessage = errorData.error?.message || errorMessage;
-        } catch (e) {
-            // لا يمكن قراءة الجسم
-        }
+        } catch (e) {}
 
         switch (status) {
             case 400:
@@ -362,11 +381,11 @@ class GeminiAPI {
                 break;
             case 404:
                 errorType = 'not_found';
-                errorMessage = 'النموذج غير موجود. تحقق من اسم النموذج.';
+                errorMessage = 'النموذج غير موجود.';
                 break;
             case 429:
                 errorType = 'quota_exceeded';
-                errorMessage = 'تم تجاوز الحد المسموح. انتظر قليلاً ثم حاول مجدداً.';
+                errorMessage = 'تم تجاوز الحد المسموح. انتظر قليلاً.';
                 break;
             case 500:
             case 502:
@@ -376,7 +395,7 @@ class GeminiAPI {
                 break;
         }
 
-        throw new VACTError(errorMessage, errorType);
+        return new VACTError(errorMessage, errorType);
     }
 }
 
@@ -384,7 +403,6 @@ class GeminiAPI {
 class UIManager {
     constructor() {
         this.elements = {};
-        this.toastTimeout = null;
     }
 
     init() {
@@ -457,9 +475,7 @@ class UIManager {
             <div class="message-avatar">🤖</div>
             <div class="message-content">
                 <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </div>
             </div>
         `;
@@ -514,10 +530,8 @@ class UIManager {
             }
 
             const date = new Date(chat.date).toLocaleDateString('ar-SA', {
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
+                month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit',
             });
 
             item.innerHTML = `
@@ -525,28 +539,20 @@ class UIManager {
                 <div class="history-item-date">${date}</div>
                 <div class="history-item-actions">
                     <button onclick="event.stopPropagation(); VACT.Chat.deleteChat('${chat.id}')" 
-                            title="حذف المحادثة">🗑️</button>
+                            title="حذف">🗑️</button>
                 </div>
             `;
 
-            item.addEventListener('click', () => {
-                VACT.Chat.loadChat(chat.id);
-            });
-
+            item.addEventListener('click', () => VACT.Chat.loadChat(chat.id));
             historyList.appendChild(item);
         });
     }
 
     formatMarkdown(text) {
         if (typeof marked !== 'undefined') {
-            marked.setOptions({
-                breaks: true,
-                gfm: true,
-            });
+            marked.setOptions({ breaks: true, gfm: true });
             return marked.parse(text);
         }
-        
-        // Fallback basic formatting
         return this.escapeHtml(text)
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -562,12 +568,7 @@ class UIManager {
     updateCharCount() {
         const count = this.elements.userInput.value.length;
         this.elements.charCount.textContent = `${count}/4000`;
-        
-        if (count > 3500) {
-            this.elements.charCount.style.color = 'var(--warning)';
-        } else {
-            this.elements.charCount.style.color = 'var(--text-muted)';
-        }
+        this.elements.charCount.style.color = count > 3500 ? 'var(--warning)' : 'var(--text-muted)';
     }
 
     autoResize() {
@@ -585,20 +586,12 @@ class UIManager {
     setConnectionStatus(status, message) {
         const statusEl = this.elements.connectionStatus;
         const textEl = statusEl.querySelector('.status-text');
-        
         statusEl.classList.remove('error');
         
         switch (status) {
-            case 'connected':
-                textEl.textContent = 'متصل';
-                break;
-            case 'error':
-                statusEl.classList.add('error');
-                textEl.textContent = message || 'خطأ';
-                break;
-            case 'processing':
-                textEl.textContent = 'جاري المعالجة...';
-                break;
+            case 'connected': textEl.textContent = 'متصل'; break;
+            case 'error': statusEl.classList.add('error'); textEl.textContent = message || 'خطأ'; break;
+            case 'processing': textEl.textContent = 'جاري المعالجة...'; break;
         }
     }
 
@@ -643,11 +636,7 @@ class VACTApp {
         this.chatManager = new ChatManager();
         this.api = new GeminiAPI();
         this.ui = new UIManager();
-        this.preferences = {
-            name: '',
-            interest: '',
-            style: 'detailed',
-        };
+        this.preferences = { name: '', interest: '', style: 'detailed' };
     }
 
     init() {
@@ -671,12 +660,8 @@ class VACTApp {
         this.ui.setConnectionStatus('processing');
 
         this.ui.addMessage('user', message);
-        this.chatManager.conversationHistory.push({
-            role: 'user',
-            content: message,
-        });
+        this.chatManager.conversationHistory.push({ role: 'user', content: message });
         this.ui.clearInput();
-
         this.ui.showTypingIndicator();
 
         try {
@@ -688,10 +673,7 @@ class VACTApp {
 
             this.ui.removeTypingIndicator();
             this.ui.addMessage('assistant', response);
-            this.chatManager.conversationHistory.push({
-                role: 'assistant',
-                content: response,
-            });
+            this.chatManager.conversationHistory.push({ role: 'assistant', content: response });
 
             this.ui.setConnectionStatus('connected');
             this.chatManager.saveCurrentChat();
@@ -704,7 +686,7 @@ class VACTApp {
             if (error instanceof VACTError) {
                 switch (error.type) {
                     case 'auth_error':
-                        errorMessage = '🔑 مفتاح API غير صالح. تأكد من المفتاح.';
+                        errorMessage = '🔑 المفتاح غير صالح. تأكد من المفتاح أو جدد الصلاحية.';
                         break;
                     case 'quota_exceeded':
                         errorMessage = '⏳ تم تجاوز الحد المسموح. انتظر قليلاً.';
@@ -835,12 +817,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('beforeunload', () => {
     VACT.chatManager.saveCurrentChat();
-});
-
-window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
-});
-
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
 });
