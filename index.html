@@ -3,94 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VACT - المساعد الذكي | Gemini AI</title>
+    <title>VACT - المساعد الذكي</title>
     <meta name="author" content="أحمد الجابري">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; height: 100vh; display: flex; flex-direction: column; }
+        
+        .header { background: #1e293b; padding: 15px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #334155; }
+        .header h1 { background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; }
+        
+        .chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .message { display: flex; gap: 10px; align-items: flex-start; }
+        .message.user { flex-direction: row-reverse; }
+        .message-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #334155; flex-shrink: 0; }
+        .message.user .message-avatar { background: #7c3aed; }
+        .message-content { background: #1e293b; padding: 10px 14px; border-radius: 12px; max-width: 70%; line-height: 1.6; }
+        .message.user .message-content { background: #6d28d9; }
+        
+        .input-area { background: #1e293b; padding: 15px 20px; border-top: 1px solid #334155; display: flex; gap: 10px; }
+        .input-area textarea { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #f1f5f9; padding: 12px; font-size: 16px; resize: none; font-family: Arial; }
+        .input-area button { background: #7c3aed; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .input-area button:active { background: #5b21b6; }
+        
+        .typing-indicator { display: flex; gap: 5px; padding: 5px; }
+        .typing-indicator span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: bounce 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+        
+        .footer { background: #1e293b; padding: 8px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #334155; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <span class="logo-icon">⚡</span>
-                    <h2>VACT</h2>
-                </div>
-                <button class="toggle-sidebar" id="toggleSidebarBtn">☰</button>
-            </div>
-            
-            <div class="user-info-section">
-                <h3>👤 تخصيص التجربة</h3>
-                <div class="input-group">
-                    <label for="userName">الاسم</label>
-                    <input type="text" id="userName" placeholder="اسمك (اختياري)">
-                </div>
-                <div class="input-group">
-                    <label for="userInterest">الاهتمامات</label>
-                    <input type="text" id="userInterest" placeholder="مثلاً: برمجة، تصميم">
-                </div>
-                <div class="input-group">
-                    <label for="responseStyle">أسلوب الرد</label>
-                    <select id="responseStyle">
-                        <option value="detailed">📝 ردود مفصلة</option>
-                        <option value="concise">⚡ ردود مختصرة</option>
-                        <option value="creative">🎨 أسلوب إبداعي</option>
-                        <option value="professional">💼 أسلوب مهني</option>
-                    </select>
-                </div>
-                <button id="savePrefsBtn" class="save-btn">💾 حفظ التفضيلات</button>
-            </div>
-            
-            <div class="chat-history">
-                <h3>💬 المحادثات</h3>
-                <button id="newChatBtn" class="new-chat-btn">✨ محادثة جديدة</button>
-                <div id="historyList" class="history-list"></div>
-            </div>
-            
-            <div class="developer-credit">
-                <p>© 2026 <strong>VACT</strong></p>
-                <p>تطوير: <strong>أحمد الجابري</strong></p>
-            </div>
-        </aside>
-        
-        <main class="chat-area">
-            <header class="chat-header">
-                <button class="menu-btn" id="menuBtn">☰</button>
-                <div class="logo">
-                    <span class="logo-icon">⚡</span>
-                    <h1>VACT</h1>
-                </div>
-                <div class="status" id="connectionStatus">
-                    <span class="status-dot"></span>
-                    <span class="status-text">متصل</span>
-                </div>
-            </header>
-            
-            <div class="messages-container" id="messages">
-                <div class="welcome-message">
-                    <div class="bot-avatar">🤖</div>
-                    <div class="message-content">
-                        <h2>مرحباً بك في VACT! ⚡</h2>
-                        <p>المساعد الذكي المدعوم بـ <strong>Gemini AI</strong></p>
-                        <p style="margin-top:10px;color:#f59e0b;">✍️ اكتب رسالة واضغط Enter أو زر الإرسال</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="input-area">
-                <div class="input-container">
-                    <textarea id="userInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
-                    <button id="clearChatBtn" class="clear-btn">🗑️</button>
-                    <button id="exportChatBtn" class="export-btn">📥</button>
-                    <button id="sendBtn" class="send-btn" style="background:#7c3aed;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:16px;">إرسال 📤</button>
-                </div>
-            </div>
-            
-            <div class="footer-bar">
-                <p>© 2026 <strong>VACT</strong> | تطوير: <strong>أحمد الجابري</strong></p>
-            </div>
-        </main>
+    
+    <div class="header">
+        <span style="font-size:24px;">⚡</span>
+        <h1>VACT</h1>
+        <span style="margin-right:auto;font-size:12px;color:#94a3b8;">تطوير: أحمد الجابري</span>
     </div>
     
-    <script src="script.js"></script>
+    <div class="chat-area" id="messages">
+        <div class="message assistant">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+                <strong>مرحباً بك في VACT! ⚡</strong><br>
+                اكتب رسالتك واضغط إرسال
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-area">
+        <textarea id="userInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
+        <button id="sendBtn">إرسال 📤</button>
+    </div>
+    
+    <div class="footer">
+        © 2026 <strong>VACT</strong> | تطوير: <strong>أحمد الجابري</strong> | مدعوم بـ Gemini AI
+    </div>
+
+    <script>
+        var API_KEY = 'AQ.Ab8RN6K0T5DTdTlv5H-GP3ni-BRwLGGxohfzkRxb3_5MMKdQJQ';
+        var API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        var PROXY_URL = 'https://api.allorigins.win/raw?url=';
+        var conversationHistory = [];
+        var isProcessing = false;
+        
+        var sendBtn = document.getElementById('sendBtn');
+        var userInput = document.getElementById('userInput');
+        var messagesDiv = document.getElementById('messages');
+        
+        console.log('🚀 VACT جاهز');
+        
+        sendBtn.addEventListener('click', function() {
+            console.log('زر الإرسال تم الضغط عليه');
+            sendMessage();
+        });
+        
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                console.log('Enter تم الضغط على');
+                sendMessage();
+            }
+        });
+        
+        function addMessage(role, text) {
+            var div = document.createElement('div');
+            div.className = 'message ' + (role === 'user' ? 'user' : 'assistant');
+            var avatar = role === 'user' ? '👤' : '🤖';
+            var formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            div.innerHTML = '<div class="message-avatar">' + avatar + '</div>' +
+                           '<div class="message-content">' + formatted + '</div>';
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function showTyping() {
+            var div = document.createElement('div');
+            div.className = 'message assistant';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<div class="message-avatar">🤖</div>' +
+                '<div class="message-content"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function removeTyping() {
+            var el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+        
+        async function sendMessage() {
+            if (isProcessing) {
+                console.log('جاري المعالجة...');
+                return;
+            }
+            
+            var message = userInput.value.trim();
+            if (!message) {
+                console.log('الرسالة فارغة');
+                return;
+            }
+            
+            console.log('إرسال: ' + message);
+            
+            isProcessing = true;
+            sendBtn.textContent = '⏳';
+            sendBtn.disabled = true;
+            
+            addMessage('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            userInput.value = '';
+            
+            showTyping();
+            
+            try {
+                var contents = [
+                    { role: 'user', parts: [{ text: 'أنت VACT مساعد ذكي. أجب بالعربية.' }] },
+                    { role: 'model', parts: [{ text: 'حسناً.' }] }
+                ];
+                
+                conversationHistory.slice(-10).forEach(function(m) {
+                    contents.push({
+                        role: m.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: m.content }]
+                    });
+                });
+                
+                var targetUrl = API_URL + '?key=' + API_KEY;
+                var proxyUrl = PROXY_URL + encodeURIComponent(targetUrl);
+                
+                var response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: contents,
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                    })
+                });
+                
+                console.log('حالة الاستجابة: ' + response.status);
+                
+                if (!response.ok) {
+                    var errText = await response.text();
+                    throw new Error('خطأ ' + response.status + ': ' + errText.substring(0, 100));
+                }
+                
+                var data = await response.json();
+                var reply = data.candidates[0].content.parts[0].text;
+                
+                removeTyping();
+                addMessage('assistant', reply);
+                conversationHistory.push({ role: 'assistant', content: reply });
+                
+            } catch(e) {
+                removeTyping();
+                console.error('خطأ:', e.message);
+                addMessage('assistant', '❌ ' + e.message);
+            } finally {
+                isProcessing = false;
+                sendBtn.textContent = 'إرسال 📤';
+                sendBtn.disabled = false;
+            }
+        }
+        
+        console.log('✅ جاهز - اكتب رسالة واضغط إرسال');
+    </script>
 </body>
 </html>
