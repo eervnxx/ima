@@ -4,22 +4,15 @@
  * @copyright 2026 VACT
  */
 
-import { GoogleGenAI } from '@google/genai';
-
 const API_KEY = 'AQ.Ab8RN6K0T5DTdTlv5H-GP3ni-BRwLGGxohfzkRxb3_5MMKdQJQ';
+const API_MODEL = 'gemini-2.0-flash';
 
-let ai;
-let chat;
+// استخدام وكيل CORS مجاني
+const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/' + API_MODEL + ':generateContent';
+
 let conversationHistory = [];
 let isProcessing = false;
-
-// تهيئة Gemini
-try {
-    ai = new GoogleGenAI({ apiKey: API_KEY });
-    console.log('✅ تم الاتصال بـ Gemini API');
-} catch(e) {
-    console.error('❌ فشل الاتصال:', e.message);
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -36,6 +29,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const savePrefsBtn = document.getElementById('savePrefsBtn');
     const charCount = document.getElementById('charCount');
+    const connectionStatus = document.getElementById('connectionStatus');
+    
+    function setStatus(text, isError) {
+        if (!connectionStatus) return;
+        const dot = connectionStatus.querySelector('.status-dot');
+        const txt = connectionStatus.querySelector('.status-text');
+        txt.textContent = text;
+        if (isError) {
+            dot.style.background = '#ef4444';
+            txt.style.color = '#ef4444';
+        } else {
+            dot.style.background = '#10b981';
+            txt.style.color = '#10b981';
+        }
+    }
     
     function toggleSidebar() {
         sidebar.classList.toggle('collapsed');
@@ -52,13 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 style: document.getElementById('responseStyle').value
             };
             localStorage.setItem('vact_preferences', JSON.stringify(prefs));
-            alert('✅ تم حفظ التفضيلات!');
+            showToast('✅ تم حفظ التفضيلات!');
         });
     }
     
     function resetChat() {
         conversationHistory = [];
-        chat = null;
     }
     
     if (newChatBtn) {
@@ -105,8 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const avatar = role === 'user' ? '👤' : '🤖';
         let formatted = text
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-            .replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/`(.+?)`/g, '<code>$1</code>');
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/`(.+?)`/g, '<code>$1</code>')
+            .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
         div.innerHTML = '<div class="message-avatar">' + avatar + '</div>' +
                        '<div class="message-content">' + formatted + '</div>';
         messagesDiv.appendChild(div);
@@ -129,14 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (el) el.remove();
     }
     
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f1f5f9;padding:10px 20px;border-radius:8px;z-index:999;font-size:14px;border:1px solid #334155;';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 2500);
+    }
+    
     async function sendMessage() {
-        if (isProcessing || !ai) return;
+        if (isProcessing) return;
         const message = userInput.value.trim();
         if (!message) return;
         
         isProcessing = true;
         sendBtn.disabled = true;
         sendBtn.innerHTML = '<span>⏳</span>';
+        setStatus('جاري الإرسال...', false);
         
         addMessage('user', message);
         conversationHistory.push({ role: 'user', content: message });
@@ -146,30 +164,72 @@ document.addEventListener('DOMContentLoaded', function() {
         showTyping();
         
         try {
-            // إنشاء محادثة جديدة إذا ما موجودة
-            if (!chat) {
-                chat = ai.chats.create({
-                    model: 'gemini-2.0-flash',
-                    config: {
-                        systemInstruction: 'أنت VACT، مساعد ذكي ومفيد. أجب دائماً باللغة العربية.',
-                        temperature: 0.7,
-                        maxOutputTokens: 2048,
-                    }
+            const contents = [];
+            
+            // إضافة system prompt
+            contents.push({
+                role: 'user',
+                parts: [{ text: 'أنت VACT، مساعد ذكي ومفيد. أجب دائماً باللغة العربية.' }]
+            });
+            contents.push({
+                role: 'model',
+                parts: [{ text: 'حسناً، أنا VACT. سأجيب بالعربية.' }]
+            });
+            
+            // إضافة آخر 10 رسائل من التاريخ
+            const recentHistory = conversationHistory.slice(-10);
+            recentHistory.forEach(function(m) {
+                contents.push({
+                    role: m.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: m.content }]
                 });
+            });
+            
+            const requestBody = {
+                contents: contents,
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 2048
+                }
+            };
+            
+            // بناء الرابط مع المفتاح
+            const targetUrl = API_URL + '?key=' + API_KEY;
+            const proxyUrl = PROXY_URL + encodeURIComponent(targetUrl);
+            
+            console.log('🔄 جاري الاتصال...');
+            
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error('خطأ ' + response.status + ': ' + errorText.substring(0, 100));
             }
             
-            // إرسال الرسالة
-            const result = await chat.sendMessage({ message: message });
-            const botReply = result.text;
+            const data = await response.json();
+            
+            if (!data.candidates || data.candidates.length === 0) {
+                throw new Error('لم يتم الحصول على رد');
+            }
+            
+            const botReply = data.candidates[0].content.parts[0].text;
             
             removeTyping();
             addMessage('assistant', botReply);
             conversationHistory.push({ role: 'assistant', content: botReply });
+            setStatus('متصل', false);
             
         } catch (error) {
             removeTyping();
             console.error('❌', error.message);
             addMessage('assistant', '❌ ' + error.message);
+            setStatus('خطأ', true);
         } finally {
             isProcessing = false;
             sendBtn.disabled = false;
@@ -185,7 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // تحميل التفضيلات
     const saved = localStorage.getItem('vact_preferences');
     if (saved) {
         try {
@@ -199,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.VACT = {
         Chat: { sendMessage, newChat: function() { resetChat(); messagesDiv.innerHTML = ''; } },
         UI: { toggleSidebar, clearChat: function() { resetChat(); } },
-        savePreferences: function() { alert('✅ تم الحفظ!'); }
+        savePreferences: function() { showToast('✅ تم الحفظ!'); }
     };
     
     console.log('✅ VACT جاهز');
