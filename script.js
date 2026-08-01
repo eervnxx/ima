@@ -4,8 +4,7 @@
  * @copyright 2026 VACT
  */
 
-// ========== الإعدادات ==========
-var API_KEY = 'AQ.Ab8RN6JTedhHhrcHxpsKHT_qveZLPdsoTz9YadOLfBjiEm4hHQ';
+var API_KEY = 'AQ.Ab8RN6K0T5DTdTlv5H-GP3ni-BRwLGGxohfzkRxb3_5MMKdQJQ';
 var API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 var conversationHistory = [];
@@ -113,85 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (el) el.remove();
     }
     
-    // ========== تجربة كل طرق المصادقة ==========
-    async function tryAllMethods(contents) {
-        var methods = [
-            // طريقة 1: مفتاح في الرابط
-            {
-                url: API_URL + '?key=' + API_KEY,
-                headers: { 'Content-Type': 'application/json' }
-            },
-            // طريقة 2: مفتاح في x-goog-api-key
-            {
-                url: API_URL,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': API_KEY
-                }
-            },
-            // طريقة 3: Bearer token
-            {
-                url: API_URL,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + API_KEY
-                }
-            },
-            // طريقة 4: api_key في الجسم
-            {
-                url: API_URL,
-                headers: { 'Content-Type': 'application/json' },
-                bodyOverride: true
-            }
-        ];
-        
-        var lastError = null;
-        
-        for (var i = 0; i < methods.length; i++) {
-            try {
-                var method = methods[i];
-                var body = JSON.stringify({
-                    contents: contents,
-                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-                });
-                
-                // طريقة 4: إضافة api_key داخل الجسم
-                if (method.bodyOverride) {
-                    body = JSON.stringify({
-                        contents: contents,
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
-                        api_key: API_KEY
-                    });
-                }
-                
-                console.log('🔄 تجربة طريقة ' + (i + 1) + '...');
-                
-                var response = await fetch(method.url, {
-                    method: 'POST',
-                    headers: method.headers,
-                    body: body
-                });
-                
-                console.log('📥 طريقة ' + (i + 1) + ': Status ' + response.status);
-                
-                if (response.ok) {
-                    console.log('✅ نجحت طريقة ' + (i + 1));
-                    return await response.json();
-                }
-                
-                var errorData = null;
-                try { errorData = await response.json(); } catch(e) {}
-                lastError = errorData ? errorData.error.message : 'Status ' + response.status;
-                
-            } catch(e) {
-                lastError = e.message;
-            }
-        }
-        
-        throw new Error(lastError || 'فشلت جميع طرق الاتصال');
-    }
-    
-    // ========== دالة الإرسال ==========
     async function sendMessage() {
         if (isProcessing) return;
         var message = userInput.value.trim();
@@ -223,10 +143,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
-            var data = await tryAllMethods(contents);
+            // نجرب الطريقتين الرئيسيتين فقط
+            var response;
+            
+            // طريقة 1: مفتاح في الرابط
+            try {
+                console.log('🔄 تجربة طريقة x-goog-api-key...');
+                response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        contents: contents,
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                    })
+                });
+                
+                if (!response.ok) throw new Error('فشل');
+                console.log('✅ نجحت طريقة x-goog-api-key');
+            } catch(e1) {
+                console.log('🔄 تجربة طريقة ?key=...');
+                response = await fetch(API_URL + '?key=' + API_KEY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: contents,
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                    })
+                });
+                console.log('📥 حالة الاستجابة: ' + response.status);
+            }
+            
+            if (!response.ok) {
+                var errorText = '';
+                try {
+                    var errorData = await response.json();
+                    errorText = errorData.error.message;
+                } catch(e) {
+                    errorText = 'HTTP ' + response.status;
+                }
+                throw new Error(errorText);
+            }
+            
+            var data = await response.json();
+            var botReply = data.candidates[0].content.parts[0].text;
             
             removeTyping();
-            var botReply = data.candidates[0].content.parts[0].text;
             addMessage('assistant', botReply);
             conversationHistory.push({ role: 'assistant', content: botReply });
             
@@ -249,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // تحميل التفضيلات
     var saved = localStorage.getItem('vact_preferences');
     if (saved) {
         try {
@@ -266,5 +229,5 @@ document.addEventListener('DOMContentLoaded', function() {
         savePreferences: function() { alert('✅ تم الحفظ!'); }
     };
     
-    console.log('✅ VACT جاهز - تجربة ' + 4 + ' طرق اتصال');
+    console.log('✅ VACT جاهز');
 });
