@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VACT - المساعد الذكي | Gemini AI</title>
-    <meta name="description" content="VACT - منصة المساعد الذكي المتطورة">
     <meta name="author" content="أحمد الجابري">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -23,11 +22,11 @@
                 <h3>👤 تخصيص التجربة</h3>
                 <div class="input-group">
                     <label for="userName">الاسم</label>
-                    <input type="text" id="userName" placeholder="اسمك (اختياري)" maxlength="50">
+                    <input type="text" id="userName" placeholder="اسمك (اختياري)">
                 </div>
                 <div class="input-group">
                     <label for="userInterest">الاهتمامات</label>
-                    <input type="text" id="userInterest" placeholder="مثلاً: برمجة، تصميم" maxlength="100">
+                    <input type="text" id="userInterest" placeholder="مثلاً: برمجة، تصميم">
                 </div>
                 <div class="input-group">
                     <label for="responseStyle">أسلوب الرد</label>
@@ -42,12 +41,9 @@
             </div>
             
             <div class="chat-history">
-                <h3>💬 المحادثات السابقة</h3>
-                <button id="newChatBtn" class="new-chat-btn">
-                    <span>✨</span> محادثة جديدة
-                </button>
+                <h3>💬 المحادثات</h3>
+                <button id="newChatBtn" class="new-chat-btn">✨ محادثة جديدة</button>
                 <div id="historyList" class="history-list"></div>
-                <div id="noHistory" class="no-history">لا توجد محادثات سابقة</div>
             </div>
             
             <div class="developer-credit">
@@ -62,13 +58,10 @@
                 <div class="logo">
                     <span class="logo-icon">⚡</span>
                     <h1>VACT</h1>
-                    <span class="logo-subtitle">AI Assistant</span>
                 </div>
-                <div class="header-actions">
-                    <div class="status" id="connectionStatus">
-                        <span class="status-dot"></span>
-                        <span class="status-text">متصل</span>
-                    </div>
+                <div class="status" id="connectionStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">متصل</span>
                 </div>
             </header>
             
@@ -78,51 +71,29 @@
                     <div class="message-content">
                         <h2>مرحباً بك في VACT! ⚡</h2>
                         <p>المساعد الذكي المدعوم بـ <strong>Gemini AI</strong></p>
-                        <ul>
-                            <li>💡 اكتب أي سؤال</li>
-                            <li>📝 اطلب مساعدة في الكتابة</li>
-                            <li>💻 استفسر عن البرمجة</li>
-                        </ul>
                     </div>
                 </div>
             </div>
             
             <div class="input-area">
                 <div class="input-container">
-                    <textarea 
-                        id="userInput" 
-                        placeholder="اكتب رسالتك هنا ثم اضغط Enter..."
-                        rows="1"
-                        maxlength="4000"
-                    ></textarea>
+                    <textarea id="userInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
                     <div class="input-buttons">
-                        <button id="clearChatBtn" class="clear-btn" title="مسح">🗑️</button>
-                        <button id="exportChatBtn" class="export-btn" title="تصدير">📥</button>
+                        <button id="clearChatBtn" class="clear-btn">🗑️</button>
+                        <button id="exportChatBtn" class="export-btn">📥</button>
                         <button id="sendBtn" class="send-btn">
-                            <span>إرسال</span>
-                            <span class="send-icon">📤</span>
+                            <span>إرسال</span> 📤
                         </button>
                     </div>
-                </div>
-                <div class="input-info">
-                    <span class="char-count" id="charCount">0/4000</span>
-                    <span class="shortcut-hint">Enter للإرسال • Shift+Enter لسطر جديد</span>
                 </div>
             </div>
             
             <div class="footer-bar">
-                <p>© 2026 <strong>VACT</strong> | تطوير: <strong>أحمد الجابري</strong> | مدعوم بـ <strong>Gemini AI</strong></p>
+                <p>© 2026 <strong>VACT</strong> | تطوير: <strong>أحمد الجابري</strong></p>
             </div>
         </main>
     </div>
     
-    <script type="importmap">
-    {
-        "imports": {
-            "@google/genai": "https://esm.run/@google/genai"
-        }
-    }
-    </script>
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
