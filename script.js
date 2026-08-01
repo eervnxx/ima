@@ -5,7 +5,7 @@
  */
 
 // ========== الإعدادات ==========
-var API_KEY = 'AQ.Ab8RN6JTedhHhrcHxpsKHT_qveZLPdsoTz9YadOLfBjiEm4hHQ';
+var API_KEY = 'AIzaSyBc0HqGg0FZXKxPRVGZJXyGdxXGPWJNlPY';
 var API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // ========== المتغيرات ==========
@@ -55,6 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== حفظ التفضيلات ==========
     if (savePrefsBtn) {
         savePrefsBtn.addEventListener('click', function() {
+            var name = document.getElementById('userName').value;
+            var interest = document.getElementById('userInterest').value;
+            var style = document.getElementById('responseStyle').value;
+            
+            var prefs = { name: name, interest: interest, style: style };
+            localStorage.setItem('vact_preferences', JSON.stringify(prefs));
             alert('✅ تم حفظ التفضيلات!');
         });
     }
@@ -67,25 +73,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 '<div class="bot-avatar">🤖</div>' +
                 '<div class="message-content"><h2>محادثة جديدة ⚡</h2><p>كيف يمكنني مساعدتك؟</p></div>' +
                 '</div>';
-            console.log('تم إنشاء محادثة جديدة');
         });
     }
     
     // ========== مسح المحادثة ==========
     if (clearChatBtn) {
         clearChatBtn.addEventListener('click', function() {
+            if (conversationHistory.length > 0 && !confirm('مسح المحادثة؟')) return;
             conversationHistory = [];
             messagesDiv.innerHTML = '<div class="welcome-message">' +
                 '<div class="bot-avatar">🤖</div>' +
                 '<div class="message-content"><h2>تم المسح ✅</h2><p>ابدأ محادثة جديدة</p></div>' +
                 '</div>';
-            console.log('تم مسح المحادثة');
         });
     }
     
     // ========== تصدير المحادثة ==========
     if (exportChatBtn) {
         exportChatBtn.addEventListener('click', function() {
+            if (conversationHistory.length === 0) {
+                alert('لا توجد محادثة لتصديرها');
+                return;
+            }
             var text = '📝 سجل محادثة VACT\n© 2026 VACT | أحمد الجابري\n\n';
             for (var i = 0; i < conversationHistory.length; i++) {
                 var role = conversationHistory[i].role === 'user' ? '👤' : '🤖';
@@ -96,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
             a.href = URL.createObjectURL(blob);
             a.download = 'VACT-chat.txt';
             a.click();
-            console.log('تم تصدير المحادثة');
         });
     }
     
@@ -114,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         var avatar = role === 'user' ? '👤' : '🤖';
         
-        // تنسيق النص
         var formatted = text
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -151,55 +158,45 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ========== دالة الإرسال ==========
     async function sendMessage() {
-        if (isProcessing) {
-            console.log('⏳ جاري المعالجة... انتظر');
-            return;
-        }
+        if (isProcessing) return;
         
         var message = userInput.value.trim();
-        if (!message) {
-            console.log('⚠️ الرسالة فارغة');
-            return;
-        }
-        
-        console.log('📤 إرسال: ' + message);
+        if (!message) return;
         
         isProcessing = true;
         sendBtn.disabled = true;
-        sendBtn.innerHTML = '<span>⏳</span>';
+        sendBtn.innerHTML = '<span>⏳ جاري الإرسال...</span>';
         
-        // إظهار رسالة المستخدم
         addMessage('user', message);
         conversationHistory.push({ role: 'user', content: message });
         userInput.value = '';
         if (charCount) charCount.textContent = '0/4000';
+        userInput.style.height = 'auto';
         
-        // مؤشر الكتابة
         showTyping();
         
         try {
-            // بناء المحتوى
             var contents = [];
             
+            // System prompt للمحادثة الجديدة
             if (conversationHistory.length <= 1) {
                 contents.push({
                     role: 'user',
-                    parts: [{ text: 'أنت VACT مساعد ذكي. أجب بالعربية.' }]
+                    parts: [{ text: 'أنت VACT، مساعد ذكي ومفيد. أجب دائماً باللغة العربية.' }]
                 });
                 contents.push({
                     role: 'model',
-                    parts: [{ text: 'حسناً، سأجيب بالعربية.' }]
+                    parts: [{ text: 'حسناً، أنا VACT. سأجيب بالعربية. كيف يمكنني مساعدتك؟' }]
                 });
             }
             
+            // تاريخ المحادثة
             for (var i = 0; i < conversationHistory.length; i++) {
                 contents.push({
                     role: conversationHistory[i].role === 'assistant' ? 'model' : 'user',
                     parts: [{ text: conversationHistory[i].content }]
                 });
             }
-            
-            console.log('🔄 جاري الاتصال بـ Gemini API...');
             
             var response = await fetch(API_URL + '?key=' + API_KEY, {
                 method: 'POST',
@@ -213,20 +210,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
             
-            console.log('📥 حالة الاستجابة: ' + response.status);
-            
             if (!response.ok) {
-                var errorText = 'خطأ ' + response.status;
+                var errorText = '';
                 try {
                     var errorData = await response.json();
                     errorText = errorData.error.message;
-                } catch(e) {}
+                } catch(e) {
+                    errorText = 'HTTP ' + response.status;
+                }
                 throw new Error(errorText);
             }
             
             var data = await response.json();
-            console.log('✅ تم استلام الرد بنجاح');
-            
             var botReply = data.candidates[0].content.parts[0].text;
             
             removeTyping();
@@ -234,8 +229,8 @@ document.addEventListener('DOMContentLoaded', function() {
             conversationHistory.push({ role: 'assistant', content: botReply });
             
         } catch (error) {
-            console.error('❌ خطأ:', error.message);
             removeTyping();
+            console.error('خطأ:', error.message);
             addMessage('assistant', '❌ ' + error.message);
         } finally {
             isProcessing = false;
@@ -245,21 +240,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ========== ربط زر الإرسال ==========
-    sendBtn.addEventListener('click', function() {
-        console.log('🖱️ تم الضغط على زر الإرسال');
-        sendMessage();
-    });
+    sendBtn.addEventListener('click', sendMessage);
     
     // ========== ربط مفتاح Enter ==========
     userInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            console.log('⌨️ تم الضغط على Enter');
             sendMessage();
         }
     });
     
-    // ========== كائن VACT للتوافق مع أي استدعاءات قديمة ==========
+    // ========== تحميل التفضيلات ==========
+    var savedPrefs = localStorage.getItem('vact_preferences');
+    if (savedPrefs) {
+        try {
+            var prefs = JSON.parse(savedPrefs);
+            if (document.getElementById('userName')) document.getElementById('userName').value = prefs.name || '';
+            if (document.getElementById('userInterest')) document.getElementById('userInterest').value = prefs.interest || '';
+            if (document.getElementById('responseStyle')) document.getElementById('responseStyle').value = prefs.style || 'detailed';
+        } catch(e) {}
+    }
+    
+    // ========== كائن VACT للتوافق ==========
     window.VACT = {
         Chat: {
             sendMessage: sendMessage,
@@ -271,7 +273,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     '</div>';
             },
             exportChat: function() {
-                var text = 'سجل محادثة VACT\n\n';
+                if (conversationHistory.length === 0) return;
+                var text = '📝 VACT Chat\n\n';
                 for (var i = 0; i < conversationHistory.length; i++) {
                     text += conversationHistory[i].content + '\n\n';
                 }
@@ -284,16 +287,17 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         UI: {
             toggleSidebar: toggleSidebar,
-            clearChat: function() {
-                conversationHistory = [];
-            }
+            clearChat: function() { conversationHistory = []; }
         },
         savePreferences: function() {
+            var name = document.getElementById('userName').value;
+            var interest = document.getElementById('userInterest').value;
+            var style = document.getElementById('responseStyle').value;
+            localStorage.setItem('vact_preferences', JSON.stringify({ name: name, interest: interest, style: style }));
             alert('✅ تم الحفظ!');
         }
     };
     
-    console.log('✅ جميع الأزرار جاهزة');
-    console.log('💡 جرب كتابة رسالة والضغط على Enter أو زر إرسال');
+    console.log('✅ جميع الأزرار جاهزة للعمل');
     
 });
