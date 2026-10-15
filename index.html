@@ -116,6 +116,9 @@
   @keyframes bellShake { 0%, 80%, 100% { transform: rotate(0deg); } 85% { transform: rotate(-12deg); } 90% { transform: rotate(12deg); } 95% { transform: rotate(-8deg); } }
   .chat-float-btn { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 8px 25px rgba(34,197,94,0.5); }
   .chat-float-btn:hover { box-shadow: 0 12px 35px rgba(34,197,94,0.75); }
+  .whatsapp-float-btn { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); box-shadow: 0 8px 25px rgba(37,211,102,0.5); }
+  .whatsapp-float-btn:hover { box-shadow: 0 12px 35px rgba(37,211,102,0.75); }
+  .whatsapp-float-btn svg { width: 32px; height: 32px; }
   .float-badge { position: absolute; top: -4px; right: -4px; min-width: 26px; height: 26px; background: var(--danger); color: #fff; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; padding: 0 6px; border: 3px solid #fff; animation: pulse 1.5s infinite; }
   .float-badge.hidden { display: none; }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -348,9 +351,10 @@
     .admin-tab { min-width: 80px; font-size: 11.5px; padding: 8px 6px; }
     .popup-notif { width: 92vw; padding: 14px 16px; }
     .days-info { grid-template-columns: 1fr; }
-    .floating-buttons-wrap { bottom: 18px; left: 18px; gap: 10px; }
-    .float-btn { width: 54px; height: 54px; }
-    .float-btn svg { width: 26px; height: 26px; }
+    .floating-buttons-wrap { bottom: 18px; left: 18px; gap: 8px; }
+    .float-btn { width: 50px; height: 50px; }
+    .float-btn svg { width: 24px; height: 24px; }
+    .whatsapp-float-btn svg { width: 26px; height: 26px; }
     .subs-notif-panel, .chat-panel { bottom: 90px; left: 12px; width: calc(100vw - 24px); }
     .save-bar { flex-direction: column; }
     .save-bar .btn { width: 100%; }
@@ -396,7 +400,7 @@ signInAnonymously(auth).then(() => {
 </script>
 </head>
 <body>
- <div class="topbar container">
+<div class="topbar container">
   <div class="brand">
     <svg class="brand-svg" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="46" fill="#1e6fd9" opacity="0.15"/>
@@ -428,7 +432,7 @@ signInAnonymously(auth).then(() => {
 <div id="loadingPage" class="container">
   <div class="loading-container">
     <div class="loading-spinner"></div>
-    <div class="loading-text">جاري التحميل  ...</div>
+    <div class="loading-text">جاري التحميل ..</div>
     <div class="loading-sub" id="loadingStatus">يتم التحقق من الاتصال</div>
   </div>
 </div>
@@ -497,7 +501,7 @@ signInAnonymously(auth).then(() => {
             </div>
             <div class="plan-price"><span>50,000</span> د.ع</div>
           </div>
-          <div class="plan" data-months="2" data-price="90,000" data-days="60" data-lectures="16">
+          <div class="plan" data-months="2" data-price="90000" data-days="60" data-lectures="16">
             <div>
               <div class="plan-months">شهرين</div>
               <div class="plan-sessions">16 محاضرة</div>
@@ -522,7 +526,7 @@ signInAnonymously(auth).then(() => {
 
       <button type="button" class="btn btn-outline" style="width:100%;margin-top:10px" onclick="toggleActiveCheck()">
         <svg class="icon-svg" style="fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        تسجيل دخول بكود موجود
+        تسجيل الدخول بأشتراك فعال 
       </button>
 
       <div id="activeCheckWrap" class="hidden" style="margin-top:12px;padding:16px;background:var(--blue-light);border-radius:12px;border:2px dashed var(--blue)">
@@ -536,7 +540,7 @@ signInAnonymously(auth).then(() => {
     </form>
   </div>
 
-  <div class="footer">جميع الحقوق محفوظة © لدى المطور احمد الجابري </div>
+  <div class="footer">جميع الحقوق محفوظة © لدى المطور احمد الجابري   </div>
 </div>
 
 <!-- ============ شاشة قفل الجهاز ============ -->
@@ -687,6 +691,10 @@ signInAnonymously(auth).then(() => {
 
 <!-- ============ الأزرار العائمة للمشترك ============ -->
 <div class="floating-buttons-wrap hidden" id="floatingButtons">
+  <button id="subsWhatsappBtn" class="float-btn whatsapp-float-btn hidden" onclick="openWhatsapp()" title="تواصل عبر واتساب">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </button>
+  
   <button id="subsChatBtn" class="float-btn chat-float-btn" onclick="toggleChatPanel()" title="التواصل مع الإدارة">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
     <span class="float-badge hidden" id="chatBadge">0</span>
@@ -738,7 +746,7 @@ signInAnonymously(auth).then(() => {
 
 <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
 
-<!-- ============ نافذة دخول الإدارة ============ -->
+<!-- ============ نافذة دخول الإدارة (مع تذكرني) ============ -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <button class="modal-close" onclick="closeSettingsModal()">✕</button>
@@ -755,6 +763,14 @@ signInAnonymously(auth).then(() => {
       <label>كلمة المرور</label>
       <input type="password" id="adminPass" placeholder="••••••••" autocomplete="off">
     </div>
+    
+    <!-- ✅ خيار تذكرني -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px;background:var(--blue-light);border-radius:10px;cursor:pointer" onclick="document.getElementById('rememberMe').click()">
+      <input type="checkbox" id="rememberMe" style="width:20px;height:20px;cursor:pointer;accent-color:var(--blue)" onclick="event.stopPropagation()">
+      <label for="rememberMe" style="font-weight:600;color:var(--blue-dark);font-size:14px;cursor:pointer;margin:0;flex:1">تذكرني على هذا الجهاز</label>
+    </div>
+    <p style="font-size:11.5px;color:#8b9bb4;margin-bottom:14px;text-align:center">سيتم حفظ الدخول لهذا الجهاز فقط حتى تسجل خروج</p>
+    
     <button class="btn btn-blue" style="width:100%" onclick="loginAdmin()">دخول</button>
     <button class="btn btn-primary" style="width:100%;margin-top:8px;background:transparent;color:#5a6c85;border:1.5px solid var(--border)" onclick="closeSettingsModal()">إلغاء</button>
   </div>
@@ -807,6 +823,29 @@ signInAnonymously(auth).then(() => {
     </div>
     <button class="btn btn-blue" style="width:100%" onclick="saveZoomLink()">حفظ الرابط</button>
     <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="clearZoomLink()">حذف الرابط</button>
+  </div>
+</div>
+
+<!-- ✅ نافذة إعدادات الواتساب -->
+<div class="modal-overlay" id="whatsappModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeWhatsappModal()">✕</button>
+    <h3 class="modal-title">
+      <svg class="icon-svg" style="fill:#25D366" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      رقم واتساب للمشتركين
+    </h3>
+    <p style="font-size:13px;color:#5a6c85;margin-bottom:14px;text-align:center">الرقم الذي سيظهر للمشتركين للتواصل عبر واتساب</p>
+    <div class="form-group">
+      <label>رقم الواتساب (بدون + أو مسافات)</label>
+      <input type="tel" id="whatsappNumberInput" placeholder="9647701234567" style="direction:ltr;font-family:'Courier New',monospace" maxlength="15">
+      <div style="font-size:11.5px;color:#8b9bb4;margin-top:5px">اكتب الرقم مع رمز الدولة: 964xxxxxxxxxx</div>
+    </div>
+    <div class="form-group">
+      <label>الرسالة الجاهزة (اختياري)</label>
+      <input type="text" id="whatsappMessageInput" placeholder="السلام عليكم، أريد الاستفسار عن..." maxlength="100">
+    </div>
+    <button class="btn btn-green" style="width:100%" onclick="saveWhatsapp()">حفظ الرقم</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="clearWhatsapp()">حذف الرقم</button>
   </div>
 </div>
 <script>
@@ -1256,6 +1295,14 @@ function renderSubscriberPage() {
     zoomBtn.classList.add('hidden');
   }
 
+  // ✅ إظهار/إخفاء زر واتساب
+  const whatsappBtn = document.getElementById('subsWhatsappBtn');
+  if (settings.whatsappNumber && settings.whatsappNumber.trim()) {
+    whatsappBtn.classList.remove('hidden');
+  } else {
+    whatsappBtn.classList.add('hidden');
+  }
+
   updateSubsNotifBadge();
   updateChatBadge();
   if (document.getElementById('subsNotifPanel').classList.contains('show')) renderSubsNotifPanel();
@@ -1376,6 +1423,18 @@ async function openZoomLink() {
   setTimeout(() => {
     window.location.href = settings.zoomLink;
   }, 300);
+}
+
+/* ============ فتح الواتساب ============ */
+function openWhatsapp() {
+  if (!settings.whatsappNumber) {
+    showToast('لا يوجد رقم واتساب متاح', 'error');
+    return;
+  }
+  const num = settings.whatsappNumber.replace(/\D/g, '');
+  const msg = settings.whatsappMessage || '';
+  const url = 'https://wa.me/' + num + (msg ? '?text=' + encodeURIComponent(msg) : '');
+  window.location.href = url;
 }
 
 /* ============ فحص الإشعارات الجديدة ============ */
@@ -1560,16 +1619,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ============ الإعدادات ============ */
+/* ============ الإعدادات (مع تذكرني) ============ */
 function openSettingsModal() {
+  // ✅ إذا كان مسجل دخول محفوظ، افتح لوحة الإدارة مباشرة
+  const remembered = localStorage.getItem('adminRemembered');
+  if (remembered === '1') {
+    showPage('adminPage');
+    document.getElementById('notifBtn').classList.remove('hidden');
+    updateNotifBadge();
+    currentSearchQuery = '';
+    draftEdits = {};
+    const si = document.getElementById('searchInput');
+    if (si) si.value = '';
+    const cb = document.getElementById('clearSearchBtn');
+    if (cb) cb.classList.remove('show');
+    switchTab(currentAdminTab || 'pending');
+    showToast('مرحباً بعودتك', 'success');
+    return;
+  }
   document.getElementById('settingsModal').classList.add('show');
   document.getElementById('settingsAlert').classList.remove('show');
 }
+
 function closeSettingsModal() {
   document.getElementById('settingsModal').classList.remove('show');
   document.getElementById('adminUser').value = '';
   document.getElementById('adminPass').value = '';
 }
+
 document.getElementById('settingsModal').addEventListener('click', e => {
   if (e.target.id === 'settingsModal') closeSettingsModal();
 });
@@ -1578,7 +1655,15 @@ document.getElementById('settingsModal').addEventListener('click', e => {
 function loginAdmin() {
   const u = document.getElementById('adminUser').value.trim();
   const p = document.getElementById('adminPass').value;
+  const remember = document.getElementById('rememberMe').checked;
+  
   if (u === ADMIN_USER && p === ADMIN_PASS) {
+    // ✅ حفظ تسجيل الدخول إذا فعّل "تذكرني"
+    if (remember) {
+      localStorage.setItem('adminRemembered', '1');
+      localStorage.setItem('adminRememberedAt', Date.now().toString());
+    }
+    
     closeSettingsModal();
     showPage('adminPage');
     document.getElementById('notifBtn').classList.remove('hidden');
@@ -1601,6 +1686,9 @@ function loginAdmin() {
 }
 
 function logoutAdmin() {
+  // ✅ مسح تذكر الدخول
+  localStorage.removeItem('adminRemembered');
+  localStorage.removeItem('adminRememberedAt');
   document.getElementById('notifBtn').classList.add('hidden');
   showPage('mainPage');
   showToast('تم الخروج', 'success');
@@ -1885,6 +1973,64 @@ async function clearZoomLink() {
   } catch(e) { showToast('فشل', 'error'); }
 }
 
+/* ============ الواتساب ============ */
+function openWhatsappModal() {
+  document.getElementById('whatsappNumberInput').value = settings.whatsappNumber || '';
+  document.getElementById('whatsappMessageInput').value = settings.whatsappMessage || '';
+  document.getElementById('whatsappModal').classList.add('show');
+}
+
+function closeWhatsappModal() {
+  document.getElementById('whatsappModal').classList.remove('show');
+}
+
+document.getElementById('whatsappModal').addEventListener('click', e => {
+  if (e.target.id === 'whatsappModal') closeWhatsappModal();
+});
+
+async function saveWhatsapp() {
+  let num = document.getElementById('whatsappNumberInput').value.trim();
+  const msg = document.getElementById('whatsappMessageInput').value.trim();
+  
+  if (!num) { showToast('أدخل الرقم', 'error'); return; }
+  
+  num = num.replace(/\D/g, '');
+  
+  if (num.length < 10) { showToast('الرقم قصير جداً', 'error'); return; }
+  
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const numDoc = settingsArr.find(s => s.key === 'whatsappNumber');
+    const msgDoc = settingsArr.find(s => s.key === 'whatsappMessage');
+    
+    if (numDoc) await fbUpdate('appSettings', numDoc.fbId, { value: num });
+    else await fbAdd('appSettings', { key: 'whatsappNumber', value: num });
+    
+    const m = msg || '';
+    if (msgDoc) await fbUpdate('appSettings', msgDoc.fbId, { value: m });
+    else await fbAdd('appSettings', { key: 'whatsappMessage', value: m });
+    
+    closeWhatsappModal();
+    showToast('تم حفظ رقم الواتساب', 'success');
+  } catch(e) { 
+    console.error(e);
+    showToast('فشل الحفظ', 'error'); 
+  }
+}
+
+async function clearWhatsapp() {
+  if (!confirm('حذف رقم الواتساب؟')) return;
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const numDoc = settingsArr.find(s => s.key === 'whatsappNumber');
+    const msgDoc = settingsArr.find(s => s.key === 'whatsappMessage');
+    if (numDoc) await fbDelete('appSettings', numDoc.fbId);
+    if (msgDoc) await fbDelete('appSettings', msgDoc.fbId);
+    closeWhatsappModal();
+    showToast('تم الحذف', 'success');
+  } catch(e) { showToast('فشل', 'error'); }
+}
+
 /* ============ إشعارات الإدارة ============ */
 async function openNotifications() {
   showPage('notifPage');
@@ -1975,7 +2121,7 @@ function exportData() {
   showToast('تم التصدير', 'success');
 }
 
-// ============ ESC لإغلاق ============
+// ESC لإغلاق
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeSubsNotifPanel();
@@ -1986,15 +2132,13 @@ document.addEventListener('keydown', e => {
 <script>
 /* ============ عرض لوحة الإدارة ============ */
 function renderAdmin() {
-  // تحديث العدادات
   document.getElementById('tabPendingCount').textContent = registrations.filter(r=>r.status==='pending').length;
   document.getElementById('tabAcceptedCount').textContent = registrations.filter(r=>r.status==='accepted').length;
   document.getElementById('tabRejectedCount').textContent = registrations.filter(r=>r.status==='rejected').length;
   document.getElementById('tabStoppedCount').textContent = registrations.filter(r=>r.status==='stopped').length;
   updateAdminChatBadge();
 
-  // زر Zoom في الإدارة
-  renderZoomAdminCard();
+  renderAdminSettingsCards();
 
   if (currentAdminTab === 'messages') {
     renderMessagesTab();
@@ -2165,12 +2309,13 @@ function renderAdmin() {
   });
 }
 
-/* ============ بطاقة Zoom في الإدارة ============ */
-function renderZoomAdminCard() {
+/* ============ بطاقات الإعدادات (Zoom + واتساب) ============ */
+function renderAdminSettingsCards() {
   const wrap = document.getElementById('zoomAdminWrap');
   if (!wrap) return;
   if (wrap.dataset.rendered === '1') {
     updateZoomStatus();
+    updateWhatsappStatus();
     return;
   }
   wrap.innerHTML = `
@@ -2184,9 +2329,21 @@ function renderZoomAdminCard() {
       </div>
       <button id="zoomAdminBtn" class="btn btn-sm" style="background:linear-gradient(135deg,#ff8c1a,#ff4500);color:#fff;border:none" onclick="openZoomModal()">تعيين الرابط</button>
     </div>
+    
+    <div style="margin-bottom:14px;padding:12px;background:linear-gradient(135deg,#e8f9ee,#d1f4dc);border-radius:12px;border:1.5px solid #86e0a8;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg style="width:26px;height:26px;fill:#25D366" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        <div>
+          <div style="font-weight:700;color:#0d7a3d;font-size:14px">رقم واتساب</div>
+          <div id="whatsappStatusText" style="font-size:12px;color:#1e8a52;margin-top:2px"></div>
+        </div>
+      </div>
+      <button id="whatsappAdminBtn" class="btn btn-sm" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none" onclick="openWhatsappModal()">تعيين الرقم</button>
+    </div>
   `;
   wrap.dataset.rendered = '1';
   updateZoomStatus();
+  updateWhatsappStatus();
 }
 
 function updateZoomStatus() {
@@ -2199,6 +2356,19 @@ function updateZoomStatus() {
   } else {
     el.textContent = 'لم يتم تحديد رابط بعد';
     if (btn) btn.textContent = 'تعيين الرابط';
+  }
+}
+
+function updateWhatsappStatus() {
+  const el = document.getElementById('whatsappStatusText');
+  const btn = document.getElementById('whatsappAdminBtn');
+  if (!el) return;
+  if (settings.whatsappNumber) {
+    el.innerHTML = 'مفعّل: <span style="font-family:monospace;color:#0d7a3d;direction:ltr;display:inline-block">' + escapeHtml(settings.whatsappNumber) + '</span>';
+    if (btn) btn.textContent = 'تعديل الرقم';
+  } else {
+    el.textContent = 'لم يتم تحديد رقم بعد';
+    if (btn) btn.textContent = 'تعيين الرقم';
   }
 }
 
@@ -2380,7 +2550,6 @@ window.addEventListener('load', async () => {
 
   document.getElementById('loadingStatus').textContent = 'جاري تحميل البيانات...';
 
-  // حمّل كل البيانات
   try {
     registrations = await fbGetAll('registrations');
     notifications = await fbGetAll('notifications');
@@ -2405,13 +2574,12 @@ window.addEventListener('load', async () => {
 
   updateNotifBadge();
 
-  // ✅ بدء الاستماع المباشر
+  // ✅ الاستماع المباشر
   const { collection, onSnapshot } = window.__fbFns;
   const { db } = window.__fb;
 
   onSnapshot(collection(db, 'registrations'), snap => {
     registrations = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
-    console.log('🔄 registrations updated:', registrations.length);
     const adminPage = document.getElementById('adminPage');
     const subscriberPage = document.getElementById('subscriberPage');
     if (adminPage && !adminPage.classList.contains('hidden')) renderAdmin();
@@ -2449,6 +2617,9 @@ window.addEventListener('load', async () => {
     snap.docs.forEach(d => { const data = d.data(); settings[data.key] = data.value; });
     const subscriberPage = document.getElementById('subscriberPage');
     if (subscriberPage && !subscriberPage.classList.contains('hidden')) renderSubscriberPage();
+    // تحديث بطاقات الإعدادات في الإدارة
+    updateZoomStatus();
+    updateWhatsappStatus();
   });
 
   console.log('✅ كل شيء جاهز');
@@ -2491,7 +2662,6 @@ document.addEventListener('click', function initAudio() {
   document.removeEventListener('click', initAudio);
 }, { once: true });
 
-// ESC لإغلاق
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeSubsNotifPanel();
