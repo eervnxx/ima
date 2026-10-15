@@ -1,194 +1,2504 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VACT - المساعد الذكي</title>
-    <meta name="author" content="أحمد الجابري">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; height: 100vh; display: flex; flex-direction: column; }
-        
-        .header { background: #1e293b; padding: 15px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #334155; }
-        .header h1 { background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; }
-        
-        .chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .message { display: flex; gap: 10px; align-items: flex-start; }
-        .message.user { flex-direction: row-reverse; }
-        .message-avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #334155; flex-shrink: 0; }
-        .message.user .message-avatar { background: #7c3aed; }
-        .message-content { background: #1e293b; padding: 10px 14px; border-radius: 12px; max-width: 70%; line-height: 1.6; }
-        .message.user .message-content { background: #6d28d9; }
-        
-        .input-area { background: #1e293b; padding: 15px 20px; border-top: 1px solid #334155; display: flex; gap: 10px; }
-        .input-area textarea { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #f1f5f9; padding: 12px; font-size: 16px; resize: none; font-family: Arial; }
-        .input-area button { background: #7c3aed; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .input-area button:active { background: #5b21b6; }
-        
-        .typing-indicator { display: flex; gap: 5px; padding: 5px; }
-        .typing-indicator span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: bounce 1.4s infinite; }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
-        
-        .footer { background: #1e293b; padding: 8px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #334155; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>منصة تسجيل الطلبة</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --blue: #1e6fd9; --blue-dark: #1557a8; --blue-light: #e8f1fc;
+    --white: #ffffff; --dark: #1a1f2e; --gray: #f5f7fa; --border: #d8e2ef;
+    --success: #28a745; --danger: #dc3545; --warning: #ffc107;
+    --purple: #7048e8; --teal: #0e8f8f; --green: #16a34a; --green-dark: #15803d;
+  }
+  html, body { overflow-x: hidden; }
+  body { background: linear-gradient(135deg, #e8f1fc 0%, #ffffff 100%); min-height: 100vh; color: var(--dark); padding: 12px; }
+  .container { max-width: 1000px; margin: 0 auto; width: 100%; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 6px 16px; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--blue-dark); font-weight: 700; font-size: 16px; }
+  .brand-svg { width: 34px; height: 34px; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .settings-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--dark); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 12px rgba(26,31,46,0.2); }
+  .settings-btn:hover { background: var(--blue); transform: rotate(60deg); }
+  .settings-btn svg { width: 22px; height: 22px; fill: #fff; }
+  .logo-wrap { text-align: center; padding: 10px 0 18px; }
+  .logo-svg { width: 82px; height: 82px; }
+  .header-title { font-size: 26px; color: var(--blue-dark); margin-top: 10px; font-weight: 700; }
+  .header-sub { color: #5a6c85; font-size: 14px; margin-top: 6px; }
+  .card { background: var(--white); border-radius: 16px; box-shadow: 0 8px 30px rgba(30,111,217,0.12); padding: 26px 22px; border: 1px solid var(--border); margin-top: 16px; }
+  .card-title { font-size: 19px; color: var(--blue-dark); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--blue-light); display: flex; align-items: center; gap: 10px; }
+  .icon-svg { width: 22px; height: 22px; fill: var(--blue); flex-shrink: 0; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: var(--dark); font-size: 14px; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; background: var(--gray); transition: all 0.25s; color: var(--dark); font-family: inherit; resize: vertical; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,111,217,0.12); }
+  .form-group input.error, .form-group select.error { border-color: var(--danger); background: #fff5f5; }
+  .error-msg { color: var(--danger); font-size: 12.5px; margin-top: 5px; display: none; }
+  .error-msg.show { display: block; }
+  .plans { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 8px; }
+  .plan { border: 2px solid var(--border); border-radius: 12px; padding: 14px 8px; text-align: center; cursor: pointer; transition: all 0.25s; background: var(--gray); }
+  .plan:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .plan.selected { border-color: var(--blue); background: var(--blue-light); box-shadow: 0 4px 15px rgba(30,111,217,0.2); }
+  .plan-months { font-weight: 700; color: var(--blue-dark); font-size: 14px; }
+  .plan-price { color: var(--dark); font-size: 13px; margin-top: 5px; font-weight: 600; }
+  .plan-price span { color: var(--blue); }
+  .plan-sessions { font-size: 11.5px; color: var(--purple); margin-top: 4px; font-weight: 600; }
+  .btn { padding: 13px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; text-decoration: none; }
+  .btn-primary { background: var(--dark); color: #fff; width: 100%; }
+  .btn-primary:hover { background: #000; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,31,46,0.3); }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: var(--blue-dark); }
+  .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+  .btn-outline:hover { background: var(--blue); color: #fff; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #1e7e34; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #b02a37; }
+  .btn-warning { background: var(--warning); color: var(--dark); }
+  .btn-warning:hover { background: #d39e00; }
+  .btn-purple { background: var(--purple); color: #fff; }
+  .btn-purple:hover { background: #5a36c9; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: var(--green-dark); }
+  .btn-sm { padding: 7px 12px; font-size: 12.5px; border-radius: 8px; }
+  .btn-ghost { background: transparent; color: #5a6c85; border: 1.5px solid var(--border); }
+  .btn-ghost:hover { background: var(--gray); color: var(--dark); }
+  .btn-zoom { background: linear-gradient(135deg, #ff8c1a 0%, #ff6b1a 50%, #ff4500 100%); color: #fff; padding: 22px 30px; font-size: 19px; border-radius: 16px; font-weight: 800; box-shadow: 0 12px 35px rgba(255,107,26,0.5), 0 4px 12px rgba(255,69,0,0.35); width: 100%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 14px; border: 3px solid #fff; cursor: pointer; text-decoration: none; margin-top: 16px; position: relative; overflow: hidden; animation: zoomPulse 2s infinite; text-shadow: 0 2px 4px rgba(0,0,0,0.25); letter-spacing: 0.5px; }
+  .btn-zoom::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: shine 2.5s infinite; }
+  @keyframes shine { 0% { left: -100%; } 60%, 100% { left: 100%; } }
+  .btn-zoom:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 18px 45px rgba(255,107,26,0.65), 0 6px 20px rgba(255,69,0,0.45); animation: none; }
+  .btn-zoom:active { transform: scale(0.97); }
+  .btn-zoom svg { width: 34px; height: 34px; fill: #fff; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); animation: camShake 2s infinite; }
+  @keyframes camShake { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-5deg) scale(1.05); } }
+  @keyframes zoomPulse { 0%, 100% { box-shadow: 0 12px 35px rgba(255,107,26,0.5), 0 4px 12px rgba(255,69,0,0.35), 0 0 0 0 rgba(255,140,26,0.7); } 50% { box-shadow: 0 12px 45px rgba(255,107,26,0.7), 0 4px 12px rgba(255,69,0,0.5), 0 0 0 12px rgba(255,140,26,0); } }
+  .btn-zoom .zoom-text { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; line-height: 1.2; }
+  .btn-zoom .zoom-text-main { font-size: 19px; font-weight: 800; }
+  .btn-zoom .zoom-text-sub { font-size: 12.5px; font-weight: 500; opacity: 0.95; }
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-120px); background: var(--dark); color: #fff; padding: 14px 22px; border-radius: 12px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.25); z-index: 9999; display: flex; align-items: center; gap: 10px; transition: transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); max-width: 90%; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: var(--warning); color: var(--dark); }
+  .toast svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+  .popup-notif { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150%) scale(0.9); background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.25); z-index: 10000; display: flex; align-items: center; gap: 12px; max-width: 90vw; width: 400px; border-right: 5px solid var(--blue); opacity: 0; transition: all 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .popup-notif.show { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+  .popup-notif.accepted { border-right-color: var(--success); }
+  .popup-notif.rejected { border-right-color: var(--danger); }
+  .popup-notif.stopped { border-right-color: #6c757d; }
+  .popup-notif.pending { border-right-color: var(--warning); }
+  .popup-notif.message { border-right-color: var(--purple); }
+  .popup-notif-icon { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--blue-light); }
+  .popup-notif.accepted .popup-notif-icon { background: #d4edda; }
+  .popup-notif.rejected .popup-notif-icon { background: #f8d7da; }
+  .popup-notif.stopped .popup-notif-icon { background: #e2e3e5; }
+  .popup-notif.pending .popup-notif-icon { background: #fff3cd; }
+  .popup-notif.message .popup-notif-icon { background: #ede4ff; }
+  .popup-notif-icon svg { width: 24px; height: 24px; }
+  .popup-notif-content { flex: 1; min-width: 0; }
+  .popup-notif-title { font-weight: 700; color: var(--dark); font-size: 14.5px; margin-bottom: 3px; }
+  .popup-notif-desc { font-size: 13px; color: #5a6c85; line-height: 1.5; }
+  .subscriber-header { text-align: center; padding: 22px 16px; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); color: #fff; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 10px 30px rgba(30,111,217,0.3); }
+  .subscriber-header .logo-svg { width: 58px; height: 58px; }
+  .subscriber-header h2 { font-size: 20px; margin-top: 8px; }
+  .subscriber-header p { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+  .master-code { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 10px; margin-top: 12px; font-family: 'Courier New', monospace; font-size: 22px; font-weight: 800; letter-spacing: 2px; direction: ltr; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+  .master-code-label { font-size: 12px; opacity: 0.85; margin-top: 10px; }
+  .device-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; font-size: 11.5px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.25); }
+  .device-badge svg { width: 14px; height: 14px; fill: #fff; }
+  .floating-buttons-wrap { position: fixed; bottom: 24px; left: 24px; display: flex; gap: 12px; z-index: 500; }
+  .float-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; }
+  .float-btn:hover { transform: scale(1.1); }
+  .float-btn:active { transform: scale(0.95); }
+  .float-btn svg { width: 30px; height: 30px; fill: #fff; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+  .notif-float-btn { background: linear-gradient(135deg, #ff8c1a 0%, #ff6b1a 100%); box-shadow: 0 8px 25px rgba(255,107,26,0.5); animation: bellShake 3s infinite; }
+  .notif-float-btn:hover { box-shadow: 0 12px 35px rgba(255,107,26,0.75); animation: none; }
+  @keyframes bellShake { 0%, 80%, 100% { transform: rotate(0deg); } 85% { transform: rotate(-12deg); } 90% { transform: rotate(12deg); } 95% { transform: rotate(-8deg); } }
+  .chat-float-btn { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 8px 25px rgba(34,197,94,0.5); }
+  .chat-float-btn:hover { box-shadow: 0 12px 35px rgba(34,197,94,0.75); }
+  .float-badge { position: absolute; top: -4px; right: -4px; min-width: 26px; height: 26px; background: var(--danger); color: #fff; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; padding: 0 6px; border: 3px solid #fff; animation: pulse 1.5s infinite; }
+  .float-badge.hidden { display: none; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  .subs-notif-panel, .chat-panel { position: fixed; bottom: 100px; left: 24px; width: 420px; max-width: calc(100vw - 48px); max-height: 70vh; background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); border: 1px solid var(--border); z-index: 501; display: flex; flex-direction: column; overflow: hidden; transform: translateY(30px) scale(0.9); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .chat-panel { max-height: 75vh; }
+  .subs-notif-panel.show, .chat-panel.show { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
+  .subs-notif-panel-header { padding: 16px 18px; background: linear-gradient(135deg, #e8f1fc 0%, #d8e8fb 100%); border-bottom: 2px solid var(--blue-light); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-shrink: 0; }
+  .subs-notif-panel-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); display: flex; align-items: center; gap: 8px; }
+  .subs-notif-panel-title svg { width: 20px; height: 20px; fill: var(--blue); }
+  .subs-notif-panel-close, .chat-panel-close { background: #fff; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 6px rgba(30,111,217,0.15); }
+  .subs-notif-panel-close:hover { background: var(--blue-light); }
+  .subs-notif-panel-close svg { width: 18px; height: 18px; fill: var(--blue-dark); }
+  .subs-notif-panel-actions { padding: 10px 14px; background: #f8fafc; border-bottom: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+  .subs-notif-panel-body { flex: 1; overflow-y: auto; padding: 14px; background: #fff; }
+  .subs-notif-panel-body::-webkit-scrollbar { width: 6px; }
+  .subs-notif-panel-body::-webkit-scrollbar-track { background: #f1f5f9; }
+  .subs-notif-panel-body::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+  .subs-notif-empty { text-align: center; padding: 40px 20px; color: #8b9bb4; font-size: 14px; }
+  .subs-notif-empty svg { width: 50px; height: 50px; fill: #cbd5e1; margin-bottom: 10px; }
+  .subs-notif-item { background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px; animation: slideDown 0.3s ease; }
+  .subs-notif-item:last-child { margin-bottom: 0; }
+  .subs-notif-item.unread { background: linear-gradient(135deg, #f0f7ff 0%, #e8f1fc 100%); border-color: var(--blue); border-right-width: 5px; }
+  .subs-notif-item.read { background: #f8f9fa; opacity: 0.85; border-right-width: 5px; border-right-color: #cbd5e1; }
+  .subs-notif-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--blue-light); }
+  .subs-notif-icon svg { width: 20px; height: 20px; }
+  .subs-notif-item.unread .subs-notif-icon { background: var(--blue); }
+  .subs-notif-item.unread .subs-notif-icon svg { fill: #fff; }
+  .subs-notif-item.read .subs-notif-icon svg { fill: var(--blue); }
+  .subs-notif-body { flex: 1; min-width: 0; }
+  .subs-notif-title { font-weight: 700; color: var(--dark); font-size: 13.5px; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .subs-notif-desc { font-size: 12.5px; color: #5a6c85; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .subs-notif-time { font-size: 11px; color: #8b9bb4; margin-top: 5px; }
+  .subs-notif-new { background: var(--danger); color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+  .subs-notif-del { background: transparent; border: none; color: #8b9bb4; cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s; flex-shrink: 0; align-self: flex-start; }
+  .subs-notif-del:hover { background: #f8d7da; color: var(--danger); }
+  .subs-notif-del svg { width: 16px; height: 16px; fill: currentColor; }
+  .chat-panel-header { padding: 14px 18px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-shrink: 0; }
+  .chat-panel-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .chat-panel-title svg { width: 20px; height: 20px; fill: #fff; }
+  .chat-panel-close { background: rgba(255,255,255,0.2); box-shadow: none; }
+  .chat-panel-close:hover { background: rgba(255,255,255,0.35); }
+  .chat-panel-close svg { width: 18px; height: 18px; fill: #fff; }
+  .chat-panel-subtitle { padding: 8px 14px; background: #f0fdf4; color: #166534; font-size: 11.5px; text-align: center; border-bottom: 1px solid #dcfce7; flex-shrink: 0; }
+  .chat-panel-body { flex: 1; overflow-y: auto; padding: 14px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; min-height: 200px; }
+  .chat-panel-body::-webkit-scrollbar { width: 6px; }
+  .chat-panel-body::-webkit-scrollbar-track { background: #f1f5f9; }
+  .chat-panel-body::-webkit-scrollbar-thumb { background: var(--green); border-radius: 3px; }
+  .chat-empty { text-align: center; padding: 30px 20px; color: #8b9bb4; font-size: 13.5px; }
+  .chat-empty svg { width: 55px; height: 55px; fill: #cbd5e1; margin-bottom: 10px; }
+  .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; animation: slideDown 0.3s ease; }
+  .chat-bubble.mine { align-self: flex-end; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #fff; border-bottom-left-radius: 4px; }
+  .chat-bubble.theirs { align-self: flex-start; background: #fff; color: var(--dark); border: 1.5px solid var(--border); border-bottom-right-radius: 4px; }
+  .chat-bubble .bubble-time { font-size: 10.5px; opacity: 0.75; margin-top: 4px; display: block; }
+  .chat-bubble.mine .bubble-time { color: #dcfce7; }
+  .chat-bubble.theirs .bubble-time { color: #8b9bb4; }
+  .chat-input-area { padding: 12px; background: #fff; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+  .chat-input-area textarea { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; resize: none; font-family: inherit; max-height: 100px; min-height: 42px; background: var(--gray); color: var(--dark); transition: all 0.25s; }
+  .chat-input-area textarea:focus { outline: none; border-color: var(--green); background: #fff; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+  .chat-send-btn { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 4px 12px rgba(34,197,94,0.35); }
+  .chat-send-btn:hover { transform: scale(1.08); }
+  .chat-send-btn svg { width: 22px; height: 22px; fill: #fff; }
+  .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(26,31,46,0.35); backdrop-filter: blur(2px); z-index: 499; display: none; animation: fadeIn 0.25s ease; }
+  .overlay.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .sub-card { background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; transition: all 0.25s; }
+  .sub-card.accepted { border-color: var(--success); background: #f0fbf3; }
+  .sub-card.rejected { border-color: var(--danger); background: #fdf2f4; }
+  .sub-card.stopped { border-color: #6c757d; background: #f5f5f5; }
+  .sub-card.pending { border-color: var(--warning); background: #fffdf3; }
+  .sub-card-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1.5px dashed var(--border); margin-bottom: 12px; }
+  .sub-card-name { font-size: 16px; font-weight: 700; color: var(--dark); }
+  .sub-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sub-info { background: var(--gray); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .sub-info-label { color: #5a6c85; font-size: 11.5px; margin-bottom: 3px; }
+  .sub-info-value { color: var(--dark); font-weight: 600; font-size: 14px; }
+  .sub-status-msg { grid-column: span 2; border-radius: 10px; padding: 11px 14px; margin-top: 6px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; line-height: 1.5; }
+  .sub-status-msg svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .sub-status-msg.pending { background: #fff3cd; color: #856404; border: 1.5px solid #ffe69c; }
+  .sub-status-msg.pending svg { fill: #856404; }
+  .sub-status-msg.accepted { background: #d4edda; color: #155724; border: 1.5px solid #a3d7b3; }
+  .sub-status-msg.accepted svg { fill: #155724; }
+  .sub-status-msg.rejected { background: #f8d7da; color: #721c24; border: 1.5px solid #f1aeb5; }
+  .sub-status-msg.rejected svg { fill: #721c24; }
+  .sub-status-msg.stopped { background: #e2e3e5; color: #383d41; border: 1.5px solid #c6c8ca; }
+  .sub-status-msg.stopped svg { fill: #383d41; }
+  .days-wrap { grid-column: span 2; background: linear-gradient(135deg, #e8f7f7 0%, #d6efef 100%); border: 1.5px solid #8ed4d4; border-radius: 10px; padding: 14px; margin-top: 6px; }
+  .days-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13.5px; color: var(--teal); font-weight: 700; }
+  .days-count-badge { background: var(--teal); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; }
+  .days-count-badge.expired { background: var(--danger); }
+  .days-count-badge.warning { background: var(--warning); color: var(--dark); }
+  .days-bar { height: 12px; background: rgba(14,143,143,0.15); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .days-fill { height: 100%; background: linear-gradient(90deg, var(--teal) 0%, #16b3b3 100%); border-radius: 6px; transition: width 0.5s ease; }
+  .days-fill.warning { background: linear-gradient(90deg, var(--warning) 0%, #ffd95a 100%); }
+  .days-fill.expired { background: linear-gradient(90deg, var(--danger) 0%, #f4778a 100%); }
+  .days-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 12px; }
+  .days-info-item { text-align: center; background: rgba(255,255,255,0.6); border-radius: 6px; padding: 6px 4px; }
+  .days-info-item .label { color: #5a6c85; display: block; font-size: 11px; margin-bottom: 2px; }
+  .days-info-item .value { color: var(--dark); font-weight: 800; font-size: 13.5px; }
+  .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .status-badge.pending { background: #fff3cd; color: #856404; }
+  .status-badge.accepted { background: #d4edda; color: #155724; }
+  .status-badge.rejected { background: #f8d7da; color: #721c24; }
+  .status-badge.stopped { background: #e2e3e5; color: #383d41; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .notif-btn { position: relative; width: 44px; height: 44px; border-radius: 12px; background: var(--warning); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 12px rgba(255,193,7,0.4); }
+  .notif-btn:hover { transform: scale(1.08); }
+  .notif-btn svg { width: 24px; height: 24px; fill: var(--dark); }
+  .notif-badge { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; background: var(--danger); color: #fff; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 0 6px; border: 2px solid #fff; animation: pulse 1.5s infinite; }
+  .notif-badge.hidden { display: none; }
+  .search-box { position: relative; margin-bottom: 16px; }
+  .search-box input { width: 100%; padding: 14px 50px 14px 44px; border: 2px solid var(--border); border-radius: 12px; font-size: 15px; background: #fff; font-family: inherit; color: var(--dark); transition: all 0.25s; box-shadow: 0 2px 8px rgba(30,111,217,0.06); }
+  .search-box input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(30,111,217,0.12); }
+  .search-box .search-icon { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); pointer-events: none; width: 22px; height: 22px; fill: var(--blue); }
+  .search-box .clear-btn { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); background: #e2e8f0; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: none; align-items: center; justify-content: center; transition: all 0.2s; }
+  .search-box .clear-btn:hover { background: #cbd5e1; }
+  .search-box .clear-btn.show { display: flex; }
+  .search-box .clear-btn svg { width: 16px; height: 16px; fill: #5a6c85; }
+  .search-hint { font-size: 12px; color: #8b9bb4; margin-top: 6px; text-align: center; }
+  .admin-tabs { display: flex; gap: 8px; margin-bottom: 18px; background: var(--gray); padding: 6px; border-radius: 12px; border: 1px solid var(--border); flex-wrap: wrap; }
+  .admin-tab { flex: 1; min-width: 100px; padding: 11px 10px; background: transparent; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px; color: #5a6c85; transition: all 0.25s; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .admin-tab:hover { background: rgba(30,111,217,0.08); }
+  .admin-tab.active { background: var(--white); color: var(--blue-dark); box-shadow: 0 2px 8px rgba(30,111,217,0.15); }
+  .admin-tab .tab-count { background: #e2e8f0; color: #5a6c85; padding: 2px 8px; border-radius: 10px; font-size: 11.5px; font-weight: 800; min-width: 24px; }
+  .admin-tab.active .tab-count { background: var(--blue); color: #fff; }
+  .admin-tab.tab-pending.active .tab-count { background: var(--warning); color: var(--dark); }
+  .admin-tab.tab-accepted.active .tab-count { background: var(--success); color: #fff; }
+  .admin-tab.tab-rejected.active .tab-count { background: var(--danger); color: #fff; }
+  .admin-tab.tab-messages.active .tab-count { background: var(--green); color: #fff; }
+  .admin-card { background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; transition: all 0.25s; }
+  .admin-card:hover { box-shadow: 0 6px 20px rgba(30, 111, 217, 0.12); }
+  .admin-card.accepted { border-color: var(--success); border-right-width: 6px; }
+  .admin-card.rejected { border-color: var(--danger); border-right-width: 6px; }
+  .admin-card.pending { border-color: var(--warning); border-right-width: 6px; }
+  .admin-card.stopped { border-color: #6c757d; border-right-width: 6px; }
+  .admin-card.dirty { border-color: var(--purple); border-right-width: 6px; box-shadow: 0 0 0 4px rgba(112,72,232,0.15); }
+  .admin-card-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1.5px dashed var(--border); margin-bottom: 14px; }
+  .admin-card-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .admin-card-num { width: 30px; height: 30px; background: var(--blue); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .admin-card-name { font-size: 16px; font-weight: 700; color: var(--dark); }
+  .admin-card-code { font-family: 'Courier New', monospace; font-size: 13px; background: var(--blue-light); color: var(--blue-dark); padding: 4px 10px; border-radius: 8px; font-weight: 700; direction: ltr; }
+  .device-chip { display: inline-flex; align-items: center; gap: 5px; background: #f0fdf4; color: #166534; padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 700; border: 1px solid #bbf7d0; }
+  .device-chip.unbound { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+  .device-chip svg { width: 13px; height: 13px; fill: currentColor; }
+  .admin-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .admin-field { display: flex; flex-direction: column; gap: 4px; }
+  .admin-field label { font-size: 12px; color: #5a6c85; font-weight: 600; }
+  .admin-field input, .admin-field select { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13.5px; background: var(--gray); font-family: inherit; color: var(--dark); transition: all 0.2s; width: 100%; }
+  .admin-field input:focus, .admin-field select:focus { outline: none; border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,111,217,0.1); }
+  .admin-field.days input { background: #e8f7f7; border-color: #8ed4d4; color: var(--teal); font-weight: 700; text-align: center; }
+  .admin-field.lectures input { background: #f3eeff; border-color: #c9b8ff; color: var(--purple); font-weight: 700; text-align: center; }
+  .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed var(--border); }
+  .save-bar { display: flex; gap: 10px; margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #f3eeff 0%, #e8dfff 100%); border: 2px dashed var(--purple); border-radius: 10px; align-items: center; animation: slideDown 0.3s ease; }
+  .save-bar-text { flex: 1; font-size: 13px; font-weight: 700; color: var(--purple); display: flex; align-items: center; gap: 6px; }
+  .save-bar-text svg { width: 18px; height: 18px; fill: var(--purple); }
+  .empty-state { text-align: center; padding: 40px 20px; color: #5a6c85; }
+  .empty-svg { width: 70px; height: 70px; opacity: 0.4; margin-bottom: 10px; }
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(26,31,46,0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; animation: fadeIn 0.25s ease; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--white); border-radius: 18px; padding: 28px 22px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.68,-0.55,0.27,1.55); max-height: 90vh; overflow-y: auto; position: relative; }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+  .modal-title { font-size: 18px; color: var(--blue-dark); margin-bottom: 16px; text-align: center; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .modal-close { background: none; border: none; color: #5a6c85; cursor: pointer; font-size: 20px; position: absolute; top: 12px; left: 14px; padding: 6px 10px; border-radius: 8px; transition: background 0.2s; }
+  .modal-close:hover { background: var(--gray); }
+  .alert { padding: 13px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; display: none; font-weight: 500; }
+  .alert.show { display: block; animation: slideDown 0.3s ease; }
+  .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .footer { text-align: center; color: #8b9bb4; font-size: 12.5px; margin-top: 24px; padding: 14px; }
+  .hidden { display: none !important; }
+  .device-lock-screen { max-width: 500px; margin: 60px auto; text-align: center; }
+  .device-lock-screen .lock-icon { width: 90px; height: 90px; margin: 0 auto 20px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #fcd34d; }
+  .device-lock-screen .lock-icon svg { width: 44px; height: 44px; fill: #92400e; }
+  .device-lock-screen h2 { color: #92400e; font-size: 22px; margin-bottom: 12px; }
+  .device-lock-screen p { color: #5a6c85; font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+  .device-info-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: right; font-size: 13px; }
+  .msg-thread-list { display: flex; flex-direction: column; gap: 10px; }
+  .msg-thread { background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 14px 16px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 12px; }
+  .msg-thread:hover { border-color: var(--green); box-shadow: 0 6px 20px rgba(34,197,94,0.15); }
+  .msg-thread.unread { border-color: var(--green); background: #f0fdf4; border-right-width: 6px; }
+  .msg-thread-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+  .msg-thread-content { flex: 1; min-width: 0; }
+  .msg-thread-name { font-weight: 700; color: var(--dark); font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .msg-thread-code { font-family: 'Courier New', monospace; font-size: 12px; background: var(--blue-light); color: var(--blue-dark); padding: 2px 8px; border-radius: 6px; font-weight: 700; direction: ltr; }
+  .msg-thread-last { font-size: 13px; color: #5a6c85; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msg-thread-time { font-size: 11.5px; color: #8b9bb4; margin-top: 4px; }
+  .msg-thread-badge { background: var(--green); color: #fff; min-width: 26px; height: 26px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; padding: 0 8px; flex-shrink: 0; }
+  .admin-chat-panel { background: #fff; border-radius: 14px; border: 2px solid var(--border); overflow: hidden; margin-top: 14px; }
+  .admin-chat-header { padding: 14px 18px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #fff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .admin-chat-name { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .admin-chat-code { font-family: 'Courier New', monospace; font-size: 12px; background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 8px; direction: ltr; }
+  .admin-chat-body { padding: 14px; background: #f8fafc; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .admin-chat-body::-webkit-scrollbar { width: 6px; }
+  .admin-chat-body::-webkit-scrollbar-track { background: #f1f5f9; }
+  .admin-chat-body::-webkit-scrollbar-thumb { background: var(--green); border-radius: 3px; }
+  .admin-chat-input { padding: 12px; background: #fff; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .admin-chat-input textarea { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; resize: none; font-family: inherit; min-height: 42px; max-height: 100px; background: var(--gray); color: var(--dark); }
+  .admin-chat-input textarea:focus { outline: none; border-color: var(--green); background: #fff; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+  .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; padding: 40px 20px; }
+  .loading-spinner { width: 70px; height: 70px; border: 6px solid #e8f1fc; border-top-color: #1e6fd9; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { margin-top: 24px; color: #1557a8; font-size: 18px; font-weight: 700; }
+  .loading-sub { color: #5a6c85; font-size: 14px; margin-top: 8px; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 640px) {
+    body { padding: 8px; }
+    .card { padding: 20px 16px; border-radius: 14px; }
+    .header-title { font-size: 21px; }
+    .logo-svg { width: 68px; height: 68px; }
+    .plans { grid-template-columns: 1fr; }
+    .plan { padding: 12px; display: flex; justify-content: space-between; align-items: center; text-align: right; flex-wrap: wrap; gap: 6px; }
+    .plan-price { margin-top: 0; }
+    .plan-sessions { margin-top: 0; }
+    .sub-card-body { grid-template-columns: 1fr; }
+    .days-wrap { grid-column: span 1; }
+    .sub-status-msg { grid-column: span 1; }
+    .topbar { padding: 6px 2px 12px; }
+    .brand { font-size: 14px; }
+    .brand-svg { width: 28px; height: 28px; }
+    .settings-btn, .notif-btn { width: 40px; height: 40px; }
+    .notif-btn svg { width: 20px; height: 20px; }
+    .modal { padding: 22px 18px; }
+    .btn { padding: 12px 18px; font-size: 14px; }
+    .btn-zoom { padding: 18px 20px; font-size: 17px; }
+    .btn-zoom svg { width: 28px; height: 28px; }
+    .btn-zoom .zoom-text-main { font-size: 17px; }
+    .btn-zoom .zoom-text-sub { font-size: 11.5px; }
+    .master-code { font-size: 18px; padding: 6px 14px; }
+    .admin-fields { grid-template-columns: 1fr 1fr; }
+    .admin-actions .btn { flex: 1; min-width: 80px; }
+    .admin-tab { min-width: 80px; font-size: 11.5px; padding: 8px 6px; }
+    .popup-notif { width: 92vw; padding: 14px 16px; }
+    .days-info { grid-template-columns: 1fr; }
+    .floating-buttons-wrap { bottom: 18px; left: 18px; gap: 10px; }
+    .float-btn { width: 54px; height: 54px; }
+    .float-btn svg { width: 26px; height: 26px; }
+    .subs-notif-panel, .chat-panel { bottom: 90px; left: 12px; width: calc(100vw - 24px); }
+    .save-bar { flex-direction: column; }
+    .save-bar .btn { width: 100%; }
+  }
+  @media (max-width: 400px) {
+    .header-title { font-size: 18px; }
+    .sub-card-head { flex-direction: column; align-items: flex-start; }
+    .admin-fields { grid-template-columns: 1fr; }
+    .admin-tab { min-width: 70px; font-size: 10.5px; padding: 7px 4px; }
+    .btn-zoom .zoom-text-main { font-size: 15px; }
+  }
+</style>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCXxJPS8BV7BscgtgUFBVQ8yBiSdVth5sE",
+  authDomain: "alhisab-alzihni.firebaseapp.com",
+  projectId: "alhisab-alzihni",
+  storageBucket: "alhisab-alzihni.firebasestorage.app",
+  messagingSenderId: "253920103888",
+  appId: "1:253920103888:web:7d518ac24bdbef5db93dd5"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+
+window.__fb = { db, auth };
+window.__fbFns = { collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, where, onSnapshot, serverTimestamp };
+
+signInAnonymously(auth).then(() => {
+  console.log('✅ Firebase Auth ready');
+  window.dispatchEvent(new Event('fb-ready'));
+}).catch(e => {
+  console.error('Auth error:', e);
+  window.dispatchEvent(new Event('fb-ready'));
+});
+</script>
 </head>
 <body>
-    
-    <div class="header">
-        <span style="font-size:24px;">⚡</span>
-        <h1>VACT</h1>
-        <span style="margin-right:auto;font-size:12px;color:#94a3b8;">تطوير: أحمد الجابري</span>
-    </div>
-    
-    <div class="chat-area" id="messages">
-        <div class="message assistant">
-            <div class="message-avatar">🤖</div>
-            <div class="message-content">
-                <strong>مرحباً بك في VACT! ⚡</strong><br>
-                اكتب رسالتك واضغط إرسال
+ <div class="topbar container">
+  <div class="brand">
+    <svg class="brand-svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="#1e6fd9" opacity="0.15"/>
+      <path d="M50 20 L80 40 L80 75 L20 75 L20 40 Z" fill="#1e6fd9"/>
+      <path d="M50 20 L80 40 L50 60 L20 40 Z" fill="#1557a8"/>
+      <rect x="42" y="55" width="16" height="20" fill="#ffffff"/>
+      <circle cx="50" cy="42" r="4" fill="#ffffff"/>
+    </svg>
+    <span>منصة تسجيل الطلبة</span>
+  </div>
+
+  <div class="topbar-actions">
+    <button id="notifBtn" class="notif-btn hidden" onclick="openNotifications()" title="الإشعارات">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+      </svg>
+      <span class="notif-badge hidden" id="notifBadge">0</span>
+    </button>
+
+    <button class="settings-btn" onclick="openSettingsModal()" title="الإعدادات">
+      <svg viewBox="0 0 24 24">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ============ شاشة التحميل ============ -->
+<div id="loadingPage" class="container">
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">جاري التحميل  ...</div>
+    <div class="loading-sub" id="loadingStatus">يتم التحقق من الاتصال</div>
+  </div>
+</div>
+
+<!-- ============ الصفحة الرئيسية ============ -->
+<div id="mainPage" class="container hidden">
+  <div class="logo-wrap">
+    <svg class="logo-svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="#1e6fd9" opacity="0.1"/>
+      <circle cx="50" cy="50" r="36" fill="#1e6fd9" opacity="0.2"/>
+      <path d="M50 20 L80 40 L80 75 L20 75 L20 40 Z" fill="#1e6fd9"/>
+      <path d="M50 20 L80 40 L50 60 L20 40 Z" fill="#1557a8"/>
+      <rect x="42" y="55" width="16" height="20" fill="#ffffff"/>
+      <circle cx="50" cy="42" r="4" fill="#ffffff"/>
+    </svg>
+    <h1 class="header-title">منصة تسجيل الطلبة</h1>
+    <p class="header-sub">سجل بيانات ابنك/ابنتك بسهولة وأمان</p>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      استمارة التسجيل
+    </h2>
+
+    <form id="regForm" novalidate>
+      <div class="form-group">
+        <label for="name">اسم الطالب الكامل</label>
+        <input type="text" id="name" placeholder="مثال: علي محمد حسين">
+        <div class="error-msg" id="nameErr">الرجاء إدخال الاسم (حرفان على الأقل)</div>
+      </div>
+
+      <div class="form-group">
+        <label for="age">العمر (من 5 إلى 15 سنة)</label>
+        <input type="number" id="age" min="5" max="15" placeholder="مثال: 10">
+        <div class="error-msg" id="ageErr">العمر يجب أن يكون بين 5 و 15 سنة</div>
+      </div>
+
+      <div class="form-group">
+        <label for="gov">المحافظة</label>
+        <select id="gov">
+          <option value="">-- اختر المحافظة --</option>
+          <option>بغداد</option><option>البصرة</option><option>نينوى</option>
+          <option>أربيل</option><option>السليمانية</option><option>دهوك</option>
+          <option>كركوك</option><option>النجف</option><option>كربلاء</option>
+          <option>ذي قار</option><option>بابل</option><option>الأنبار</option>
+          <option>ديالى</option><option>واسط</option><option>ميسان</option>
+          <option>المثنى</option><option>القادسية</option><option>صلاح الدين</option>
+        </select>
+        <div class="error-msg" id="govErr">الرجاء اختيار المحافظة</div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">رقم الهاتف</label>
+        <input type="tel" id="phone" placeholder="07XXXXXXXXX" maxlength="11" inputmode="numeric">
+        <div class="error-msg" id="phoneErr">رقم غير صحيح. يجب أن يبدأ بـ 07 ويكون 11 رقم</div>
+      </div>
+
+      <div class="form-group">
+        <label>مدة الاشتراك</label>
+        <div class="plans" id="plans">
+          <div class="plan" data-months="1" data-price="50000" data-days="30" data-lectures="8">
+            <div>
+              <div class="plan-months">شهر واحد</div>
+              <div class="plan-sessions">8 محاضرات</div>
             </div>
+            <div class="plan-price"><span>50,000</span> د.ع</div>
+          </div>
+          <div class="plan" data-months="2" data-price="90,000" data-days="60" data-lectures="16">
+            <div>
+              <div class="plan-months">شهرين</div>
+              <div class="plan-sessions">16 محاضرة</div>
+            </div>
+            <div class="plan-price"><span>90,000</span> د.ع</div>
+          </div>
+          <div class="plan" data-months="3" data-price="135000" data-days="90" data-lectures="24">
+            <div>
+              <div class="plan-months">3 أشهر</div>
+              <div class="plan-sessions">24 محاضرة</div>
+            </div>
+            <div class="plan-price"><span>135,000</span> د.ع</div>
+          </div>
         </div>
+        <div class="error-msg" id="planErr">الرجاء اختيار مدة الاشتراك</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <svg class="icon-svg" style="fill:#fff" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        تفعيل الاشتراك وإرسال الطلب
+      </button>
+
+      <button type="button" class="btn btn-outline" style="width:100%;margin-top:10px" onclick="toggleActiveCheck()">
+        <svg class="icon-svg" style="fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        تسجيل دخول بكود موجود
+      </button>
+
+      <div id="activeCheckWrap" class="hidden" style="margin-top:12px;padding:16px;background:var(--blue-light);border-radius:12px;border:2px dashed var(--blue)">
+        <label style="font-weight:700;color:var(--blue-dark);font-size:14px;display:block;margin-bottom:8px">أدخل الكود الخاص بك</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input type="text" id="lookupCode" placeholder="#00000" maxlength="6" style="flex:1;min-width:120px;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:16px;background:#fff;font-family:'Courier New',monospace;font-weight:700;text-align:center;direction:ltr">
+          <button type="button" class="btn btn-blue" onclick="lookupSubscription()">دخول</button>
+        </div>
+        <div class="error-msg" id="lookupErr">لم يتم العثور على اشتراك بهذا الكود</div>
+      </div>
+    </form>
+  </div>
+
+  <div class="footer">جميع الحقوق محفوظة © لدى المطور احمد الجابري </div>
+</div>
+
+<!-- ============ شاشة قفل الجهاز ============ -->
+<div id="deviceLockPage" class="container hidden">
+  <div class="device-lock-screen">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
     </div>
-    
-    <div class="input-area">
-        <textarea id="userInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
-        <button id="sendBtn">إرسال 📤</button>
+    <h2>هذا الكود مربوط بجهاز آخر</h2>
+    <p>هذا الحساب مفعّل على جهاز آخر بالفعل.<br>لا يمكن استخدام نفس الكود على أكثر من جهاز واحد في نفس الوقت.</p>
+    <div class="device-info-box">
+      <strong>الكود:</strong> <span id="lockedCode" style="font-family:monospace;color:var(--blue-dark);direction:ltr;display:inline-block">#00000</span><br>
+      <strong style="margin-top:6px;display:inline-block">معرّف الجهاز الحالي:</strong> <span id="currentDeviceId" style="font-family:monospace;font-size:11px;color:#5a6c85;direction:ltr;display:inline-block">-</span>
     </div>
-    
-    <div class="footer">
-        © 2026 <strong>VACT</strong> | تطوير: <strong>أحمد الجابري</strong> | مدعوم بـ Gemini AI
+    <p style="font-size:13px;color:#5a6c85">إذا كنت صاحب الحساب وتريد نقل الكود لجهازك الحالي، تواصل مع الإدارة لإعادة تعيين الجهاز.</p>
+    <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="backFromDeviceLock()">
+      <svg class="icon-svg" style="fill:#fff" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      رجوع للصفحة الرئيسية
+    </button>
+  </div>
+</div>
+
+<!-- ============ صفحة المشترك ============ -->
+<div id="subscriberPage" class="container hidden">
+  <div class="subscriber-header">
+    <svg class="logo-svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="#ffffff" opacity="0.15"/>
+      <path d="M50 20 L80 40 L80 75 L20 75 L20 40 Z" fill="#ffffff"/>
+      <path d="M50 20 L80 40 L50 60 L20 40 Z" fill="#ffffff" opacity="0.85"/>
+      <rect x="42" y="55" width="16" height="20" fill="#1e6fd9"/>
+      <circle cx="50" cy="42" r="4" fill="#1e6fd9"/>
+    </svg>
+    <h2 id="subWelcomeTitle">مرحباً بك</h2>
+    <p>هذه صفحتك الخاصة - محمية بكودك ومرتبطة بجهازك</p>
+    <div class="master-code-label">الكود الخاص بك</div>
+    <div class="master-code" id="masterCode">#00000</div>
+    <div class="device-badge">
+      <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+      <span>مرتبط بهذا الجهاز</span>
+    </div>
+  </div>
+
+  <button id="zoomBtn" class="btn-zoom hidden" onclick="openZoomLink()">
+    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+    <div class="zoom-text">
+      <span class="zoom-text-main" id="zoomBtnText">الدخول إلى المحاضرة المباشرة</span>
+      <span class="zoom-text-sub">اضغط للانضمام الآن</span>
+    </div>
+  </button>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+      <h2 class="card-title" style="border:none;margin:0;padding:0">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>
+        اشتراكي
+      </h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-purple btn-sm" onclick="refreshSubscriber()">تحديث</button>
+        <button class="btn btn-ghost btn-sm" onclick="logoutSubscriber()">خروج</button>
+      </div>
+    </div>
+    <div id="subsContainer"></div>
+  </div>
+
+  <div class="footer">جميع الحقوق محفوظة © لدى المطور احمد الجابري </div>
+</div>
+
+<!-- ============ لوحة الإدارة ============ -->
+<div id="adminPage" class="container hidden">
+  <div class="card">
+    <div class="admin-header">
+      <h2 class="card-title" style="border:none;margin:0;padding:0">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        لوحة الإدارة
+      </h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-warning btn-sm" onclick="exportData()">تصدير CSV</button>
+        <button class="btn btn-blue btn-sm" onclick="renderAdmin()">تحديث</button>
+        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">خروج</button>
+      </div>
     </div>
 
-    <script>
-        var API_KEY = 'AQ.Ab8RN6K0T5DTdTlv5H-GP3ni-BRwLGGxohfzkRxb3_5MMKdQJQ';
-        var API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-        var PROXY_URL = 'https://api.allorigins.win/raw?url=';
-        var conversationHistory = [];
-        var isProcessing = false;
-        
-        var sendBtn = document.getElementById('sendBtn');
-        var userInput = document.getElementById('userInput');
-        var messagesDiv = document.getElementById('messages');
-        
-        console.log('🚀 VACT جاهز');
-        
-        sendBtn.addEventListener('click', function() {
-            console.log('زر الإرسال تم الضغط عليه');
-            sendMessage();
+    <div id="zoomAdminWrap"></div>
+
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" id="searchInput" placeholder="ابحث بالاسم أو الكود (#12345) أو رقم الهاتف..." oninput="handleSearch(this.value)">
+      <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="search-hint">البحث يعمل في كل التبويبات</div>
+
+    <div class="admin-tabs" id="adminTabsWrap">
+      <button class="admin-tab tab-pending" id="tabPendingBtn" onclick="switchTab('pending')">
+        قيد الانتظار
+        <span class="tab-count" id="tabPendingCount">0</span>
+      </button>
+      <button class="admin-tab tab-accepted" id="tabAcceptedBtn" onclick="switchTab('accepted')">
+        النشطة
+        <span class="tab-count" id="tabAcceptedCount">0</span>
+      </button>
+      <button class="admin-tab tab-rejected" id="tabRejectedBtn" onclick="switchTab('rejected')">
+        المرفوضة
+        <span class="tab-count" id="tabRejectedCount">0</span>
+      </button>
+      <button class="admin-tab" id="tabStoppedBtn" onclick="switchTab('stopped')">
+        الموقوفة
+        <span class="tab-count" id="tabStoppedCount">0</span>
+      </button>
+      <button class="admin-tab tab-messages" id="tabMessagesBtn" onclick="switchTab('messages')">
+        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        الرسائل
+        <span class="tab-count" id="tabMessagesCount">0</span>
+      </button>
+    </div>
+
+    <div id="adminCards" style="margin-top:10px"></div>
+
+    <div class="empty-state hidden" id="emptyState">
+      <svg class="empty-svg" viewBox="0 0 24 24"><path fill="#5a6c85" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+      <p id="emptyStateText">لا توجد طلبات في هذا القسم</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ صفحة إشعارات الإدارة ============ -->
+<div id="notifPage" class="container hidden">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+      <h2 class="card-title" style="border:none;margin:0;padding:0">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        إشعارات الإدارة (<span id="notifCount">0</span>)
+      </h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-blue btn-sm" onclick="markAllRead()">تعليم الكل كمقروء</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllNotifs()">حذف الكل</button>
+        <button class="btn btn-ghost btn-sm" onclick="backToAdmin()">رجوع</button>
+      </div>
+    </div>
+    <div id="notifContainer"></div>
+    <div class="empty-state hidden" id="notifEmpty">
+      <svg class="empty-svg" viewBox="0 0 24 24"><path fill="#5a6c85" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      <p>لا توجد إشعارات حالياً</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ الأزرار العائمة للمشترك ============ -->
+<div class="floating-buttons-wrap hidden" id="floatingButtons">
+  <button id="subsChatBtn" class="float-btn chat-float-btn" onclick="toggleChatPanel()" title="التواصل مع الإدارة">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+    <span class="float-badge hidden" id="chatBadge">0</span>
+  </button>
+  <button id="subsNotifBtn" class="float-btn notif-float-btn" onclick="toggleSubsNotifPanel()" title="الإشعارات">
+    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+    <span class="float-badge hidden" id="subsNotifBadge">0</span>
+  </button>
+</div>
+
+<!-- ============ لوحة إشعارات المشترك ============ -->
+<div id="subsNotifPanel" class="subs-notif-panel">
+  <div class="subs-notif-panel-header">
+    <div class="subs-notif-panel-title">
+      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      إشعاراتي (<span id="subsPanelCount">0</span>)
+    </div>
+    <button class="subs-notif-panel-close" onclick="closeSubsNotifPanel()">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+  <div class="subs-notif-panel-actions">
+    <button class="btn btn-blue btn-sm" style="flex:1" onclick="markAllSubsNotifsRead()">تعليم الكل كمقروء</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="clearAllSubsNotifs()">حذف الكل</button>
+  </div>
+  <div class="subs-notif-panel-body" id="subsNotifPanelBody"></div>
+</div>
+
+<!-- ============ لوحة دردشة المشترك ============ -->
+<div id="chatPanel" class="chat-panel">
+  <div class="chat-panel-header">
+    <div class="chat-panel-title">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      التواصل مع الإدارة
+    </div>
+    <button class="chat-panel-close" onclick="closeChatPanel()">
+      <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+  <div class="chat-panel-subtitle">سيتم الرد عليك من قبل الإدارة في أقرب وقت</div>
+  <div class="chat-panel-body" id="chatPanelBody"></div>
+  <div class="chat-input-area">
+    <textarea id="chatInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
+    <button class="chat-send-btn" onclick="sendChatMessage()" title="إرسال">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+
+<!-- ============ نافذة دخول الإدارة ============ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+    <h3 class="modal-title">
+      <svg class="icon-svg" style="fill:#1e6fd9" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+      دخول لوحة التحكم
+    </h3>
+    <div id="settingsAlert" class="alert"></div>
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <input type="text" id="adminUser" placeholder="اسم المستخدم" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="adminPass" placeholder="••••••••" autocomplete="off">
+    </div>
+    <button class="btn btn-blue" style="width:100%" onclick="loginAdmin()">دخول</button>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px;background:transparent;color:#5a6c85;border:1.5px solid var(--border)" onclick="closeSettingsModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- ============ نافذة الرسالة المخصصة ============ -->
+<div class="modal-overlay" id="msgModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMsgModal()">✕</button>
+    <h3 class="modal-title">
+      <svg class="icon-svg" style="fill:#7048e8" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      إرسال رسالة مخصصة
+    </h3>
+    <div id="msgAlert" class="alert"></div>
+    <div style="background:var(--blue-light);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13px">
+      <strong>إلى:</strong> <span id="msgTargetName"></span> <span id="msgTargetCode" style="font-family:monospace;color:var(--blue-dark)"></span>
+    </div>
+    <div class="form-group">
+      <label>عنوان الرسالة</label>
+      <input type="text" id="msgTitle" placeholder="مثال: موعد المحاضرة القادمة" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label>نص الرسالة</label>
+      <textarea id="msgBody" rows="5" placeholder="اكتب رسالتك هنا..."></textarea>
+    </div>
+    <button class="btn btn-purple" style="width:100%" onclick="sendCustomMessage()">
+      <svg class="icon-svg" style="fill:#fff" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      إرسال الرسالة
+    </button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="closeMsgModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- ============ نافذة رابط Zoom ============ -->
+<div class="modal-overlay" id="zoomModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeZoomModal()">✕</button>
+    <h3 class="modal-title">
+      <svg class="icon-svg" style="fill:#ff6b1a" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      رابط تطبيق المحاضرات (Zoom)
+    </h3>
+    <p style="font-size:13px;color:#5a6c85;margin-bottom:14px;text-align:center">الرابط الذي سيظهر للمشتركين للدخول المباشر</p>
+    <div class="form-group">
+      <label>الرابط</label>
+      <input type="url" id="zoomLinkInput" placeholder="https://zoom.us/j/123456789" style="direction:ltr;font-family:'Courier New',monospace">
+    </div>
+    <div class="form-group">
+      <label>نص الزر (اختياري)</label>
+      <input type="text" id="zoomLabelInput" placeholder="الدخول إلى المحاضرة المباشرة" maxlength="40">
+    </div>
+    <button class="btn btn-blue" style="width:100%" onclick="saveZoomLink()">حفظ الرابط</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="clearZoomLink()">حذف الرابط</button>
+  </div>
+</div>
+<script>
+/* ============ الثوابت ============ */
+const ADMIN_USER = "1";
+const ADMIN_PASS = "aa";
+
+/* ============ المتغيرات العامة ============ */
+let registrations = [];
+let notifications = [];
+let subsNotifications = [];
+let chatMessages = [];
+let settings = {};
+let selectedPlan = null;
+let currentMasterCode = localStorage.getItem('currentMasterCode');
+let currentAdminTab = 'pending';
+let msgTargetId = null;
+let currentSearchQuery = '';
+let currentAdminChatCode = null;
+let draftEdits = {};
+let fbReady = false;
+
+/* ============ انتظار جاهزية Firebase ============ */
+window.addEventListener('fb-ready', () => {
+  fbReady = true;
+  console.log('🔥 Firebase Ready');
+});
+
+/* ============ مساعدات Firebase ============ */
+async function fbAdd(col, data) {
+  const { addDoc, collection, serverTimestamp } = window.__fbFns;
+  const { db } = window.__fb;
+  return await addDoc(collection(db, col), { ...data, createdAt: serverTimestamp() });
+}
+
+async function fbUpdate(col, fbId, data) {
+  const { doc, updateDoc } = window.__fbFns;
+  const { db } = window.__fb;
+  return await updateDoc(doc(db, col, fbId), data);
+}
+
+async function fbDelete(col, fbId) {
+  const { doc, deleteDoc } = window.__fbFns;
+  const { db } = window.__fb;
+  return await deleteDoc(doc(db, col, fbId));
+}
+
+async function fbGetAll(col) {
+  const { collection, getDocs } = window.__fbFns;
+  const { db } = window.__fb;
+  const snap = await getDocs(collection(db, col));
+  return snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+}
+
+/* ============ معرّف الجهاز ============ */
+function generateDeviceId() {
+  let deviceId = localStorage.getItem('myDeviceId');
+  if (!deviceId) {
+    const nav = window.navigator;
+    const screenInfo = window.screen.width + 'x' + window.screen.height;
+    const seed = (nav.userAgent || '') + '|' + (nav.language || '') + '|' + screenInfo + '|' + Date.now() + '|' + Math.random();
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      const c = seed.charCodeAt(i);
+      hash = ((hash << 5) - hash) + c;
+      hash = hash & hash;
+    }
+    deviceId = 'DEV-' + Math.abs(hash).toString(36).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem('myDeviceId', deviceId);
+  }
+  return deviceId;
+}
+
+function getDeviceName() {
+  const ua = navigator.userAgent;
+  let browser = 'متصفح';
+  let os = 'جهاز';
+  if (/Chrome/.test(ua) && !/Edge|OPR/.test(ua)) browser = 'Chrome';
+  else if (/Firefox/.test(ua)) browser = 'Firefox';
+  else if (/Safari/.test(ua)) browser = 'Safari';
+  else if (/Edge/.test(ua)) browser = 'Edge';
+  else if (/OPR|Opera/.test(ua)) browser = 'Opera';
+  if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Mac/.test(ua)) os = 'Mac';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/iPhone|iPad/.test(ua)) os = 'iOS';
+  return browser + ' - ' + os;
+}
+
+const MY_DEVICE_ID = generateDeviceId();
+
+/* ============ الصوت ============ */
+let audioCtx = null;
+function playNotifSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    let notes;
+    if (type === 'accepted') notes = [{freq:523.25,t:0},{freq:659.25,t:0.12},{freq:783.99,t:0.24},{freq:1046.5,t:0.36}];
+    else if (type === 'rejected') notes = [{freq:440,t:0},{freq:349.23,t:0.15},{freq:261.63,t:0.3}];
+    else if (type === 'message') notes = [{freq:659.25,t:0},{freq:880,t:0.15}];
+    else if (type === 'stopped') notes = [{freq:440,t:0},{freq:440,t:0.18}];
+    else notes = [{freq:587.33,t:0},{freq:880,t:0.12}];
+    notes.forEach(n => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = n.freq;
+      gain.gain.setValueAtTime(0, now + n.t);
+      gain.gain.linearRampToValueAtTime(0.15, now + n.t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + 0.35);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now + n.t); osc.stop(now + n.t + 0.4);
+    });
+  } catch(e){}
+}
+
+/* ============ التوست ============ */
+function showToast(msg, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  const iconPath = type === 'success'
+    ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
+    : type === 'warning'
+    ? 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'
+    : 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z';
+  toast.innerHTML = `<svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg><span>${msg}</span>`;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+
+/* ============ Popup إشعار ============ */
+function showPopupNotif(status, title, desc) {
+  const popup = document.createElement('div');
+  popup.className = 'popup-notif ' + status;
+  const iconPath = {
+    accepted: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+    rejected: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+    stopped: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+    pending: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
+    message: 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'
+  }[status];
+  popup.innerHTML = `
+    <div class="popup-notif-icon"><svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg></div>
+    <div class="popup-notif-content">
+      <div class="popup-notif-title">${escapeHtml(title)}</div>
+      <div class="popup-notif-desc">${escapeHtml(desc)}</div>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  playNotifSound(status);
+  requestAnimationFrame(() => popup.classList.add('show'));
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => popup.remove(), 500);
+  }, 5500);
+}
+
+/* ============ أدوات مساعدة ============ */
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function formatDate(d) {
+  if (!d) return '-';
+  const date = new Date(d);
+  return date.toLocaleDateString('ar-IQ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1).toString().padStart(2,'0') + '-' + d.getDate().toString().padStart(2,'0');
+}
+
+function getDaysLeft(r) {
+  const start = r.startDate ? new Date(r.startDate) : new Date();
+  const end = r.endDate ? new Date(r.endDate) : new Date(start.getTime() + (r.days || 30) * 86400000);
+  const totalDays = Math.ceil((end - start) / 86400000);
+  const daysLeft = Math.max(0, Math.ceil((end - new Date()) / 86400000));
+  return { days: daysLeft, total: totalDays, start, end };
+}
+
+/* ============ التنقل ============ */
+function showPage(id) {
+  ['loadingPage','mainPage','subscriberPage','adminPage','notifPage','deviceLockPage'].forEach(p => {
+    const el = document.getElementById(p);
+    if (el) el.classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+  const floatingBtns = document.getElementById('floatingButtons');
+  if (id === 'subscriberPage') {
+    floatingBtns.classList.remove('hidden');
+    updateSubsNotifBadge();
+    updateChatBadge();
+  } else {
+    floatingBtns.classList.add('hidden');
+    closeSubsNotifPanel();
+    closeChatPanel();
+  }
+}
+
+/* ============ توليد كود ============ */
+function generateMasterCode() {
+  let code;
+  do { code = '#' + Math.floor(10000 + Math.random() * 90000); }
+  while (registrations.some(r => r.masterCode === code));
+  return code;
+}
+
+/* ============ إشعارات الإدارة ============ */
+async function addNotification(type, title, desc, regId) {
+  await fbAdd('notifications', {
+    type, title, desc: desc, regId: regId || null, read: false,
+    time: new Date().toLocaleString('ar-IQ')
+  });
+  playNotifSound(type === 'new' ? 'message' : type);
+}
+
+function updateNotifBadge() {
+  const unread = notifications.filter(n => !n.read).length;
+  const badge = document.getElementById('notifBadge');
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 99 ? '99+' : unread;
+    badge.classList.remove('hidden');
+  } else badge.classList.add('hidden');
+}
+
+/* ============ إشعارات المشترك ============ */
+async function addSubsNotification(masterCode, status, title, desc, regId) {
+  await fbAdd('subsNotifications', {
+    masterCode, status, title, desc: desc, regId: regId || null, read: false,
+    time: new Date().toLocaleString('ar-IQ')
+  });
+}
+
+function updateSubsNotifBadge() {
+  if (!currentMasterCode) return;
+  const unread = subsNotifications.filter(n => n.masterCode === currentMasterCode && !n.read && n.status !== 'chat').length;
+  const badge = document.getElementById('subsNotifBadge');
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 99 ? '99+' : unread;
+    badge.classList.remove('hidden');
+  } else badge.classList.add('hidden');
+}
+
+/* ============ الدردشة ============ */
+async function addChatMessage(masterCode, sender, text) {
+  await fbAdd('chatMessages', {
+    masterCode: masterCode,
+    sender: sender,
+    text: text,
+    readByAdmin: sender === 'admin',
+    readBySub: sender === 'subscriber',
+    time: new Date().toLocaleString('ar-IQ')
+  });
+}
+
+function updateChatBadge() {
+  if (!currentMasterCode) return;
+  const unread = chatMessages.filter(m => m.masterCode === currentMasterCode && m.sender === 'admin' && !m.readBySub).length;
+  const badge = document.getElementById('chatBadge');
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 99 ? '99+' : unread;
+    badge.classList.remove('hidden');
+  } else badge.classList.add('hidden');
+}
+
+function updateAdminChatBadge() {
+  const unreadCount = chatMessages.filter(m => m.sender === 'subscriber' && !m.readByAdmin).length;
+  const el = document.getElementById('tabMessagesCount');
+  if (el) el.textContent = unreadCount;
+}
+
+/* ============ اختيار خطة ============ */
+document.querySelectorAll('#plans .plan').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#plans .plan').forEach(x => x.classList.remove('selected'));
+    p.classList.add('selected');
+    selectedPlan = {
+      months: parseInt(p.dataset.months),
+      price: parseInt(p.dataset.price),
+      days: parseInt(p.dataset.days),
+      lectures: parseInt(p.dataset.lectures)
+    };
+    document.getElementById('planErr').classList.remove('show');
+  });
+});
+
+/* ============ نموذج التسجيل ============ */
+document.getElementById('regForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const age = parseInt(document.getElementById('age').value);
+  const gov = document.getElementById('gov').value;
+  const phone = document.getElementById('phone').value.trim();
+
+  let ok = true;
+  if (name.length < 2) { markErr('name','nameErr',true); ok=false; } else markErr('name','nameErr',false);
+  if (!age || age < 5 || age > 15) { markErr('age','ageErr',true); ok=false; } else markErr('age','ageErr',false);
+  if (!gov) { markErr('gov','govErr',true); ok=false; } else markErr('gov','govErr',false);
+  if (!/^07\d{9}$/.test(phone)) { markErr('phone','phoneErr',true); ok=false; } else markErr('phone','phoneErr',false);
+  if (!selectedPlan) { document.getElementById('planErr').classList.add('show'); ok=false; } else document.getElementById('planErr').classList.remove('show');
+
+  if (!ok) { showToast('يرجى تعبئة جميع الحقول', 'error'); return; }
+
+  const masterCode = generateMasterCode();
+  const now = Date.now();
+  const endDate = now + selectedPlan.days * 86400000;
+
+  const reg = {
+    masterCode,
+    name, age, gov, phone,
+    months: selectedPlan.months,
+    price: selectedPlan.price,
+    days: selectedPlan.days,
+    totalLectures: selectedPlan.lectures,
+    usedLectures: 0,
+    lastLectureDate: null,
+    startTimestamp: now,
+    startDate: new Date(now).toISOString(),
+    endDate: new Date(endDate).toISOString(),
+    status: 'pending',
+    date: new Date().toLocaleString('ar-IQ'),
+    deviceId: MY_DEVICE_ID,
+    deviceName: getDeviceName(),
+    deviceBoundAt: new Date().toISOString()
+  };
+
+  try {
+    await fbAdd('registrations', reg);
+    await addNotification('new', 'اشتراك جديد', `تم تسجيل الطالب "${name}" من ${gov} - كود: ${masterCode}`, null);
+
+    currentMasterCode = masterCode;
+    localStorage.setItem('currentMasterCode', masterCode);
+
+    showToast('تم إرسال الطلب! كودك: ' + masterCode, 'success');
+
+    e.target.reset();
+    document.querySelectorAll('#plans .plan').forEach(x => x.classList.remove('selected'));
+    selectedPlan = null;
+
+    setTimeout(() => {
+      renderSubscriberPage();
+      showPage('subscriberPage');
+    }, 700);
+  } catch(err) {
+    console.error(err);
+    showToast('فشل الاتصال بالسيرفر', 'error');
+  }
+});
+
+function markErr(inputId, errId, isErr) {
+  document.getElementById(inputId).classList.toggle('error', isErr);
+  document.getElementById(errId).classList.toggle('show', isErr);
+}
+
+/* ============ تسجيل دخول بالكود ============ */
+function toggleActiveCheck() {
+  const wrap = document.getElementById('activeCheckWrap');
+  wrap.classList.toggle('hidden');
+  if (!wrap.classList.contains('hidden')) {
+    setTimeout(() => document.getElementById('lookupCode').focus(), 100);
+  }
+}
+
+async function lookupSubscription() {
+  const code = document.getElementById('lookupCode').value.trim();
+  const err = document.getElementById('lookupErr');
+
+  if (!/^#\d{5}$/.test(code)) {
+    err.textContent = 'الرجاء إدخال كود صحيح';
+    err.classList.add('show');
+    showToast('كود غير صحيح', 'error');
+    return;
+  }
+
+  const reg = registrations.find(r => r.masterCode === code);
+  if (!reg) {
+    err.textContent = 'لم يتم العثور على اشتراك بهذا الكود';
+    err.classList.add('show');
+    showToast('لم يتم العثور على الاشتراك', 'error');
+    return;
+  }
+
+  if (reg.deviceId && reg.deviceId !== MY_DEVICE_ID) {
+    err.classList.remove('show');
+    document.getElementById('lockedCode').textContent = code;
+    document.getElementById('currentDeviceId').textContent = MY_DEVICE_ID;
+    document.getElementById('lookupCode').value = '';
+    document.getElementById('activeCheckWrap').classList.add('hidden');
+    showPage('deviceLockPage');
+    return;
+  }
+
+  if (!reg.deviceId) {
+    try {
+      await fbUpdate('registrations', reg.fbId, {
+        deviceId: MY_DEVICE_ID,
+        deviceName: getDeviceName(),
+        deviceBoundAt: new Date().toISOString()
+      });
+    } catch(e) { console.error(e); }
+  }
+
+  err.classList.remove('show');
+  currentMasterCode = code;
+  localStorage.setItem('currentMasterCode', code);
+  document.getElementById('lookupCode').value = '';
+  document.getElementById('activeCheckWrap').classList.add('hidden');
+
+  showToast('مرحباً بك مجدداً!', 'success');
+  renderSubscriberPage();
+  showPage('subscriberPage');
+  setTimeout(() => { checkForNewSubsNotifs(true); }, 800);
+}
+
+function backFromDeviceLock() {
+  showPage('mainPage');
+}
+
+/* ============ عرض صفحة المشترك ============ */
+function renderSubscriberPage() {
+  if (!currentMasterCode) return;
+
+  const r = registrations.find(x => x.masterCode === currentMasterCode);
+  if (!r) { logoutSubscriber(); return; }
+
+  document.getElementById('masterCode').textContent = currentMasterCode;
+  document.getElementById('subWelcomeTitle').textContent = 'مرحباً ' + r.name;
+
+  const hasAccepted = r.status === 'accepted';
+  const zoomBtn = document.getElementById('zoomBtn');
+  if (settings.zoomLink && settings.zoomLink.trim() && hasAccepted) {
+    zoomBtn.classList.remove('hidden');
+    document.getElementById('zoomBtnText').textContent = settings.zoomLabel || 'الدخول إلى المحاضرة المباشرة';
+  } else {
+    zoomBtn.classList.add('hidden');
+  }
+
+  updateSubsNotifBadge();
+  updateChatBadge();
+  if (document.getElementById('subsNotifPanel').classList.contains('show')) renderSubsNotifPanel();
+  if (document.getElementById('chatPanel').classList.contains('show')) renderChatPanel();
+
+  const container = document.getElementById('subsContainer');
+  container.innerHTML = '';
+
+  const statusMessages = {
+    pending: { text: 'اشتراكك قيد المراجعة من قبل الإدارة', icon: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z' },
+    accepted: { text: 'مبروك! تم قبول اشتراكك وتفعيله بنجاح', icon: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' },
+    rejected: { text: 'تم رفض طلب الاشتراك. يرجى التواصل مع الإدارة', icon: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' },
+    stopped: { text: 'تم إيقاف اشتراكك مؤقتاً. يرجى التواصل مع الإدارة', icon: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z' }
+  };
+
+  const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف' }[r.status] || r.status;
+  const statusIcon = statusMessages[r.status].icon;
+  const daysInfo = getDaysLeft(r);
+  const daysPassed = daysInfo.total - daysInfo.days;
+  const dayPct = daysInfo.total > 0 ? (daysPassed / daysInfo.total) * 100 : 0;
+
+  let dayClass = '';
+  if (daysInfo.days === 0) dayClass = 'expired';
+  else if (daysInfo.days <= 5) dayClass = 'warning';
+
+  const card = document.createElement('div');
+  card.className = 'sub-card ' + r.status;
+  card.innerHTML = `
+    <div class="sub-card-head">
+      <div class="sub-card-name"><span>${escapeHtml(r.name)}</span></div>
+      <span class="status-badge ${r.status}">
+        <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="${statusIcon}"/></svg>
+        ${statusText}
+      </span>
+    </div>
+    <div class="sub-card-body">
+      <div class="sub-info">
+        <div class="sub-info-label">مدة الاشتراك</div>
+        <div class="sub-info-value">${r.months} ${r.months === 1 ? 'شهر' : r.months === 2 ? 'شهران' : 'أشهر'} (${daysInfo.total} يوم)</div>
+      </div>
+      <div class="sub-info">
+        <div class="sub-info-label">تاريخ البدء</div>
+        <div class="sub-info-value">${formatDate(daysInfo.start)}</div>
+      </div>
+      <div class="sub-status-msg ${r.status}">
+        <svg viewBox="0 0 24 24"><path d="${statusIcon}"/></svg>
+        <span>${statusMessages[r.status].text}</span>
+      </div>
+      <div class="days-wrap">
+        <div class="days-head">
+          <span>الأيام المتبقية من الاشتراك</span>
+          <span class="days-count-badge ${dayClass}">${daysInfo.days === 0 ? 'انتهى' : daysInfo.days + ' يوم'}</span>
+        </div>
+        <div class="days-bar"><div class="days-fill ${dayClass}" style="width:${Math.min(100, dayPct)}%"></div></div>
+        <div class="days-info">
+          <div class="days-info-item">
+            <span class="label">البدء</span>
+            <span class="value" style="font-size:12px">${formatDate(daysInfo.start)}</span>
+          </div>
+          <div class="days-info-item">
+            <span class="label">الانتهاء</span>
+            <span class="value" style="font-size:12px">${formatDate(daysInfo.end)}</span>
+          </div>
+          <div class="days-info-item">
+            <span class="label">الأيام الكلية</span>
+            <span class="value">${daysInfo.total}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+}
+
+function refreshSubscriber() {
+  renderSubscriberPage();
+  showToast('تم تحديث بياناتك', 'success');
+  checkForNewSubsNotifs(true);
+}
+
+function logoutSubscriber() {
+  localStorage.removeItem('currentMasterCode');
+  currentMasterCode = null;
+  showPage('mainPage');
+  showToast('تم تسجيل الخروج', 'success');
+}
+
+/* ============ دخول الزوم ============ */
+async function openZoomLink() {
+  if (!settings.zoomLink) {
+    showToast('لا يوجد رابط متاح', 'error');
+    return;
+  }
+
+  const r = registrations.find(x => x.masterCode === currentMasterCode);
+  if (!r) return;
+
+  if (r.status !== 'accepted') {
+    showToast('يجب أن يكون اشتراكك مقبولاً للانضمام', 'error');
+    return;
+  }
+
+  const today = todayKey();
+  if (r.lastLectureDate !== today) {
+    const total = r.totalLectures || 0;
+    const used = r.usedLectures || 0;
+    if (used < total) {
+      try {
+        await fbUpdate('registrations', r.fbId, {
+          usedLectures: used + 1,
+          lastLectureDate: today
         });
-        
-        userInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                console.log('Enter تم الضغط على');
-                sendMessage();
-            }
-        });
-        
-        function addMessage(role, text) {
-            var div = document.createElement('div');
-            div.className = 'message ' + (role === 'user' ? 'user' : 'assistant');
-            var avatar = role === 'user' ? '👤' : '🤖';
-            var formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            div.innerHTML = '<div class="message-avatar">' + avatar + '</div>' +
-                           '<div class="message-content">' + formatted + '</div>';
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        await addNotification('message', 'دخول محاضرة', `الطالب "${r.name}" (كود ${currentMasterCode}) دخل المحاضرة`, null);
+      } catch(e) { console.error(e); }
+    }
+  }
+
+  setTimeout(() => {
+    window.location.href = settings.zoomLink;
+  }, 300);
+}
+
+/* ============ فحص الإشعارات الجديدة ============ */
+function checkForNewSubsNotifs(showPopup) {
+  if (!currentMasterCode) return;
+  const unread = subsNotifications.filter(n => n.masterCode === currentMasterCode && !n.read && n.status !== 'chat');
+  if (unread.length > 0 && showPopup) {
+    const latest = unread[0];
+    showPopupNotif(latest.status, latest.title, latest.desc);
+  }
+}
+
+/* ============ لوحة إشعارات المشترك ============ */
+function toggleSubsNotifPanel() {
+  const panel = document.getElementById('subsNotifPanel');
+  const overlay = document.getElementById('overlay');
+  if (panel.classList.contains('show')) {
+    closeSubsNotifPanel();
+  } else {
+    closeChatPanel();
+    renderSubsNotifPanel();
+    panel.classList.add('show');
+    overlay.classList.add('show');
+    setTimeout(async () => {
+      const unread = subsNotifications.filter(n => n.masterCode === currentMasterCode && !n.read);
+      for (const n of unread) {
+        try { await fbUpdate('subsNotifications', n.fbId, { read: true }); } catch(e){}
+      }
+    }, 2000);
+  }
+}
+
+function closeSubsNotifPanel() {
+  document.getElementById('subsNotifPanel').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function closeAllPanels() {
+  closeSubsNotifPanel();
+  closeChatPanel();
+}
+
+function renderSubsNotifPanel() {
+  const container = document.getElementById('subsNotifPanelBody');
+  const myNotifs = subsNotifications.filter(n => n.masterCode === currentMasterCode);
+  document.getElementById('subsPanelCount').textContent = myNotifs.length;
+
+  if (myNotifs.length === 0) {
+    container.innerHTML = `
+      <div class="subs-notif-empty">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <p>لا توجد إشعارات حالياً</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  myNotifs.forEach(n => {
+    const iconPath = {
+      accepted: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+      rejected: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+      stopped: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+      pending: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
+      message: 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'
+    }[n.status] || 'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z';
+
+    const item = document.createElement('div');
+    item.className = 'subs-notif-item ' + (n.read ? 'read' : 'unread');
+    item.innerHTML = `
+      <div class="subs-notif-icon"><svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg></div>
+      <div class="subs-notif-body">
+        <div class="subs-notif-title">${escapeHtml(n.title)} ${!n.read ? '<span class="subs-notif-new">جديد</span>' : ''}</div>
+        <div class="subs-notif-desc">${escapeHtml(n.desc || n.description || '')}</div>
+        <div class="subs-notif-time">${n.time || ''}</div>
+      </div>
+      <button class="subs-notif-del" onclick="deleteSubsNotif('${n.fbId}')" title="حذف">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    `;
+    container.appendChild(item);
+  });
+}
+
+async function deleteSubsNotif(fbId) {
+  try {
+    await fbDelete('subsNotifications', fbId);
+    showToast('تم حذف الإشعار', 'success');
+  } catch(e) { showToast('فشل الحذف', 'error'); }
+}
+
+async function markAllSubsNotifsRead() {
+  const unread = subsNotifications.filter(n => n.masterCode === currentMasterCode && !n.read);
+  for (const n of unread) {
+    try { await fbUpdate('subsNotifications', n.fbId, { read: true }); } catch(e){}
+  }
+  showToast('تم تعليم الكل كمقروء', 'success');
+}
+
+async function clearAllSubsNotifs() {
+  if (!confirm('حذف جميع الإشعارات؟')) return;
+  const my = subsNotifications.filter(n => n.masterCode === currentMasterCode);
+  for (const n of my) {
+    try { await fbDelete('subsNotifications', n.fbId); } catch(e){}
+  }
+  showToast('تم حذف جميع الإشعارات', 'success');
+}
+
+/* ============ دردشة المشترك ============ */
+function toggleChatPanel() {
+  const panel = document.getElementById('chatPanel');
+  const overlay = document.getElementById('overlay');
+  if (panel.classList.contains('show')) {
+    closeChatPanel();
+  } else {
+    closeSubsNotifPanel();
+    renderChatPanel();
+    panel.classList.add('show');
+    overlay.classList.add('show');
+    setTimeout(async () => {
+      const unread = chatMessages.filter(m => m.masterCode === currentMasterCode && m.sender === 'admin' && !m.readBySub);
+      for (const m of unread) {
+        try { await fbUpdate('chatMessages', m.fbId, { readBySub: true }); } catch(e){}
+      }
+    }, 1000);
+  }
+}
+
+function closeChatPanel() {
+  document.getElementById('chatPanel').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function renderChatPanel() {
+  const container = document.getElementById('chatPanelBody');
+  const myMessages = chatMessages.filter(m => m.masterCode === currentMasterCode);
+
+  if (myMessages.length === 0) {
+    container.innerHTML = `
+      <div class="chat-empty">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <p>لا توجد رسائل بعد</p>
+        <p style="font-size:12px;color:#8b9bb4;margin-top:5px">اكتب رسالتك للإدارة وسيتم الرد عليك</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  myMessages.forEach(m => {
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + (m.sender === 'subscriber' ? 'mine' : 'theirs');
+    bubble.innerHTML = `${escapeHtml(m.text)}<span class="bubble-time">${m.time || ''}</span>`;
+    container.appendChild(bubble);
+  });
+  setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !currentMasterCode) return;
+
+  try {
+    await addChatMessage(currentMasterCode, 'subscriber', text);
+    input.value = '';
+    input.style.height = 'auto';
+  } catch(e) { showToast('فشل الإرسال', 'error'); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const chatInput = document.getElementById('chatInput');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    });
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
+});
+
+/* ============ الإعدادات ============ */
+function openSettingsModal() {
+  document.getElementById('settingsModal').classList.add('show');
+  document.getElementById('settingsAlert').classList.remove('show');
+}
+function closeSettingsModal() {
+  document.getElementById('settingsModal').classList.remove('show');
+  document.getElementById('adminUser').value = '';
+  document.getElementById('adminPass').value = '';
+}
+document.getElementById('settingsModal').addEventListener('click', e => {
+  if (e.target.id === 'settingsModal') closeSettingsModal();
+});
+
+/* ============ دخول الإدارة ============ */
+function loginAdmin() {
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    closeSettingsModal();
+    showPage('adminPage');
+    document.getElementById('notifBtn').classList.remove('hidden');
+    updateNotifBadge();
+    currentSearchQuery = '';
+    draftEdits = {};
+    const si = document.getElementById('searchInput');
+    if (si) si.value = '';
+    const cb = document.getElementById('clearSearchBtn');
+    if (cb) cb.classList.remove('show');
+    switchTab('pending');
+    showToast('مرحباً بك', 'success');
+  } else {
+    const a = document.getElementById('settingsAlert');
+    a.textContent = 'بيانات الدخول غير صحيحة';
+    a.className = 'alert show alert-danger';
+    setTimeout(() => a.classList.remove('show'), 2500);
+    showToast('بيانات خاطئة', 'error');
+  }
+}
+
+function logoutAdmin() {
+  document.getElementById('notifBtn').classList.add('hidden');
+  showPage('mainPage');
+  showToast('تم الخروج', 'success');
+}
+
+function switchTab(tab) {
+  currentAdminTab = tab;
+  ['pending','accepted','rejected','stopped','messages'].forEach(t => {
+    const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1) + 'Btn');
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  const searchBox = document.querySelector('.search-box');
+  const searchHint = document.querySelector('.search-hint');
+  if (tab === 'messages') {
+    searchBox.style.display = 'none';
+    searchHint.style.display = 'none';
+  } else {
+    searchBox.style.display = 'block';
+    searchHint.style.display = 'block';
+  }
+  renderAdmin();
+}
+
+function handleSearch(query) {
+  currentSearchQuery = query.trim();
+  const clearBtn = document.getElementById('clearSearchBtn');
+  if (currentSearchQuery.length > 0) clearBtn.classList.add('show');
+  else clearBtn.classList.remove('show');
+  renderAdmin();
+}
+
+function clearSearch() {
+  currentSearchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearSearchBtn').classList.remove('show');
+  renderAdmin();
+}
+
+function matchSearch(r, query) {
+  if (!query) return true;
+  const q = query.toLowerCase().trim();
+  if (r.name && r.name.toLowerCase().includes(q)) return true;
+  const codeClean = (r.masterCode || '').replace('#', '').toLowerCase();
+  const qClean = q.replace('#', '');
+  if (codeClean.includes(qClean)) return true;
+  if (r.phone && r.phone.includes(q)) return true;
+  return false;
+}
+
+function highlightMatch(text, query) {
+  if (!query || !text) return text;
+  const q = query.replace('#', '').toLowerCase();
+  if (!q) return text;
+  const original = String(text);
+  const lower = original.toLowerCase();
+  const idx = lower.indexOf(q);
+  if (idx === -1) return original;
+  return original.substring(0, idx) +
+    '<mark style="background:#ffe066;color:#000;padding:1px 3px;border-radius:3px">' +
+    original.substring(idx, idx + q.length) +
+    '</mark>' +
+    original.substring(idx + q.length);
+}
+
+/* ============ الحفظ اليدوي (draftEdits) ============ */
+function hasDraft(fbId) {
+  return draftEdits[fbId] && Object.keys(draftEdits[fbId]).length > 0;
+}
+
+function setDraft(fbId, field, value) {
+  if (!draftEdits[fbId]) draftEdits[fbId] = {};
+  draftEdits[fbId][field] = value;
+  const r = registrations.find(x => x.fbId === fbId);
+  if (r && r[field] === value) {
+    delete draftEdits[fbId][field];
+    if (Object.keys(draftEdits[fbId]).length === 0) delete draftEdits[fbId];
+  }
+  renderAdmin();
+}
+
+async function saveDraft(fbId) {
+  const r = registrations.find(x => x.fbId === fbId);
+  if (!r) return;
+  const edits = draftEdits[fbId] || {};
+  if (Object.keys(edits).length === 0) return;
+
+  const updateData = { ...edits };
+
+  if (edits.days && (r.startDate || edits.startDate)) {
+    const start = edits.startDate ? new Date(edits.startDate) : new Date(r.startDate);
+    start.setHours(0, 0, 0, 0);
+    updateData.startDate = start.toISOString();
+    const end = new Date(start.getTime() + (parseInt(edits.days) || 0) * 86400000);
+    end.setHours(23, 59, 59, 999);
+    updateData.endDate = end.toISOString();
+  }
+
+  if (edits.startDate) {
+    const d = new Date(edits.startDate);
+    d.setHours(0, 0, 0, 0);
+    updateData.startDate = d.toISOString();
+    const days = parseInt(edits.days || r.days) || 30;
+    const end = new Date(d.getTime() + days * 86400000);
+    end.setHours(23, 59, 59, 999);
+    updateData.endDate = end.toISOString();
+  }
+
+  if (edits.endDate) {
+    const d = new Date(edits.endDate);
+    d.setHours(23, 59, 59, 999);
+    updateData.endDate = d.toISOString();
+  }
+
+  try {
+    await fbUpdate('registrations', fbId, updateData);
+    delete draftEdits[fbId];
+    showToast('تم حفظ التعديلات', 'success');
+  } catch(e) {
+    showToast('فشل الحفظ', 'error');
+  }
+}
+
+function cancelDraft(fbId) {
+  delete draftEdits[fbId];
+  renderAdmin();
+  showToast('تم إرجاع التعديلات', 'warning');
+}
+
+/* ============ تغيير الحالة ============ */
+async function setStatus(fbId, status) {
+  const r = registrations.find(x => x.fbId === fbId);
+  if (!r) return;
+
+  try {
+    await fbUpdate('registrations', fbId, { status });
+  } catch(e) { showToast('فشل التحديث', 'error'); return; }
+
+  const statusInfo = {
+    accepted: { admin: 'تم القبول', subsTitle: 'تم قبول اشتراكك', subsDesc: `مبروك! تم قبول اشتراك الطالب "${r.name}" بنجاح.` },
+    rejected: { admin: 'تم الرفض', subsTitle: 'تم رفض اشتراكك', subsDesc: `نأسف، تم رفض طلب اشتراك "${r.name}".` },
+    stopped: { admin: 'تم الإيقاف', subsTitle: 'تم إيقاف اشتراكك', subsDesc: `تم إيقاف اشتراك الطالب "${r.name}" مؤقتاً.` },
+    pending: { admin: 'تم إرجاع للانتظار', subsTitle: 'اشتراكك قيد المراجعة', subsDesc: `تم إرجاع اشتراك "${r.name}" لقيد الانتظار.` }
+  }[status];
+
+  await addNotification('status', statusInfo.admin, `الطالب "${r.name}" - كود: ${r.masterCode}`, null);
+  await addSubsNotification(r.masterCode, status, statusInfo.subsTitle, statusInfo.subsDesc, null);
+
+  showToast(statusInfo.admin, 'success');
+
+  if (currentMasterCode === r.masterCode) {
+    setTimeout(() => {
+      showPopupNotif(status, statusInfo.subsTitle, statusInfo.subsDesc);
+    }, 500);
+  }
+}
+
+/* ============ حذف مشترك ============ */
+async function delReg(fbId) {
+  if (!confirm('حذف هذا الاشتراك؟')) return;
+  try {
+    await fbDelete('registrations', fbId);
+    delete draftEdits[fbId];
+    showToast('تم الحذف', 'success');
+  } catch(e) { showToast('فشل الحذف', 'error'); }
+}
+
+/* ============ إعادة تعيين الجهاز ============ */
+async function resetDevice(fbId) {
+  const r = registrations.find(x => x.fbId === fbId);
+  if (!r) return;
+  if (!confirm(`إعادة تعيين الجهاز للطالب "${r.name}"؟`)) return;
+  try {
+    await fbUpdate('registrations', fbId, {
+      deviceId: null, deviceName: null, deviceBoundAt: null
+    });
+    showToast('تم إعادة تعيين الجهاز', 'success');
+  } catch(e) { showToast('فشل', 'error'); }
+}
+
+/* ============ إعادة تعيين آخر دخول ============ */
+async function resetLectureDate(fbId) {
+  try {
+    await fbUpdate('registrations', fbId, { lastLectureDate: null });
+    showToast('تم إعادة تعيين آخر دخول', 'success');
+  } catch(e) { showToast('فشل', 'error'); }
+}
+
+/* ============ نافذة الرسالة المخصصة ============ */
+function openMsgModal(fbId) {
+  const r = registrations.find(x => x.fbId === fbId);
+  if (!r) return;
+  msgTargetId = fbId;
+  document.getElementById('msgTargetName').textContent = r.name;
+  document.getElementById('msgTargetCode').textContent = ' - ' + r.masterCode;
+  document.getElementById('msgTitle').value = '';
+  document.getElementById('msgBody').value = '';
+  document.getElementById('msgModal').classList.add('show');
+}
+
+function closeMsgModal() {
+  document.getElementById('msgModal').classList.remove('show');
+  msgTargetId = null;
+}
+
+document.getElementById('msgModal').addEventListener('click', e => {
+  if (e.target.id === 'msgModal') closeMsgModal();
+});
+
+async function sendCustomMessage() {
+  const title = document.getElementById('msgTitle').value.trim();
+  const body = document.getElementById('msgBody').value.trim();
+  if (!title || title.length < 2) { showToast('أدخل عنوان الرسالة', 'error'); return; }
+  if (!body || body.length < 2) { showToast('أدخل نص الرسالة', 'error'); return; }
+
+  const r = registrations.find(x => x.fbId === msgTargetId);
+  if (!r) return;
+
+  try {
+    await addSubsNotification(r.masterCode, 'message', title, body, null);
+    await addNotification('message', 'رسالة إلى ' + r.name, title, null);
+    closeMsgModal();
+    showToast('تم إرسال الرسالة', 'success');
+    if (currentMasterCode === r.masterCode) {
+      setTimeout(() => { showPopupNotif('message', title, body); }, 500);
+    }
+  } catch(e) { showToast('فشل الإرسال', 'error'); }
+}
+
+/* ============ Zoom ============ */
+function openZoomModal() {
+  document.getElementById('zoomLinkInput').value = settings.zoomLink || '';
+  document.getElementById('zoomLabelInput').value = settings.zoomLabel || '';
+  document.getElementById('zoomModal').classList.add('show');
+}
+
+function closeZoomModal() {
+  document.getElementById('zoomModal').classList.remove('show');
+}
+
+document.getElementById('zoomModal').addEventListener('click', e => {
+  if (e.target.id === 'zoomModal') closeZoomModal();
+});
+
+async function saveZoomLink() {
+  const link = document.getElementById('zoomLinkInput').value.trim();
+  const label = document.getElementById('zoomLabelInput').value.trim();
+  if (!link) { showToast('أدخل الرابط', 'error'); return; }
+  if (!/^https?:\/\//i.test(link)) { showToast('الرابط يجب أن يبدأ بـ http:// أو https://', 'error'); return; }
+
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const zoomDoc = settingsArr.find(s => s.key === 'zoomLink');
+    const labelDoc = settingsArr.find(s => s.key === 'zoomLabel');
+
+    if (zoomDoc) await fbUpdate('appSettings', zoomDoc.fbId, { value: link });
+    else await fbAdd('appSettings', { key: 'zoomLink', value: link });
+
+    const lbl = label || 'الدخول إلى المحاضرة المباشرة';
+    if (labelDoc) await fbUpdate('appSettings', labelDoc.fbId, { value: lbl });
+    else await fbAdd('appSettings', { key: 'zoomLabel', value: lbl });
+
+    const codes = [...new Set(registrations.map(r => r.masterCode))];
+    for (const code of codes) {
+      await addSubsNotification(code, 'message', 'رابط المحاضرة متاح', 'يمكنك الآن الدخول للمحاضرة بالضغط على الزر البرتقالي في صفحتك.', null);
+    }
+
+    closeZoomModal();
+    showToast('تم حفظ الرابط', 'success');
+  } catch(e) { showToast('فشل الحفظ', 'error'); }
+}
+
+async function clearZoomLink() {
+  if (!confirm('حذف رابط Zoom؟')) return;
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const zoomDoc = settingsArr.find(s => s.key === 'zoomLink');
+    const labelDoc = settingsArr.find(s => s.key === 'zoomLabel');
+    if (zoomDoc) await fbDelete('appSettings', zoomDoc.fbId);
+    if (labelDoc) await fbDelete('appSettings', labelDoc.fbId);
+    closeZoomModal();
+    showToast('تم الحذف', 'success');
+  } catch(e) { showToast('فشل', 'error'); }
+}
+
+/* ============ إشعارات الإدارة ============ */
+async function openNotifications() {
+  showPage('notifPage');
+  renderNotifications();
+  setTimeout(async () => {
+    const unread = notifications.filter(n => !n.read);
+    for (const n of unread) {
+      try { await fbUpdate('notifications', n.fbId, { read: true }); } catch(e){}
+    }
+  }, 1500);
+}
+
+function backToAdmin() {
+  showPage('adminPage');
+  renderAdmin();
+}
+
+function renderNotifications() {
+  const container = document.getElementById('notifContainer');
+  container.innerHTML = '';
+  document.getElementById('notifCount').textContent = notifications.length;
+
+  if (notifications.length === 0) {
+    document.getElementById('notifEmpty').classList.remove('hidden');
+    return;
+  } else document.getElementById('notifEmpty').classList.add('hidden');
+
+  notifications.forEach(n => {
+    const item = document.createElement('div');
+    item.className = 'subs-notif-item ' + (n.read ? 'read' : 'unread');
+    let iconPath = 'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z';
+    if (n.type === 'status') iconPath = 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z';
+    if (n.type === 'message') iconPath = 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z';
+
+    item.innerHTML = `
+      <div class="subs-notif-icon"><svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg></div>
+      <div class="subs-notif-body">
+        <div class="subs-notif-title">${escapeHtml(n.title)} ${!n.read ? '<span class="subs-notif-new">جديد</span>' : ''}</div>
+        <div class="subs-notif-desc">${escapeHtml(n.desc || n.description || '')}</div>
+        <div class="subs-notif-time">${n.time || ''}</div>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+async function markAllRead() {
+  const unread = notifications.filter(n => !n.read);
+  for (const n of unread) {
+    try { await fbUpdate('notifications', n.fbId, { read: true }); } catch(e){}
+  }
+  showToast('تم تعليم الكل كمقروء', 'success');
+}
+
+async function clearAllNotifs() {
+  if (!confirm('حذف جميع الإشعارات؟')) return;
+  const all = await fbGetAll('notifications');
+  for (const n of all) {
+    try { await fbDelete('notifications', n.fbId); } catch(e){}
+  }
+  showToast('تم الحذف', 'success');
+}
+
+/* ============ تصدير CSV ============ */
+function exportData() {
+  if (registrations.length === 0) { showToast('لا توجد بيانات', 'error'); return; }
+  const headers = ['الكود','الاسم','العمر','المحافظة','الهاتف','الأشهر','السعر','الأيام الكلية','تاريخ البدء','تاريخ الانتهاء','المحاضرات الكلية','المحاضرات المستخدمة','آخر دخول','الحالة','معرّف الجهاز','اسم الجهاز'];
+  const rows = registrations.map(r => [
+    r.masterCode, r.name, r.age, r.gov, r.phone, r.months, r.price,
+    r.days || r.months * 30,
+    r.startDate ? formatDate(r.startDate) : '-',
+    r.endDate ? formatDate(r.endDate) : '-',
+    r.totalLectures || 0,
+    r.usedLectures || 0,
+    r.lastLectureDate || '-',
+    r.status,
+    r.deviceId || '-',
+    r.deviceName || '-'
+  ]);
+  const csv = '\uFEFF' + [headers, ...rows].map(row => row.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'registrations.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('تم التصدير', 'success');
+}
+
+// ============ ESC لإغلاق ============
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSubsNotifPanel();
+    closeChatPanel();
+  }
+});
+</script>
+<script>
+/* ============ عرض لوحة الإدارة ============ */
+function renderAdmin() {
+  // تحديث العدادات
+  document.getElementById('tabPendingCount').textContent = registrations.filter(r=>r.status==='pending').length;
+  document.getElementById('tabAcceptedCount').textContent = registrations.filter(r=>r.status==='accepted').length;
+  document.getElementById('tabRejectedCount').textContent = registrations.filter(r=>r.status==='rejected').length;
+  document.getElementById('tabStoppedCount').textContent = registrations.filter(r=>r.status==='stopped').length;
+  updateAdminChatBadge();
+
+  // زر Zoom في الإدارة
+  renderZoomAdminCard();
+
+  if (currentAdminTab === 'messages') {
+    renderMessagesTab();
+    return;
+  }
+
+  const container = document.getElementById('adminCards');
+  container.innerHTML = '';
+
+  const emptyStateText = document.getElementById('emptyStateText');
+  let filtered;
+  let isSearching = currentSearchQuery.length > 0;
+
+  if (isSearching) {
+    filtered = registrations.filter(r => matchSearch(r, currentSearchQuery));
+    filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  } else {
+    filtered = registrations.filter(r => r.status === currentAdminTab);
+    filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  }
+
+  if (filtered.length === 0) {
+    document.getElementById('emptyState').classList.remove('hidden');
+    emptyStateText.textContent = isSearching ? 'لا توجد نتائج مطابقة للبحث' : 'لا توجد طلبات في هذا القسم';
+    return;
+  } else document.getElementById('emptyState').classList.add('hidden');
+
+  const govs = ['بغداد','البصرة','نينوى','أربيل','السليمانية','دهوك','كركوك','النجف','كربلاء','ذي قار','بابل','الأنبار','ديالى','واسط','ميسان','المثنى','القادسية','صلاح الدين'];
+
+  filtered.forEach((r, i) => {
+    const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف' }[r.status] || r.status;
+    const edits = draftEdits[r.fbId] || {};
+
+    const vName = edits.name !== undefined ? edits.name : r.name;
+    const vAge = edits.age !== undefined ? edits.age : r.age;
+    const vGov = edits.gov !== undefined ? edits.gov : r.gov;
+    const vPhone = edits.phone !== undefined ? edits.phone : r.phone;
+    const vMonths = edits.months !== undefined ? edits.months : r.months;
+    const vPrice = edits.price !== undefined ? edits.price : r.price;
+    const vDays = edits.days !== undefined ? edits.days : (r.days || r.months*30);
+    const vTotalLec = edits.totalLectures !== undefined ? edits.totalLectures : (r.totalLectures || 0);
+    const vUsedLec = edits.usedLectures !== undefined ? edits.usedLectures : (r.usedLectures || 0);
+
+    const startISO = r.startDate ? new Date(r.startDate).toISOString().substring(0,10) : new Date().toISOString().substring(0,10);
+    const endISO = r.endDate ? new Date(r.endDate).toISOString().substring(0,10) : new Date(Date.now() + (r.days||30)*86400000).toISOString().substring(0,10);
+    const lastVisit = r.lastLectureDate || 'لم يدخل بعد';
+
+    const deviceChip = r.deviceId
+      ? `<span class="device-chip">
+          <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+          ${escapeHtml(r.deviceName || r.deviceId)}
+        </span>`
+      : `<span class="device-chip unbound">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          غير مربوط بجهاز
+        </span>`;
+
+    const isDirty = hasDraft(r.fbId);
+
+    const card = document.createElement('div');
+    card.className = 'admin-card ' + r.status + (isDirty ? ' dirty' : '');
+    card.innerHTML = `
+      <div class="admin-card-head">
+        <div class="admin-card-title">
+          <div class="admin-card-num">${i+1}</div>
+          <div class="admin-card-name">${highlightMatch(escapeHtml(r.name), currentSearchQuery)}</div>
+          <div class="admin-card-code">${highlightMatch(r.masterCode || '-', currentSearchQuery)}</div>
+          <span class="status-badge ${r.status}">${statusText}</span>
+          ${isDirty ? '<span class="status-badge" style="background:#f3eeff;color:#7048e8">✎ تعديلات غير محفوظة</span>' : ''}
+        </div>
+        <div style="font-size:12px;color:#5a6c85">${r.date || ''}</div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+        ${deviceChip}
+        ${r.deviceId ? `<button class="btn btn-warning btn-sm" onclick="resetDevice('${r.fbId}')">
+          <svg class="icon-svg" style="fill:#1a1f2e;width:13px;height:13px" viewBox="0 0 24 24"><path d="M17.65 6.35A8 8 0 1 0 19.73 14h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          إعادة تعيين الجهاز
+        </button>` : ''}
+      </div>
+
+      <div class="admin-fields">
+        <div class="admin-field">
+          <label>الاسم</label>
+          <input type="text" value="${escapeHtml(vName)}" onchange="setDraft('${r.fbId}','name',this.value)">
+        </div>
+        <div class="admin-field">
+          <label>العمر</label>
+          <input type="number" value="${vAge}" min="5" max="15" onchange="setDraft('${r.fbId}','age',parseInt(this.value)||0)">
+        </div>
+        <div class="admin-field">
+          <label>المحافظة</label>
+          <select onchange="setDraft('${r.fbId}','gov',this.value)">
+            ${govs.map(g => `<option ${g===vGov?'selected':''}>${g}</option>`).join('')}
+          </select>
+        </div>
+        <div class="admin-field">
+          <label>الهاتف</label>
+          <input type="tel" value="${escapeHtml(vPhone)}" maxlength="11" onchange="setDraft('${r.fbId}','phone',this.value)">
+        </div>
+        <div class="admin-field">
+          <label>المدة (أشهر)</label>
+          <input type="number" value="${vMonths}" min="1" onchange="setDraft('${r.fbId}','months',parseInt(this.value)||1)">
+        </div>
+        <div class="admin-field">
+          <label>السعر (د.ع)</label>
+          <input type="number" value="${vPrice}" min="0" onchange="setDraft('${r.fbId}','price',parseInt(this.value)||0)">
+        </div>
+        <div class="admin-field days">
+          <label>الأيام الكلية</label>
+          <input type="number" value="${vDays}" min="0" onchange="setDraft('${r.fbId}','days',parseInt(this.value)||0)">
+        </div>
+        <div class="admin-field">
+          <label>تاريخ البدء</label>
+          <input type="date" value="${startISO}" onchange="setDraft('${r.fbId}','startDate',this.value)">
+        </div>
+        <div class="admin-field">
+          <label>تاريخ الانتهاء</label>
+          <input type="date" value="${endISO}" onchange="setDraft('${r.fbId}','endDate',this.value)">
+        </div>
+
+        <div class="admin-field lectures">
+          <label>المحاضرات الكلية</label>
+          <input type="number" value="${vTotalLec}" min="0" onchange="setDraft('${r.fbId}','totalLectures',Math.max(0,parseInt(this.value)||0))">
+        </div>
+        <div class="admin-field lectures">
+          <label>المحاضرات المستخدمة</label>
+          <input type="number" value="${vUsedLec}" min="0" onchange="setDraft('${r.fbId}','usedLectures',Math.max(0,parseInt(this.value)||0))">
+        </div>
+        <div class="admin-field lectures">
+          <label>آخر دخول</label>
+          <input type="text" value="${lastVisit}" readonly style="background:#eee;color:#5a6c85;cursor:not-allowed">
+        </div>
+      </div>
+
+      ${isDirty ? `
+      <div class="save-bar">
+        <div class="save-bar-text">
+          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          لديك تعديلات غير محفوظة
+        </div>
+        <button class="btn btn-purple btn-sm" onclick="cancelDraft('${r.fbId}')">
+          <svg class="icon-svg" style="fill:#fff;width:14px;height:14px" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+          إرجاع
+        </button>
+        <button class="btn btn-green btn-sm" onclick="saveDraft('${r.fbId}')">
+          <svg class="icon-svg" style="fill:#fff;width:14px;height:14px" viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          حفظ التعديلات
+        </button>
+      </div>
+      ` : ''}
+
+      <div class="admin-actions">
+        ${r.status !== 'accepted' ? `<button class="btn btn-success btn-sm" onclick="setStatus('${r.fbId}','accepted')">قبول</button>` : ''}
+        ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setStatus('${r.fbId}','rejected')">رفض</button>` : ''}
+        ${r.status !== 'stopped' ? `<button class="btn btn-warning btn-sm" onclick="setStatus('${r.fbId}','stopped')">إيقاف</button>` : ''}
+        ${r.status !== 'pending' ? `<button class="btn btn-ghost btn-sm" onclick="setStatus('${r.fbId}','pending')">انتظار</button>` : ''}
+        <button class="btn btn-purple btn-sm" onclick="openMsgModal('${r.fbId}')">رسالة</button>
+        <button class="btn btn-green btn-sm" onclick="openAdminChat('${r.masterCode}')">
+          <svg class="icon-svg" style="fill:#fff;width:14px;height:14px" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          محادثة
+        </button>
+        <button class="btn btn-blue btn-sm" onclick="resetLectureDate('${r.fbId}')">إعادة تعيين الدخول</button>
+        <button class="btn btn-danger btn-sm" style="margin-right:auto" onclick="delReg('${r.fbId}')">حذف</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* ============ بطاقة Zoom في الإدارة ============ */
+function renderZoomAdminCard() {
+  const wrap = document.getElementById('zoomAdminWrap');
+  if (!wrap) return;
+  if (wrap.dataset.rendered === '1') {
+    updateZoomStatus();
+    return;
+  }
+  wrap.innerHTML = `
+    <div style="margin-bottom:14px;padding:12px;background:linear-gradient(135deg,#fff2e6,#ffe0c7);border-radius:12px;border:1.5px solid #ffb87a;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg style="width:26px;height:26px;fill:#ff6b1a" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        <div>
+          <div style="font-weight:700;color:#c94b00;font-size:14px">رابط تطبيق المحاضرات</div>
+          <div id="zoomStatusText" style="font-size:12px;color:#8a5a2a;margin-top:2px"></div>
+        </div>
+      </div>
+      <button id="zoomAdminBtn" class="btn btn-sm" style="background:linear-gradient(135deg,#ff8c1a,#ff4500);color:#fff;border:none" onclick="openZoomModal()">تعيين الرابط</button>
+    </div>
+  `;
+  wrap.dataset.rendered = '1';
+  updateZoomStatus();
+}
+
+function updateZoomStatus() {
+  const el = document.getElementById('zoomStatusText');
+  const btn = document.getElementById('zoomAdminBtn');
+  if (!el) return;
+  if (settings.zoomLink) {
+    el.innerHTML = 'مفعّل: <span style="font-family:monospace;color:#c94b00;direction:ltr;display:inline-block">' + escapeHtml(settings.zoomLink.substring(0, 45)) + (settings.zoomLink.length > 45 ? '...' : '') + '</span>';
+    if (btn) btn.textContent = 'تعديل الرابط';
+  } else {
+    el.textContent = 'لم يتم تحديد رابط بعد';
+    if (btn) btn.textContent = 'تعيين الرابط';
+  }
+}
+
+/* ============ تبويب الرسائل ============ */
+function renderMessagesTab() {
+  const container = document.getElementById('adminCards');
+  container.innerHTML = '';
+  document.getElementById('emptyState').classList.add('hidden');
+
+  if (currentAdminChatCode) {
+    renderAdminChatView();
+    return;
+  }
+
+  const codesWithMessages = {};
+  chatMessages.forEach(m => {
+    if (!codesWithMessages[m.masterCode]) {
+      codesWithMessages[m.masterCode] = { code: m.masterCode, messages: [], unread: 0 };
+    }
+    codesWithMessages[m.masterCode].messages.push(m);
+    if (m.sender === 'subscriber' && !m.readByAdmin) {
+      codesWithMessages[m.masterCode].unread++;
+    }
+  });
+
+  const threads = Object.values(codesWithMessages);
+
+  if (threads.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg class="empty-svg" viewBox="0 0 24 24"><path fill="#5a6c85" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <p>لا توجد رسائل من المشتركين بعد</p>
+      </div>`;
+    return;
+  }
+
+  threads.sort((a, b) => {
+    const aLast = a.messages[a.messages.length - 1];
+    const bLast = b.messages[b.messages.length - 1];
+    return (bLast.createdAt?.seconds || 0) - (aLast.createdAt?.seconds || 0);
+  });
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-thread-list';
+
+  threads.forEach(t => {
+    const reg = registrations.find(r => r.masterCode === t.code);
+    const firstName = reg ? reg.name : 'مشترك';
+    const lastMsg = t.messages[t.messages.length - 1];
+
+    const thread = document.createElement('div');
+    thread.className = 'msg-thread' + (t.unread > 0 ? ' unread' : '');
+    thread.onclick = () => openAdminChat(t.code);
+    thread.innerHTML = `
+      <div class="msg-thread-avatar">${escapeHtml(firstName.charAt(0))}</div>
+      <div class="msg-thread-content">
+        <div class="msg-thread-name">
+          ${escapeHtml(firstName)}
+          <span class="msg-thread-code">${t.code}</span>
+        </div>
+        <div class="msg-thread-last">${lastMsg.sender === 'admin' ? 'أنت: ' : ''}${escapeHtml(lastMsg.text.substring(0, 60))}${lastMsg.text.length > 60 ? '...' : ''}</div>
+        <div class="msg-thread-time">${lastMsg.time || ''}</div>
+      </div>
+      ${t.unread > 0 ? `<div class="msg-thread-badge">${t.unread}</div>` : ''}
+    `;
+    wrap.appendChild(thread);
+  });
+
+  container.appendChild(wrap);
+}
+
+async function openAdminChat(masterCode) {
+  currentAdminChatCode = masterCode;
+  const unread = chatMessages.filter(m => m.masterCode === masterCode && m.sender === 'subscriber' && !m.readByAdmin);
+  for (const m of unread) {
+    try { await fbUpdate('chatMessages', m.fbId, { readByAdmin: true }); } catch(e){}
+  }
+  renderAdmin();
+}
+
+function renderAdminChatView() {
+  const container = document.getElementById('adminCards');
+  container.innerHTML = '';
+
+  const reg = registrations.find(r => r.masterCode === currentAdminChatCode);
+  const firstName = reg ? reg.name : 'مشترك';
+  const messages = chatMessages.filter(m => m.masterCode === currentAdminChatCode);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'admin-chat-panel';
+  wrap.innerHTML = `
+    <div class="admin-chat-header">
+      <div class="admin-chat-name">
+        <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:5px 10px" onclick="closeAdminChat()">← رجوع</button>
+        ${escapeHtml(firstName)}
+        <span class="admin-chat-code">${currentAdminChatCode}</span>
+      </div>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);border:none;color:#fff" onclick="clearAdminChat()">حذف</button>
+    </div>
+    <div class="admin-chat-body" id="adminChatBody"></div>
+    <div class="admin-chat-input">
+      <textarea id="adminChatInput" placeholder="اكتب ردك هنا..." rows="1"></textarea>
+      <button class="chat-send-btn" onclick="sendAdminChatMessage()" title="إرسال">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  `;
+  container.appendChild(wrap);
+
+  const body = document.getElementById('adminChatBody');
+  if (messages.length === 0) {
+    body.innerHTML = '<div class="chat-empty" style="text-align:center;color:#8b9bb4;padding:20px">لا توجد رسائل</div>';
+  } else {
+    messages.forEach(m => {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + (m.sender === 'admin' ? 'mine' : 'theirs');
+      bubble.innerHTML = `${escapeHtml(m.text)}<span class="bubble-time">${m.time || ''}</span>`;
+      body.appendChild(bubble);
+    });
+  }
+
+  setTimeout(() => { body.scrollTop = body.scrollHeight; }, 50);
+
+  setTimeout(() => {
+    const inp = document.getElementById('adminChatInput');
+    if (inp) {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendAdminChatMessage();
         }
-        
-        function showTyping() {
-            var div = document.createElement('div');
-            div.className = 'message assistant';
-            div.id = 'typingIndicator';
-            div.innerHTML = '<div class="message-avatar">🤖</div>' +
-                '<div class="message-content"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function removeTyping() {
-            var el = document.getElementById('typingIndicator');
-            if (el) el.remove();
-        }
-        
-        async function sendMessage() {
-            if (isProcessing) {
-                console.log('جاري المعالجة...');
-                return;
-            }
-            
-            var message = userInput.value.trim();
-            if (!message) {
-                console.log('الرسالة فارغة');
-                return;
-            }
-            
-            console.log('إرسال: ' + message);
-            
-            isProcessing = true;
-            sendBtn.textContent = '⏳';
-            sendBtn.disabled = true;
-            
-            addMessage('user', message);
-            conversationHistory.push({ role: 'user', content: message });
-            userInput.value = '';
-            
-            showTyping();
-            
-            try {
-                var contents = [
-                    { role: 'user', parts: [{ text: 'أنت VACT مساعد ذكي. أجب بالعربية.' }] },
-                    { role: 'model', parts: [{ text: 'حسناً.' }] }
-                ];
-                
-                conversationHistory.slice(-10).forEach(function(m) {
-                    contents.push({
-                        role: m.role === 'assistant' ? 'model' : 'user',
-                        parts: [{ text: m.content }]
-                    });
-                });
-                
-                var targetUrl = API_URL + '?key=' + API_KEY;
-                var proxyUrl = PROXY_URL + encodeURIComponent(targetUrl);
-                
-                var response = await fetch(proxyUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: contents,
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-                    })
-                });
-                
-                console.log('حالة الاستجابة: ' + response.status);
-                
-                if (!response.ok) {
-                    var errText = await response.text();
-                    throw new Error('خطأ ' + response.status + ': ' + errText.substring(0, 100));
-                }
-                
-                var data = await response.json();
-                var reply = data.candidates[0].content.parts[0].text;
-                
-                removeTyping();
-                addMessage('assistant', reply);
-                conversationHistory.push({ role: 'assistant', content: reply });
-                
-            } catch(e) {
-                removeTyping();
-                console.error('خطأ:', e.message);
-                addMessage('assistant', '❌ ' + e.message);
-            } finally {
-                isProcessing = false;
-                sendBtn.textContent = 'إرسال 📤';
-                sendBtn.disabled = false;
-            }
-        }
-        
-        console.log('✅ جاهز - اكتب رسالة واضغط إرسال');
-    </script>
+      });
+      inp.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+      });
+      inp.focus();
+    }
+  }, 100);
+}
+
+function closeAdminChat() {
+  currentAdminChatCode = null;
+  renderAdmin();
+}
+
+async function clearAdminChat() {
+  if (!confirm('حذف كل الرسائل مع هذا المشترك؟')) return;
+  const msgs = chatMessages.filter(m => m.masterCode === currentAdminChatCode);
+  for (const m of msgs) {
+    try { await fbDelete('chatMessages', m.fbId); } catch(e){}
+  }
+  showToast('تم حذف المحادثة', 'success');
+}
+
+async function sendAdminChatMessage() {
+  const input = document.getElementById('adminChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  try {
+    await addChatMessage(currentAdminChatCode, 'admin', text);
+    input.value = '';
+    input.style.height = 'auto';
+  } catch(e) { showToast('فشل الإرسال', 'error'); }
+}
+
+/* ============ تحميل الصفحة الرئيسي ============ */
+window.addEventListener('load', async () => {
+  console.log('🚀 بدء التطبيق...');
+
+  // انتظر Firebase
+  await new Promise(resolve => {
+    if (window.__fb) resolve();
+    else window.addEventListener('fb-ready', resolve, { once: true });
+  });
+
+  console.log('✅ Firebase جاهز');
+
+  document.getElementById('loadingStatus').textContent = 'جاري تحميل البيانات...';
+
+  // حمّل كل البيانات
+  try {
+    registrations = await fbGetAll('registrations');
+    notifications = await fbGetAll('notifications');
+    notifications.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    subsNotifications = await fbGetAll('subsNotifications');
+    subsNotifications.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    chatMessages = await fbGetAll('chatMessages');
+    chatMessages.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+
+    const settingsArr = await fbGetAll('appSettings');
+    settings = {};
+    settingsArr.forEach(s => { settings[s.key] = s.value; });
+
+    console.log(`✅ تم التحميل: ${registrations.length} مشترك`);
+  } catch(e) {
+    console.error('❌ فشل التحميل:', e);
+    document.getElementById('loadingStatus').textContent = 'فشل الاتصال بقاعدة البيانات';
+    showToast('فشل الاتصال بقاعدة البيانات', 'error');
+  }
+
+  updateNotifBadge();
+
+  // ✅ بدء الاستماع المباشر
+  const { collection, onSnapshot } = window.__fbFns;
+  const { db } = window.__fb;
+
+  onSnapshot(collection(db, 'registrations'), snap => {
+    registrations = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+    console.log('🔄 registrations updated:', registrations.length);
+    const adminPage = document.getElementById('adminPage');
+    const subscriberPage = document.getElementById('subscriberPage');
+    if (adminPage && !adminPage.classList.contains('hidden')) renderAdmin();
+    if (subscriberPage && !subscriberPage.classList.contains('hidden')) renderSubscriberPage();
+  });
+
+  onSnapshot(collection(db, 'notifications'), snap => {
+    notifications = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+    notifications.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    updateNotifBadge();
+    const notifPage = document.getElementById('notifPage');
+    if (notifPage && !notifPage.classList.contains('hidden')) renderNotifications();
+  });
+
+  onSnapshot(collection(db, 'subsNotifications'), snap => {
+    subsNotifications = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+    subsNotifications.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    updateSubsNotifBadge();
+    const subsNotifPanel = document.getElementById('subsNotifPanel');
+    if (subsNotifPanel && subsNotifPanel.classList.contains('show')) renderSubsNotifPanel();
+  });
+
+  onSnapshot(collection(db, 'chatMessages'), snap => {
+    chatMessages = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+    chatMessages.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+    updateChatBadge();
+    updateAdminChatBadge();
+    const chatPanel = document.getElementById('chatPanel');
+    if (chatPanel && chatPanel.classList.contains('show')) renderChatPanel();
+    if (currentAdminChatCode && currentAdminTab === 'messages') renderMessagesTab();
+  });
+
+  onSnapshot(collection(db, 'appSettings'), snap => {
+    settings = {};
+    snap.docs.forEach(d => { const data = d.data(); settings[data.key] = data.value; });
+    const subscriberPage = document.getElementById('subscriberPage');
+    if (subscriberPage && !subscriberPage.classList.contains('hidden')) renderSubscriberPage();
+  });
+
+  console.log('✅ كل شيء جاهز');
+
+  // ✅ اختر الصفحة المناسبة
+  if (currentMasterCode) {
+    const reg = registrations.find(r => r.masterCode === currentMasterCode);
+    if (reg) {
+      if (reg.deviceId && reg.deviceId !== MY_DEVICE_ID) {
+        document.getElementById('lockedCode').textContent = currentMasterCode;
+        document.getElementById('currentDeviceId').textContent = MY_DEVICE_ID;
+        showPage('deviceLockPage');
+        return;
+      }
+      if (!reg.deviceId) {
+        try {
+          await fbUpdate('registrations', reg.fbId, {
+            deviceId: MY_DEVICE_ID,
+            deviceName: getDeviceName(),
+            deviceBoundAt: new Date().toISOString()
+          });
+        } catch(e) {}
+      }
+      showPage('subscriberPage');
+      setTimeout(() => { checkForNewSubsNotifs(true); }, 1200);
+      return;
+    } else {
+      localStorage.removeItem('currentMasterCode');
+      currentMasterCode = null;
+    }
+  }
+  showPage('mainPage');
+});
+
+/* ============ تفعيل الصوت ============ */
+document.addEventListener('click', function initAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+  }
+  document.removeEventListener('click', initAudio);
+}, { once: true });
+
+// ESC لإغلاق
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSubsNotifPanel();
+    closeChatPanel();
+  }
+});
+</script>
+
 </body>
 </html>
