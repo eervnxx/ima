@@ -3,14 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title> MAHH Platform </title>
+<title>  MAHH Platform  </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+  * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', Tahoma, sans-serif; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  html, body, input, button, select, textarea {
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+  }
   :root {
     --blue: #1e6fd9; --blue-dark: #1557a8; --blue-light: #e8f1fc;
     --white: #ffffff; --dark: #1a1f2e; --gray: #f5f7fa; --border: #d8e2ef;
     --success: #28a745; --danger: #dc3545; --warning: #ffc107;
     --purple: #7048e8; --teal: #0e8f8f; --green: #16a34a; --green-dark: #15803d;
+    --telegram: #2AABEE;
   }
   html, body { overflow-x: hidden; }
   body { 
@@ -52,7 +65,15 @@
   .settings-btn svg { width: 22px; height: 22px; fill: #fff; }
   .logo-wrap { text-align: center; padding: 10px 0 18px; }
   .logo-svg { width: 82px; height: 82px; }
-  .header-title { font-size: 26px; color: var(--blue-dark); margin-top: 10px; font-weight: 700; }
+  .header-title { 
+    font-size: 32px; 
+    color: var(--blue-dark); 
+    margin-top: 10px; 
+    font-weight: 900;
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 8px rgba(30,111,217,0.15);
+  }
   .header-sub { color: #5a6c85; font-size: 14px; margin-top: 6px; }
   .card { 
     background: rgba(255, 255, 255, 0.85); 
@@ -64,10 +85,21 @@
     border: 1px solid rgba(255, 255, 255, 0.6); 
     margin-top: 16px; 
   }
-  .card-title { font-size: 19px; color: var(--blue-dark); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--blue-light); display: flex; align-items: center; gap: 10px; }
+  .card-title { 
+    font-size: 20px; 
+    color: var(--blue-dark); 
+    margin-bottom: 20px; 
+    padding-bottom: 12px; 
+    border-bottom: 2px solid var(--blue-light); 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    font-weight: 800;
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+  }
   .icon-svg { width: 22px; height: 22px; fill: var(--blue); flex-shrink: 0; }
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: var(--dark); font-size: 14px; }
+  .form-group label { display: block; margin-bottom: 7px; font-weight: 700; color: var(--dark); font-size: 14px; }
   .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; background: rgba(245,247,250,0.9); transition: all 0.25s; color: var(--dark); font-family: inherit; resize: vertical; }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,111,217,0.12); }
   .form-group input.error, .form-group select.error { border-color: var(--danger); background: #fff5f5; }
@@ -81,7 +113,7 @@
   .plan-price { color: var(--dark); font-size: 13px; margin-top: 5px; font-weight: 600; }
   .plan-price span { color: var(--blue); }
   .plan-sessions { font-size: 11.5px; color: var(--purple); margin-top: 4px; font-weight: 600; }
-  .btn { padding: 13px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; text-decoration: none; }
+  .btn { padding: 13px 24px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; text-decoration: none; }
   .btn-primary { background: var(--dark); color: #fff; width: 100%; }
   .btn-primary:hover { background: #000; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,31,46,0.3); }
   .btn-blue { background: var(--blue); color: #fff; }
@@ -161,13 +193,18 @@
   @keyframes headerShine { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   .subscriber-header > * { position: relative; z-index: 1; }
   .subscriber-header .logo-svg { width: 58px; height: 58px; }
-  .subscriber-header h2 { font-size: 20px; margin-top: 8px; }
+  .subscriber-header h2 { 
+    font-size: 22px; 
+    margin-top: 8px; 
+    font-weight: 900;
+    font-family: 'Tajawal', 'Cairo', sans-serif;
+  }
   .subscriber-header p { font-size: 13px; opacity: 0.9; margin-top: 4px; }
   .master-code { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 10px; margin-top: 12px; font-family: 'Courier New', monospace; font-size: 22px; font-weight: 800; letter-spacing: 2px; direction: ltr; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
   .master-code-label { font-size: 12px; opacity: 0.85; margin-top: 10px; }
   .device-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; font-size: 11.5px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.25); }
   .device-badge svg { width: 14px; height: 14px; fill: #fff; }
-  .floating-buttons-wrap { position: fixed; bottom: 24px; left: 24px; display: flex; gap: 12px; z-index: 500; }
+  .floating-buttons-wrap { position: fixed; bottom: 24px; left: 24px; display: flex; gap: 12px; z-index: 500; flex-wrap: wrap; max-width: calc(100vw - 48px); }
   .float-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; }
   .float-btn:hover { transform: scale(1.1); }
   .float-btn:active { transform: scale(0.95); }
@@ -180,6 +217,9 @@
   .whatsapp-float-btn { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); box-shadow: 0 8px 25px rgba(37,211,102,0.5); }
   .whatsapp-float-btn:hover { box-shadow: 0 12px 35px rgba(37,211,102,0.75); }
   .whatsapp-float-btn svg { width: 32px; height: 32px; }
+  .telegram-float-btn { background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%); box-shadow: 0 8px 25px rgba(42,171,238,0.5); }
+  .telegram-float-btn:hover { box-shadow: 0 12px 35px rgba(42,171,238,0.75); }
+  .telegram-float-btn svg { width: 32px; height: 32px; }
   .float-badge { position: absolute; top: -4px; right: -4px; min-width: 26px; height: 26px; background: var(--danger); color: #fff; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; padding: 0 6px; border: 3px solid #fff; animation: pulse 1.5s infinite; }
   .float-badge.hidden { display: none; }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
@@ -260,6 +300,7 @@
   .sub-card.rejected { border-color: var(--danger); background: linear-gradient(135deg, rgba(253,242,244,0.95) 0%, rgba(255,255,255,0.95) 100%); }
   .sub-card.stopped { border-color: #6c757d; background: linear-gradient(135deg, rgba(245,245,245,0.95) 0%, rgba(255,255,255,0.95) 100%); }
   .sub-card.pending { border-color: var(--warning); background: linear-gradient(135deg, rgba(255,253,243,0.95) 0%, rgba(255,255,255,0.95) 100%); }
+  .sub-card.expired { border-color: #6c757d; background: linear-gradient(135deg, rgba(245,245,245,0.95) 0%, rgba(255,255,255,0.95) 100%); }
   .sub-card-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1.5px dashed var(--border); margin-bottom: 12px; }
   .sub-card-name { font-size: 16px; font-weight: 700; color: var(--dark); }
   .sub-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -276,6 +317,8 @@
   .sub-status-msg.rejected svg { fill: #721c24; }
   .sub-status-msg.stopped { background: #e2e3e5; color: #383d41; border: 1.5px solid #c6c8ca; }
   .sub-status-msg.stopped svg { fill: #383d41; }
+  .sub-status-msg.expired { background: #e2e3e5; color: #383d41; border: 1.5px solid #c6c8ca; }
+  .sub-status-msg.expired svg { fill: #383d41; }
   .days-wrap { grid-column: span 2; background: linear-gradient(135deg, rgba(232,247,247,0.9) 0%, rgba(214,239,239,0.9) 100%); border: 1.5px solid #8ed4d4; border-radius: 10px; padding: 14px; margin-top: 6px; }
   .days-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13.5px; color: var(--teal); font-weight: 700; }
   .days-count-badge { background: var(--teal); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; }
@@ -294,6 +337,7 @@
   .status-badge.accepted { background: #d4edda; color: #155724; }
   .status-badge.rejected { background: #f8d7da; color: #721c24; }
   .status-badge.stopped { background: #e2e3e5; color: #383d41; }
+  .status-badge.expired { background: #e2e3e5; color: #383d41; }
   .admin-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
   .notif-btn { position: relative; width: 44px; height: 44px; border-radius: 12px; background: var(--warning); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 12px rgba(255,193,7,0.4); }
   .notif-btn:hover { transform: scale(1.08); }
@@ -319,6 +363,7 @@
   .admin-tab.tab-accepted.active .tab-count { background: var(--success); color: #fff; }
   .admin-tab.tab-rejected.active .tab-count { background: var(--danger); color: #fff; }
   .admin-tab.tab-messages.active .tab-count { background: var(--green); color: #fff; }
+  .admin-tab.tab-expired.active .tab-count { background: #6c757d; color: #fff; }
   .admin-card { 
     background: rgba(255, 255, 255, 0.92); 
     backdrop-filter: blur(8px);
@@ -335,6 +380,7 @@
   .admin-card.rejected { border-color: var(--danger); border-right-width: 6px; }
   .admin-card.pending { border-color: var(--warning); border-right-width: 6px; }
   .admin-card.stopped { border-color: #6c757d; border-right-width: 6px; }
+  .admin-card.expired { border-color: #6c757d; border-right-width: 6px; }
   .admin-card.dirty { border-color: var(--purple); border-right-width: 6px; box-shadow: 0 0 0 4px rgba(112,72,232,0.15); }
   .admin-card-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1.5px dashed var(--border); margin-bottom: 14px; }
   .admin-card-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -425,7 +471,7 @@
   @media (max-width: 640px) {
     body { padding: 8px; }
     .card { padding: 20px 16px; border-radius: 14px; }
-    .header-title { font-size: 21px; }
+    .header-title { font-size: 24px; }
     .logo-svg { width: 68px; height: 68px; }
     .plans { grid-template-columns: 1fr; }
     .plan { padding: 12px; display: flex; justify-content: space-between; align-items: center; text-align: right; flex-wrap: wrap; gap: 6px; }
@@ -454,7 +500,7 @@
     .floating-buttons-wrap { bottom: 18px; left: 18px; gap: 8px; }
     .float-btn { width: 50px; height: 50px; }
     .float-btn svg { width: 24px; height: 24px; }
-    .whatsapp-float-btn svg { width: 26px; height: 26px; }
+    .whatsapp-float-btn svg, .telegram-float-btn svg { width: 26px; height: 26px; }
     .subs-notif-panel, .chat-panel { bottom: 90px; left: 12px; width: calc(100vw - 24px); }
     .save-bar { flex-direction: column; }
     .save-bar .btn { width: 100%; }
@@ -464,7 +510,7 @@
     .payment-message-text { font-size: 13.5px; }
   }
   @media (max-width: 400px) {
-    .header-title { font-size: 18px; }
+    .header-title { font-size: 20px; }
     .sub-card-head { flex-direction: column; align-items: flex-start; }
     .admin-fields { grid-template-columns: 1fr; }
     .admin-tab { min-width: 70px; font-size: 10.5px; padding: 7px 4px; }
@@ -503,7 +549,7 @@ signInAnonymously(auth).then(() => {
 </script>
 </head>
 <body>
-  <div class="topbar container">
+<div class="topbar container">
   <div class="brand">
     <div id="brandLogoSlot">
       <svg class="brand-svg" viewBox="0 0 100 100">
@@ -514,7 +560,7 @@ signInAnonymously(auth).then(() => {
         <circle cx="50" cy="42" r="4" fill="#ffffff"/>
       </svg>
     </div>
-    <span> MAHH Platform </span>
+    <span>  MAHH Platform  </span>
   </div>
 
   <div class="topbar-actions">
@@ -536,7 +582,7 @@ signInAnonymously(auth).then(() => {
 <div id="loadingPage" class="container">
   <div class="loading-container">
     <div class="loading-spinner"></div>
-    <div class="loading-text">جاري التحميل ..</div>
+    <div class="loading-text">جاري الاتصال بقاعدة البيانات...</div>
     <div class="loading-sub" id="loadingStatus">يتم التحقق من الاتصال</div>
   </div>
 </div>
@@ -551,7 +597,7 @@ signInAnonymously(auth).then(() => {
       <rect x="42" y="55" width="16" height="20" fill="#ffffff"/>
       <circle cx="50" cy="42" r="4" fill="#ffffff"/>
     </svg>
-    <h1 class="header-title">MAHH Platform  </h1>
+    <h1 class="header-title">  MAHH Platform  </h1>
     <p class="header-sub">سجل بيانات ابنك/ابنتك بسهولة وأمان</p>
   </div>
 
@@ -677,7 +723,7 @@ signInAnonymously(auth).then(() => {
       </svg>
     </div>
     <h2 id="subWelcomeTitle">مرحباً بك</h2>
-    <p>هذه صفحتك الخاصة - يرجى حفظ الكود الخاص بك</p>
+    <p>  >هذه صفحتك الخاصة - يرجى حفظ الكود الخاص بك</p>
     <div class="master-code-label">الكود الخاص بك</div>
     <div class="master-code" id="masterCode">#00000</div>
     <div class="device-badge">
@@ -708,7 +754,7 @@ signInAnonymously(auth).then(() => {
     <div id="subsContainer"></div>
   </div>
 
-  <div class="footer">جميع الحقوق محفوظة © المطور احمد الجابري </div>
+  <div class="footer">جميع الحقوق محفوظة © المطور احمد الجابري   </div>
 </div>
 
 <div id="adminPage" class="container hidden">
@@ -727,7 +773,6 @@ signInAnonymously(auth).then(() => {
 
     <div id="zoomAdminWrap"></div>
 
-    <!-- ✅ بطاقة نشر رسالة للقناة -->
     <div id="broadcastAdminWrap" style="margin-bottom:14px;padding:12px;background:linear-gradient(135deg,#e8f9ee,#d1f4dc);border-radius:12px;border:1.5px solid #86e0a8;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
       <div style="display:flex;align-items:center;gap:10px">
         <svg style="width:26px;height:26px;fill:#25D366" viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
@@ -782,6 +827,10 @@ signInAnonymously(auth).then(() => {
         الموقوفة
         <span class="tab-count" id="tabStoppedCount">0</span>
       </button>
+      <button class="admin-tab tab-expired" id="tabExpiredBtn" onclick="switchTab('expired')">
+        المنتهية
+        <span class="tab-count" id="tabExpiredCount">0</span>
+      </button>
       <button class="admin-tab tab-messages" id="tabMessagesBtn" onclick="switchTab('messages')">
         <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
         الرسائل
@@ -822,6 +871,10 @@ signInAnonymously(auth).then(() => {
 <div class="floating-buttons-wrap hidden" id="floatingButtons">
   <button id="subsWhatsappBtn" class="float-btn whatsapp-float-btn hidden" onclick="openWhatsapp()" title="تواصل عبر واتساب">
     <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </button>
+  
+  <button id="subsTelegramBtn" class="float-btn telegram-float-btn hidden" onclick="openTelegram()" title="قناة التيليجرام">
+    <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
   </button>
   
   <button id="subsChatBtn" class="float-btn chat-float-btn" onclick="toggleChatPanel()" title="التواصل مع الإدارة">
@@ -970,6 +1023,24 @@ signInAnonymously(auth).then(() => {
     </div>
     <button class="btn btn-green" style="width:100%" onclick="saveWhatsapp()">حفظ الرقم</button>
     <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="clearWhatsapp()">حذف الرقم</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="telegramModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTelegramModal()">✕</button>
+    <h3 class="modal-title">
+      <svg class="icon-svg" style="fill:#2AABEE" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      قناة التيليجرام
+    </h3>
+    <p style="font-size:13px;color:#5a6c85;margin-bottom:14px;text-align:center">الرابط أو اليوزرنيم الذي سيظهر للمشتركين</p>
+    <div class="form-group">
+      <label>رابط القناة أو اليوزرنيم</label>
+      <input type="text" id="telegramChannelInput" placeholder="@mahh_iraq أو https://t.me/mahh_iraq" style="direction:ltr;font-family:'Courier New',monospace">
+      <div style="font-size:11.5px;color:#8b9bb4;margin-top:5px">مثال: @mahh_iraq أو https://t.me/mahh_iraq</div>
+    </div>
+    <button class="btn btn-blue" style="width:100%;background:linear-gradient(135deg,#2AABEE,#229ED9)" onclick="saveTelegram()">حفظ</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="clearTelegram()">حذف</button>
   </div>
 </div>
 
@@ -1210,6 +1281,19 @@ function getDaysLeft(r) {
   return { days: daysLeft, total: totalDays, start, end };
 }
 
+/* ============ الاشتراكات المنتهية ============ */
+function isExpired(r) {
+  if (r.status !== 'accepted') return false;
+  if (!r.endDate) return false;
+  const end = new Date(r.endDate);
+  return end.getTime() < Date.now();
+}
+
+function getEffectiveStatus(r) {
+  if (isExpired(r)) return 'expired';
+  return r.status;
+}
+
 /* ============ التنقل ============ */
 function showPage(id) {
   ['loadingPage','mainPage','subscriberPage','adminPage','notifPage','deviceLockPage'].forEach(p => {
@@ -1226,6 +1310,7 @@ function showPage(id) {
     const notifBtn = document.getElementById('subsNotifBtn');
     const chatBtn = document.getElementById('subsChatBtn');
     const waBtn = document.getElementById('subsWhatsappBtn');
+    const tgBtn = document.getElementById('subsTelegramBtn');
     
     if (id === 'subscriberPage') {
       if (notifBtn) notifBtn.classList.remove('hidden');
@@ -1242,6 +1327,14 @@ function showPage(id) {
         waBtn.classList.remove('hidden');
       } else {
         waBtn.classList.add('hidden');
+      }
+    }
+    
+    if (tgBtn) {
+      if (settings.telegramChannel && settings.telegramChannel.trim()) {
+        tgBtn.classList.remove('hidden');
+      } else {
+        tgBtn.classList.add('hidden');
       }
     }
   } else {
@@ -1508,7 +1601,7 @@ function renderSubscriberPage() {
   document.getElementById('masterCode').textContent = currentMasterCode;
   document.getElementById('subWelcomeTitle').textContent = 'مرحباً ' + r.name;
 
-  const hasAccepted = r.status === 'accepted';
+  const hasAccepted = r.status === 'accepted' && !isExpired(r);
   const zoomBtn = document.getElementById('zoomBtn');
   if (settings.zoomLink && settings.zoomLink.trim() && hasAccepted) {
     zoomBtn.classList.remove('hidden');
@@ -1522,6 +1615,15 @@ function renderSubscriberPage() {
     whatsappBtn.classList.remove('hidden');
   } else {
     whatsappBtn.classList.add('hidden');
+  }
+
+  const telegramBtn = document.getElementById('subsTelegramBtn');
+  if (telegramBtn) {
+    if (settings.telegramChannel && settings.telegramChannel.trim()) {
+      telegramBtn.classList.remove('hidden');
+    } else {
+      telegramBtn.classList.add('hidden');
+    }
   }
 
   updateSubsNotifBadge();
@@ -1571,15 +1673,17 @@ function renderSubscriberPage() {
     pending: { text: 'اشتراكك قيد المراجعة من قبل الإدارة', icon: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z' },
     accepted: { text: 'مبروك! تم قبول اشتراكك وتفعيله بنجاح', icon: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' },
     rejected: { text: 'تم رفض طلب الاشتراك. يرجى التواصل مع الإدارة', icon: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' },
-    stopped: { text: 'تم إيقاف اشتراكك مؤقتاً. يرجى التواصل مع الإدارة', icon: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z' }
+    stopped: { text: 'تم إيقاف اشتراكك مؤقتاً. يرجى التواصل مع الإدارة', icon: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z' },
+    expired: { text: 'انتهت مدة اشتراكك. يرجى التجديد للاستمرار', icon: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z' }
   };
 
-  const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف' }[r.status] || r.status;
-  const statusIcon = statusMessages[r.status].icon;
+  const effStatus = getEffectiveStatus(r);
+  const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف', expired: 'منتهي' }[effStatus] || effStatus;
+  const statusIcon = statusMessages[effStatus].icon;
   const daysInfo = getDaysLeft(r);
 
   let bodyContent = '';
-  if (r.status === 'accepted') {
+  if (effStatus === 'accepted') {
     const daysPassed = daysInfo.total - daysInfo.days;
     const dayPct = daysInfo.total > 0 ? (daysPassed / daysInfo.total) * 100 : 0;
     let dayClass = '';
@@ -1595,9 +1699,9 @@ function renderSubscriberPage() {
         <div class="sub-info-label">تاريخ البدء</div>
         <div class="sub-info-value">${formatDate(daysInfo.start)}</div>
       </div>
-      <div class="sub-status-msg ${r.status}">
+      <div class="sub-status-msg ${effStatus}">
         <svg viewBox="0 0 24 24"><path d="${statusIcon}"/></svg>
-        <span>${statusMessages[r.status].text}</span>
+        <span>${statusMessages[effStatus].text}</span>
       </div>
       <div class="days-wrap">
         <div class="days-head">
@@ -1623,19 +1727,19 @@ function renderSubscriberPage() {
     `;
   } else {
     bodyContent = `
-      <div class="sub-status-msg ${r.status}">
+      <div class="sub-status-msg ${effStatus}">
         <svg viewBox="0 0 24 24"><path d="${statusIcon}"/></svg>
-        <span>${statusMessages[r.status].text}</span>
+        <span>${statusMessages[effStatus].text}</span>
       </div>
     `;
   }
 
   const card = document.createElement('div');
-  card.className = 'sub-card ' + r.status;
+  card.className = 'sub-card ' + effStatus;
   card.innerHTML = `
     <div class="sub-card-head">
       <div class="sub-card-name"><span>${escapeHtml(r.name)}</span></div>
-      <span class="status-badge ${r.status}">
+      <span class="status-badge ${effStatus}">
         <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="${statusIcon}"/></svg>
         ${statusText}
       </span>
@@ -1667,7 +1771,7 @@ async function openZoomLink() {
   if (!settings.zoomLink) { showToast('لا يوجد رابط متاح', 'error'); return; }
   const r = registrations.find(x => x.masterCode === currentMasterCode);
   if (!r) return;
-  if (r.status !== 'accepted') { showToast('يجب أن يكون اشتراكك مقبولاً للانضمام', 'error'); return; }
+  if (r.status !== 'accepted' || isExpired(r)) { showToast('يجب أن يكون اشتراكك مقبولاً وفعالاً للانضمام', 'error'); return; }
 
   const today = todayKey();
   if (r.lastLectureDate !== today) {
@@ -1694,6 +1798,20 @@ function openWhatsapp() {
   const msg = settings.whatsappMessage || '';
   const url = 'https://wa.me/' + num + (msg ? '?text=' + encodeURIComponent(msg) : '');
   window.location.href = url;
+}
+
+/* ============ تيليجرام ============ */
+function openTelegram() {
+  if (!settings.telegramChannel) { showToast('لا يوجد رابط قناة متاح', 'error'); return; }
+  let channel = settings.telegramChannel.trim();
+  if (channel.startsWith('@')) {
+    channel = channel.substring(1);
+  }
+  if (channel.startsWith('https://t.me/') || channel.startsWith('http://t.me/')) {
+    window.location.href = channel;
+  } else {
+    window.location.href = 'https://t.me/' + channel;
+  }
 }
 
 /* ============ إشعارات المشترك ============ */
@@ -2069,7 +2187,7 @@ function logoutAdmin() {
 
 function switchTab(tab) {
   currentAdminTab = tab;
-  ['pending','accepted','rejected','stopped','messages'].forEach(t => {
+  ['pending','accepted','rejected','stopped','expired','messages'].forEach(t => {
     const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1) + 'Btn');
     if (btn) btn.classList.toggle('active', t === tab);
   });
@@ -2296,7 +2414,7 @@ async function sendCustomMessage() {
   } catch(e) { showToast('فشل الإرسال', 'error'); }
 }
 
-/* ============ Zoom (مع إشعار Telegram احترافي) ============ */
+/* ============ Zoom ============ */
 function openZoomModal() {
   document.getElementById('zoomLinkInput').value = settings.zoomLink || '';
   document.getElementById('zoomLabelInput').value = settings.zoomLabel || '';
@@ -2334,11 +2452,12 @@ async function saveZoomLink() {
       await addSubsNotification(code, 'message', 'رابط المحاضرة متاح', 'يمكنك الآن الدخول للمحاضرة بالضغط على الزر البرتقالي في صفحتك.', null);
     }
 
-    // ✅ إرسال إشعار احترافي للمحاضرة إلى قناة Telegram (رابط الموقع فقط)
     const escapedLink = escapeMarkdownV2(link);
-    const escapedLabel = escapeMarkdownV2(label || 'المحاضرة المباشرة')
+    const escapedLabel = escapeMarkdownV2(label || 'المحاضرة المباشرة');
+    const websiteUrl = escapeMarkdownV2('https://mahh.menuxapp.workers.dev/');
     
-    const tgMessage = `🎥 محاضرة جديدة متاحة الآن
+   
+const tgMessage = `🎥 *محاضرة جديدة متاحة الآن*
 
 
 📚 ${escapedLabel}
@@ -2420,6 +2539,45 @@ async function clearWhatsapp() {
   } catch(e) { showToast('فشل', 'error'); }
 }
 
+/* ============ تيليجرام ============ */
+function openTelegramModal() {
+  document.getElementById('telegramChannelInput').value = settings.telegramChannel || '';
+  document.getElementById('telegramModal').classList.add('show');
+}
+
+function closeTelegramModal() {
+  document.getElementById('telegramModal').classList.remove('show');
+}
+
+document.getElementById('telegramModal').addEventListener('click', e => {
+  if (e.target.id === 'telegramModal') closeTelegramModal();
+});
+
+async function saveTelegram() {
+  let channel = document.getElementById('telegramChannelInput').value.trim();
+  if (!channel) { showToast('أدخل يوزرنيم أو رابط القناة', 'error'); return; }
+  
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const tgDoc = settingsArr.find(s => s.key === 'telegramChannel');
+    if (tgDoc) await fbUpdate('appSettings', tgDoc.fbId, { value: channel });
+    else await fbAdd('appSettings', { key: 'telegramChannel', value: channel });
+    closeTelegramModal();
+    showToast('تم حفظ قناة التيليجرام', 'success');
+  } catch(e) { console.error(e); showToast('فشل الحفظ', 'error'); }
+}
+
+async function clearTelegram() {
+  if (!confirm('حذف رابط قناة التيليجرام؟')) return;
+  try {
+    const settingsArr = await fbGetAll('appSettings');
+    const tgDoc = settingsArr.find(s => s.key === 'telegramChannel');
+    if (tgDoc) await fbDelete('appSettings', tgDoc.fbId);
+    closeTelegramModal();
+    showToast('تم الحذف', 'success');
+  } catch(e) { showToast('فشل', 'error'); }
+}
+
 /* ============ إشعارات الإدارة ============ */
 async function openNotifications() {
   showPage('notifPage');
@@ -2495,7 +2653,7 @@ function exportData() {
     r.totalLectures || 0,
     r.usedLectures || 0,
     r.lastLectureDate || '-',
-    r.status,
+    getEffectiveStatus(r),
     r.deviceId || '-',
     r.deviceName || '-'
   ]);
@@ -2610,9 +2768,11 @@ document.addEventListener('keydown', e => {
 /* ============ عرض لوحة الإدارة ============ */
 function renderAdmin() {
   document.getElementById('tabPendingCount').textContent = registrations.filter(r=>r.status==='pending').length;
-  document.getElementById('tabAcceptedCount').textContent = registrations.filter(r=>r.status==='accepted').length;
+  document.getElementById('tabAcceptedCount').textContent = registrations.filter(r=>r.status==='accepted' && !isExpired(r)).length;
   document.getElementById('tabRejectedCount').textContent = registrations.filter(r=>r.status==='rejected').length;
   document.getElementById('tabStoppedCount').textContent = registrations.filter(r=>r.status==='stopped').length;
+  const expiredCountEl = document.getElementById('tabExpiredCount');
+  if (expiredCountEl) expiredCountEl.textContent = registrations.filter(r=>isExpired(r)).length;
   updateAdminChatBadge();
 
   renderAdminSettingsCards();
@@ -2634,6 +2794,12 @@ function renderAdmin() {
   if (isSearching) {
     filtered = registrations.filter(r => matchSearch(r, currentSearchQuery));
     filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  } else if (currentAdminTab === 'expired') {
+    filtered = registrations.filter(r => isExpired(r));
+    filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  } else if (currentAdminTab === 'accepted') {
+    filtered = registrations.filter(r => r.status === 'accepted' && !isExpired(r));
+    filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
   } else {
     filtered = registrations.filter(r => r.status === currentAdminTab);
     filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
@@ -2648,7 +2814,8 @@ function renderAdmin() {
   const govs = ['بغداد','البصرة','نينوى','أربيل','السليمانية','دهوك','كركوك','النجف','كربلاء','ذي قار','بابل','الأنبار','ديالى','واسط','ميسان','المثنى','القادسية','صلاح الدين'];
 
   filtered.forEach((r, i) => {
-    const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف' }[r.status] || r.status;
+    const effStatus = getEffectiveStatus(r);
+    const statusText = { pending: 'قيد الانتظار', accepted: 'مقبول', rejected: 'مرفوض', stopped: 'موقوف', expired: 'منتهي' }[effStatus] || effStatus;
     const edits = draftEdits[r.fbId] || {};
 
     const vName = edits.name !== undefined ? edits.name : r.name;
@@ -2678,14 +2845,14 @@ function renderAdmin() {
     const isDirty = hasDraft(r.fbId);
 
     const card = document.createElement('div');
-    card.className = 'admin-card ' + r.status + (isDirty ? ' dirty' : '');
+    card.className = 'admin-card ' + effStatus + (isDirty ? ' dirty' : '');
     card.innerHTML = `
       <div class="admin-card-head">
         <div class="admin-card-title">
           <div class="admin-card-num">${i+1}</div>
           <div class="admin-card-name">${highlightMatch(escapeHtml(r.name), currentSearchQuery)}</div>
           <div class="admin-card-code">${highlightMatch(r.masterCode || '-', currentSearchQuery)}</div>
-          <span class="status-badge ${r.status}">${statusText}</span>
+          <span class="status-badge ${effStatus}">${statusText}</span>
           ${isDirty ? '<span class="status-badge" style="background:#f3eeff;color:#7048e8">✎ تعديلات غير محفوظة</span>' : ''}
         </div>
         <div style="font-size:12px;color:#5a6c85">${r.date || ''}</div>
@@ -2771,10 +2938,10 @@ function renderAdmin() {
       ` : ''}
 
       <div class="admin-actions">
-        ${r.status !== 'accepted' ? `<button class="btn btn-success btn-sm" onclick="setStatus('${r.fbId}','accepted')">قبول</button>` : ''}
-        ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setStatus('${r.fbId}','rejected')">رفض</button>` : ''}
-        ${r.status !== 'stopped' ? `<button class="btn btn-warning btn-sm" onclick="setStatus('${r.fbId}','stopped')">إيقاف</button>` : ''}
-        ${r.status !== 'pending' ? `<button class="btn btn-ghost btn-sm" onclick="setStatus('${r.fbId}','pending')">انتظار</button>` : ''}
+        ${effStatus !== 'accepted' ? `<button class="btn btn-success btn-sm" onclick="setStatus('${r.fbId}','accepted')">قبول${effStatus === 'expired' ? ' (تجديد)' : ''}</button>` : ''}
+        ${effStatus !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setStatus('${r.fbId}','rejected')">رفض</button>` : ''}
+        ${effStatus !== 'stopped' ? `<button class="btn btn-warning btn-sm" onclick="setStatus('${r.fbId}','stopped')">إيقاف</button>` : ''}
+        ${effStatus !== 'pending' ? `<button class="btn btn-ghost btn-sm" onclick="setStatus('${r.fbId}','pending')">انتظار</button>` : ''}
         <button class="btn btn-purple btn-sm" onclick="openMsgModal('${r.fbId}')">رسالة</button>
         <button class="btn btn-green btn-sm" onclick="openAdminChat('${r.masterCode}')">
           <svg class="icon-svg" style="fill:#fff;width:14px;height:14px" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
@@ -2795,6 +2962,7 @@ function renderAdminSettingsCards() {
   if (wrap.dataset.rendered === '1') {
     updateZoomStatus();
     updateWhatsappStatus();
+    updateTelegramStatus();
     return;
   }
   wrap.innerHTML = `
@@ -2819,10 +2987,22 @@ function renderAdminSettingsCards() {
       </div>
       <button id="whatsappAdminBtn" class="btn btn-sm" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none" onclick="openWhatsappModal()">تعيين الرقم</button>
     </div>
+
+    <div style="margin-bottom:14px;padding:12px;background:linear-gradient(135deg,#e8f3ff,#d4e8ff);border-radius:12px;border:1.5px solid #7dc4f5;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg style="width:26px;height:26px;fill:#2AABEE" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        <div>
+          <div style="font-weight:700;color:#0c5f8a;font-size:14px">قناة التيليجرام</div>
+          <div id="telegramStatusText" style="font-size:12px;color:#1e6fa8;margin-top:2px"></div>
+        </div>
+      </div>
+      <button id="telegramAdminBtn" class="btn btn-sm" style="background:linear-gradient(135deg,#2AABEE,#229ED9);color:#fff;border:none" onclick="openTelegramModal()">تعيين القناة</button>
+    </div>
   `;
   wrap.dataset.rendered = '1';
   updateZoomStatus();
   updateWhatsappStatus();
+  updateTelegramStatus();
 }
 
 function updateZoomStatus() {
@@ -2848,6 +3028,19 @@ function updateWhatsappStatus() {
   } else {
     el.textContent = 'لم يتم تحديد رقم بعد';
     if (btn) btn.textContent = 'تعيين الرقم';
+  }
+}
+
+function updateTelegramStatus() {
+  const el = document.getElementById('telegramStatusText');
+  const btn = document.getElementById('telegramAdminBtn');
+  if (!el) return;
+  if (settings.telegramChannel) {
+    el.innerHTML = 'مفعّل: <span style="font-family:monospace;color:#0c5f8a;direction:ltr;display:inline-block">' + escapeHtml(settings.telegramChannel) + '</span>';
+    if (btn) btn.textContent = 'تعديل القناة';
+  } else {
+    el.textContent = 'لم يتم تحديد قناة بعد';
+    if (btn) btn.textContent = 'تعيين القناة';
   }
 }
 
@@ -3094,15 +3287,22 @@ window.addEventListener('load', async () => {
     snap.docs.forEach(d => { const data = d.data(); settings[data.key] = data.value; });
     const subscriberPage = document.getElementById('subscriberPage');
     if (subscriberPage && !subscriberPage.classList.contains('hidden')) renderSubscriberPage();
-    const mainPage = document.getElementById('mainPage');
-    if (mainPage && !mainPage.classList.contains('hidden')) {
-      const waBtn = document.getElementById('subsWhatsappBtn');
-      if (waBtn && settings.whatsappNumber && settings.whatsappNumber.trim()) {
-        waBtn.classList.remove('hidden');
-      }
+    
+    // تحديث أزرار الواتساب والتيليجرام في كلا الصفحتين
+    const waBtn = document.getElementById('subsWhatsappBtn');
+    const tgBtn = document.getElementById('subsTelegramBtn');
+    if (waBtn) {
+      if (settings.whatsappNumber && settings.whatsappNumber.trim()) waBtn.classList.remove('hidden');
+      else waBtn.classList.add('hidden');
     }
+    if (tgBtn) {
+      if (settings.telegramChannel && settings.telegramChannel.trim()) tgBtn.classList.remove('hidden');
+      else tgBtn.classList.add('hidden');
+    }
+    
     updateZoomStatus();
     updateWhatsappStatus();
+    updateTelegramStatus();
     updateLogoStatus();
     applyCustomLogo();
   });
